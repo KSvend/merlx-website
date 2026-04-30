@@ -1,8 +1,8 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import { RichTextRenderer } from '@/components/pages/RichTextRenderer';
-import { isGroupTenant } from '@/lib/tenant-aware';
+import type { AppLocale } from '@/i18n/routing';
+import { requireGroupTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
-import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -21,30 +21,8 @@ export default async function LegalPage({ params }: PageProps) {
   if (!ALLOWED_SLUGS.includes(slug as (typeof ALLOWED_SLUGS)[number])) notFound();
 
   const headerList = await headers();
-  if (!isGroupTenant(headerList)) notFound();
-
   const payload = await getPayload({ config });
-  const tenantDomain = headerList.get('x-tenant-domain') ?? 'merlx.org';
-
-  const tenantQuery = await payload.find({
-    collection: 'tenants',
-    where: { domain: { equals: tenantDomain } },
-    limit: 1,
-  });
-  let tenant = tenantQuery.docs[0];
-  if (!tenant) {
-    // Fallback: resolve the canonical group tenant by type. The proxy resolves
-    // `localhost` to kind='group' but no seeded tenant has domain 'localhost',
-    // so a strict domain match fails in dev/test. We've already verified
-    // `isGroupTenant` above, so falling back to the group tenant is safe.
-    const groupQuery = await payload.find({
-      collection: 'tenants',
-      where: { type: { equals: 'group' } },
-      limit: 1,
-    });
-    tenant = groupQuery.docs[0];
-  }
-  if (!tenant) notFound();
+  const tenant = await requireGroupTenant(headerList, payload);
 
   const pageQuery = await payload.find({
     collection: 'pages',
@@ -55,7 +33,7 @@ export default async function LegalPage({ params }: PageProps) {
         { status: { equals: 'published' } },
       ],
     },
-    locale: locale as 'en' | 'ar' | 'fr',
+    locale: locale as AppLocale,
     limit: 1,
   });
 
@@ -77,7 +55,7 @@ export default async function LegalPage({ params }: PageProps) {
         >
           {page.title}
         </h1>
-        <RichTextRenderer data={page.body as SerializedEditorState | null | undefined} />
+        <RichTextRenderer data={page.body} />
       </article>
     </PageShell>
   );
