@@ -30,5 +30,16 @@
     "networkBullet2": "Services : recherche, évaluation, TPM, formation",
     "networkBullet3": "Devenir un nœud · rejoindre le réseau",
     "networkCta": "Entrer dans le Réseau →"
+  },
+  "feeds": {
+    "insightsHeading": "Analyses",
+    "publicationsHeading": "Publications",
+    "emptyInsights": "Rien de publié pour le moment. Revenez bientôt.",
+    "emptyPublications": "Rien de publié pour le moment.",
+    "tableYear": "Année",
+    "tableType": "Type",
+    "tableTitle": "Titre",
+    "tableAuthors": "Auteurs",
+    "downloadPdf": "Télécharger le PDF →"
   }
 }

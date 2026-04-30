@@ -3,7 +3,7 @@ import type { AppLocale } from '@/i18n/routing';
 import { buildAggregateInsightsQuery } from '@/lib/aggregate-feed';
 import { requireGroupTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getPayload } from 'payload';
@@ -15,6 +15,7 @@ interface PageProps {
 export default async function InsightsIndex({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations('feeds');
 
   const headerList = await headers();
   const payload = await getPayload({ config });
@@ -46,7 +47,7 @@ export default async function InsightsIndex({ params }: PageProps) {
             margin: '0 0 32px',
           }}
         >
-          Insights
+          {t('insightsHeading')}
         </h1>
 
         {posts.docs.length === 0 ? (
@@ -57,7 +58,7 @@ export default async function InsightsIndex({ params }: PageProps) {
               fontStyle: 'italic',
             }}
           >
-            Nothing published yet. Check back soon.
+            {t('emptyInsights')}
           </p>
         ) : (
           <ul

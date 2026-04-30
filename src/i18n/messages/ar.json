@@ -30,5 +30,16 @@
     "networkBullet2": "الخدمات: البحث، التقييم، TPM، التدريب",
     "networkBullet3": "كن عقدة · شارك في الشبكة",
     "networkCta": "دخول الشبكة ←"
+  },
+  "feeds": {
+    "insightsHeading": "رؤى",
+    "publicationsHeading": "منشورات",
+    "emptyInsights": "لم يُنشر شيء بعد. تحقق لاحقًا.",
+    "emptyPublications": "لم يُنشر شيء بعد.",
+    "tableYear": "السنة",
+    "tableType": "النوع",
+    "tableTitle": "العنوان",
+    "tableAuthors": "المؤلفون",
+    "downloadPdf": "تنزيل PDF ←"
   }
 }

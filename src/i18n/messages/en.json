@@ -30,5 +30,16 @@
     "networkBullet2": "Services: research, evaluation, TPM, training",
     "networkBullet3": "Become a node · partner with the network",
     "networkCta": "Enter the Network →"
+  },
+  "feeds": {
+    "insightsHeading": "Insights",
+    "publicationsHeading": "Publications",
+    "emptyInsights": "Nothing published yet. Check back soon.",
+    "emptyPublications": "Nothing published yet.",
+    "tableYear": "Year",
+    "tableType": "Type",
+    "tableTitle": "Title",
+    "tableAuthors": "Authors",
+    "downloadPdf": "Download PDF →"
   }
 }

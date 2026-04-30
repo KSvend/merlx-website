@@ -24,3 +24,13 @@ test('legal/unknown 404s', async ({ page }) => {
   const response = await page.goto('/en/legal/unknown', { waitUntil: 'commit' });
   expect(response?.status()).toBe(404);
 });
+
+test('insights index renders', async ({ page }) => {
+  await page.goto('/en/insights');
+  await expect(page.getByRole('heading', { level: 1, name: 'Insights' })).toBeVisible();
+});
+
+test('publications index renders', async ({ page }) => {
+  await page.goto('/en/publications');
+  await expect(page.getByRole('heading', { level: 1, name: 'Publications' })).toBeVisible();
+});
