@@ -1,0 +1,19 @@
+:root {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+html {
+  box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+}
+
+[dir="rtl"] body {
+  text-align: start;
+}

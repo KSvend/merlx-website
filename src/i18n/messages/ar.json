@@ -1,0 +1,13 @@
+{
+  "chrome": {
+    "siteName": "MERLx",
+    "navInsights": "رؤى",
+    "navPublications": "منشورات",
+    "navContact": "تواصل"
+  },
+  "scaffold": {
+    "tenantHeader": "المستأجر",
+    "localeHeader": "اللغة",
+    "directionHeader": "الاتجاه"
+  }
+}
