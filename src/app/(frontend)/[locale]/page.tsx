@@ -1,3 +1,5 @@
+import { BrandMark } from '@/components/BrandMark';
+import { LocaleSwitch } from '@/components/LocaleSwitch';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 
@@ -15,8 +17,25 @@ export default async function Page({ params }: PageProps) {
   const tenantDomain = headerList.get('x-tenant-domain') ?? 'unknown';
 
   return (
-    <main style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
-      <h1>MERLx — Phase 0 scaffold</h1>
+    <main style={{ padding: 24 }}>
+      <header style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
+        <BrandMark size={28} />
+        <span
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontWeight: 600,
+            fontSize: 19,
+            letterSpacing: '-0.005em',
+          }}
+        >
+          MERL<span style={{ color: 'var(--color-purple)' }}>x</span>
+        </span>
+        <span style={{ marginInlineStart: 'auto' }}>
+          <LocaleSwitch currentLocale={locale} />
+        </span>
+      </header>
+
+      <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 32 }}>Phase 0 scaffold</h1>
       <table style={{ borderCollapse: 'collapse', marginTop: 12 }}>
         <tbody>
           <tr>
