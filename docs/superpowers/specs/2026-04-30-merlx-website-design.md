@@ -59,7 +59,23 @@ Five distinct kinds of subdomain, all served from one Next.js codebase via host-
 
 **Group / Studio / Network / Nodes are the same Next.js app**, distinguished by middleware reading the `Host` header and resolving a `tenants` record from Payload. Each tenant has its own theme accent, content collections, lead routing, and analytics scope.
 
-**Tools are not part of this codebase.** They're separate apps that already exist; the website owns the DNS records and points each tool subdomain at wherever the tool actually runs (HF Spaces, separate Vercel projects, Railway, etc.). The website's per-tool *marketing* page lives at `studio.merlx.org/optics/[tool]` with a "Launch tool →" link to `[tool].merlx.org`.
+**Tools are not part of this codebase.** They're separate apps that already exist; the website's per-tool *marketing* page lives at `studio.merlx.org/optics/[tool]` and links out via "Launch tool →" / "Request a demo" CTA. Tool subdomains resolve in one of two patterns depending on each tool's readiness:
+
+| Tool readiness | Subdomain pattern |
+|---|---|
+| **Publicly hosted** (e.g., Aperture on HF Spaces) | DNS CNAME / redirect → external host. The website is not in the request path. |
+| **Not yet publicly hosted** (most tools at v1) | CNAME → the website's Vercel project. `proxy.ts` matches the host and renders a per-tool "Coming soon — request a demo" page (which is just the same Studio per-tool marketing page from `studio.merlx.org/optics/[tool]`, served at the tool subdomain for SEO + future-proofing). When the tool's real deployment goes live, switch the DNS / `proxy.ts` rule to redirect. |
+
+Per-tool readiness at expected launch (subject to change as the Optics Suite matures):
+
+| Tool | Status | At launch |
+|---|---|---|
+| IRIS | Operational prototype (Brace4Peace) | Coming-soon page |
+| PRISM | Beta (Sudan / HoA) | Subject to deploy decision; default coming-soon |
+| Aperture | Beta (HF Spaces) | Live redirect to HF Spaces |
+| ToC Tester | Beta (workshop-ready) | Subject to deploy; default coming-soon |
+| OASIS | Live (Sudan pilot) | Subject to public-access decision; default coming-soon |
+| ECHO | Alpha (Android) | Coming-soon page (mobile-only, not a web app) |
 
 ---
 
@@ -172,9 +188,9 @@ All routes are localised at `/en|/ar|/fr/...`. RTL layout applies under `/ar`.
 ### 5.2 Color side-association
 
 The MERLx mark itself maps to the chooser layout:
-- **Studio (left half)** = orange / PRISM compound-risk register. Eyebrow tag, accent rule, CTA, and the hex-grid background SVG are orange-toned (with darker maroon `#8a2f0a` for hot-zone cells).
-- **Network (right half)** = teal / federation-and-growth register. Eyebrow tag, accent rule, CTA, and the world-map node-pin SVG are teal-toned.
-- **Purple** is reserved for wordmark + editorial italic flourishes.
+- **Studio (left half)** = **orange register** (warmth, building, the PRISM-style compound-risk visualisation that fades in on hover as the background motif). Studio is the umbrella for all six tools — orange is the Studio identity, not specifically PRISM. Eyebrow tag, accent rule, CTA, and the hex-grid background SVG are orange-toned, with darker maroon `#8a2f0a` for hot-zone cells.
+- **Network (right half)** = **teal register** (federation, growth, in-country MERL). Eyebrow tag, accent rule, CTA, and the world-map node-pin SVG are teal-toned.
+- **Purple** is reserved for wordmark + editorial italic flourishes (e.g., "global development" in the homepage headline).
 
 ### 5.3 Homepage chooser interaction
 
@@ -410,8 +426,8 @@ Phased plan; each phase ends in a state safe to pause at.
 
 ### Phase 7 — Launch (≈ days)
 
-- DNS cutover.
-- Tool subdomain redirects activated. For tools not yet publicly hosted, the subdomain renders a "Coming soon — request a demo" page (the relevant Studio per-tool marketing page).
+- DNS cutover for `merlx.org` and `*.merlx.org`.
+- Tool subdomain DNS configured per the readiness table in Section 3. Publicly hosted tools (Aperture) get external redirects; the rest CNAME back to the website's Vercel project where `proxy.ts` resolves the host and renders the per-tool marketing page as a "Coming soon — request a demo" surface.
 - Old scaffolds remain archived; no public redirect needed.
 - Soft launch announcement.
 
@@ -452,6 +468,8 @@ Phases 0 + 1 + 2 + Phase 4 with NileX in EN only. Skip Phase 3 (Network condense
 | **Tool subdomain DNS pointing at apps in different states of readiness** | For tools not publicly hosted, the subdomain renders the marketing page with "Coming soon — request a demo"; only publicly-ready tools get a real "Launch tool →" link |
 | **Node-admin permissions leakage** (a NileX editor seeing other-node draft content) | Explicit test fixtures for tenant scoping in CI; multi-tenant plugin's `req.tenant` enforcement audited before Phase 4 |
 | **Performance regression** as content grows | Lighthouse-CI gate on PR; perf budget table in this spec is enforced |
+| **Stack newness** — Next.js 16 + Payload v3 + `@payloadcms/plugin-multi-tenant` are all current versions; multi-tenant × localisation × roles has limited public reference implementations | Phase 0 includes a tenant-resolution + locale + role smoke-test fixture; pin major versions and document upgrade path; budget extra hardening time in Phase 6 |
+| **NileX content authoring** is a dependency on a separate workstream (NileX team writing the actual Sudan / HoA content, in AR + EN) | Phase 4 assumes EN copy is delivered by NileX before code work starts; AR translation overlaps with Phase 5; if NileX content slips, the Phase 4 timeline slips with it but other phases are unaffected |
 
 ---
 
