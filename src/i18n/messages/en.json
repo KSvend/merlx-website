@@ -1,0 +1,13 @@
+{
+  "chrome": {
+    "siteName": "MERLx",
+    "navInsights": "Insights",
+    "navPublications": "Publications",
+    "navContact": "Contact"
+  },
+  "scaffold": {
+    "tenantHeader": "Tenant",
+    "localeHeader": "Locale",
+    "directionHeader": "Direction"
+  }
+}

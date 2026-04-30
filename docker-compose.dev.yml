@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: merlx_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: merlx
+      POSTGRES_PASSWORD: merlx
+      POSTGRES_DB: merlx_website
+    ports:
+      - "5433:5432"
+    volumes:
+      - merlx_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U merlx"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  merlx_pg_data:
