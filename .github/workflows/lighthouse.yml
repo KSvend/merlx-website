@@ -1,0 +1,38 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: merlx
+          POSTGRES_PASSWORD: merlx
+          POSTGRES_DB: merlx_website
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://merlx:merlx@localhost:5432/merlx_website
+      PAYLOAD_SECRET: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: latest }
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - run: bun run seed
+      - name: Run Lighthouse CI
+        run: |
+          bunx --bun @lhci/cli@latest autorun --config=./lighthouserc.json
