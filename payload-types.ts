@@ -72,6 +72,7 @@ export interface Config {
     pages: Page;
     'insights-posts': InsightsPost;
     publications: Publication;
+    leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     'insights-posts': InsightsPostsSelect<false> | InsightsPostsSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -287,6 +289,33 @@ export interface Publication {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  name: string;
+  email: string;
+  organisation?: string | null;
+  role?: string | null;
+  country?: string | null;
+  message: string;
+  interest?: ('studio' | 'network' | 'hosted' | 'pilot' | 'build-with' | 'advisory')[] | null;
+  /**
+   * Which tenant + page the submission came from (e.g., "group:/contact").
+   */
+  tenantOrigin: string;
+  utm?: {
+    source?: string | null;
+    medium?: string | null;
+    campaign?: string | null;
+  };
+  submittedAt: string;
+  status: 'new' | 'in-progress' | 'resolved' | 'spam';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -328,6 +357,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'publications';
         value: number | Publication;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -473,6 +506,31 @@ export interface PublicationsSelect<T extends boolean = true> {
   fileUrl?: T;
   language?: T;
   syndicate?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  organisation?: T;
+  role?: T;
+  country?: T;
+  message?: T;
+  interest?: T;
+  tenantOrigin?: T;
+  utm?:
+    | T
+    | {
+        source?: T;
+        medium?: T;
+        campaign?: T;
+      };
+  submittedAt?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;
