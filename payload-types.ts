@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    tenants: Tenant;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,6 +77,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -144,6 +146,34 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants".
+ */
+export interface Tenant {
+  id: number;
+  /**
+   * e.g. merlx.org, studio.merlx.org, nilex.merlx.org
+   */
+  domain: string;
+  displayName: string;
+  type: 'group' | 'studio' | 'network' | 'node';
+  status: 'active' | 'pre-launch' | 'archived';
+  primaryLocale: 'en' | 'ar' | 'fr';
+  supportedLocales?: ('en' | 'ar' | 'fr')[] | null;
+  accentColor: 'teal' | 'orange' | 'sage' | 'slate' | 'deep-teal';
+  tagline?: string | null;
+  /**
+   * Whether this tenant publishes Insights. Studio + Network always true; Nodes opt in.
+   */
+  hasInsights?: boolean | null;
+  /**
+   * e.g. merlx-blob/studio. Used to scope media uploads.
+   */
+  blobBucketPrefix: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -165,10 +195,15 @@ export interface PayloadKv {
  */
 export interface PayloadLockedDocument {
   id: number;
-  document?: {
-    relationTo: 'users';
-    value: number | User;
-  } | null;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'tenants';
+        value: number | Tenant;
+      } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
@@ -234,6 +269,24 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants_select".
+ */
+export interface TenantsSelect<T extends boolean = true> {
+  domain?: T;
+  displayName?: T;
+  type?: T;
+  status?: T;
+  primaryLocale?: T;
+  supportedLocales?: T;
+  accentColor?: T;
+  tagline?: T;
+  hasInsights?: T;
+  blobBucketPrefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
