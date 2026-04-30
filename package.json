@@ -14,6 +14,7 @@
     "lint": "biome check src tests",
     "lint:fix": "biome check --write src tests",
     "format": "biome format --write src tests",
+    "seed": "bun run --env-file=.env.local scripts/seed-tenants.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
