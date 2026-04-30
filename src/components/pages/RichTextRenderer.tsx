@@ -1,9 +1,9 @@
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical';
 import { RichText } from '@payloadcms/richtext-lexical/react';
-import type { Page } from '../../../payload-types';
+import type { InsightsPost, Page } from '../../../payload-types';
 
 interface RichTextRendererProps {
-  data: Page['body'];
+  data: Page['body'] | InsightsPost['body'];
 }
 
 export function RichTextRenderer({ data }: RichTextRendererProps) {
