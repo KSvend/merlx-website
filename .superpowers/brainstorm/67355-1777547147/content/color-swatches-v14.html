@@ -1,0 +1,342 @@
+<h2>v14 — color swatch comparison</h2>
+<p class="subtitle">Same layout, four background treatments. Pick the direction (or describe a hybrid). I'll then build the full hover-dynamic version of whichever wins.</p>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 12px;
+  }
+
+  .swatch {
+    border: 1px solid #ececec;
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .swatch:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+
+  .swatch-label {
+    padding: 12px 16px;
+    background: #fafafa;
+    border-bottom: 1px solid #ececec;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .swatch-label .name {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    color: #1a1a1a;
+  }
+  .swatch-label .desc {
+    font-size: 10px; color: #888;
+    font-family: 'Tiempos Text', Georgia, serif; font-style: italic;
+  }
+
+  /* Base shared layout for the mini-mockup */
+  .mock {
+    display: flex; height: 280px; position: relative;
+  }
+  .mock .side {
+    flex: 1; padding: 22px 18px;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .mock .side.studio { border-right: 1px solid #e8e8e8; }
+  .mock .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .mock .swatch-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+  }
+  .mock .name {
+    font-family: 'Tiempos Headline', Georgia, serif;
+    font-weight: 600; font-size: 22px;
+    letter-spacing: -0.012em;
+    line-height: 1; margin-bottom: 4px;
+  }
+  .mock .name em { font-style: italic; font-weight: 500; }
+  .mock .tagline {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-style: italic; font-size: 10px;
+    margin-bottom: 14px;
+  }
+  .mock .rule {
+    width: 32px; height: 2px; margin-bottom: 12px;
+  }
+  .mock .body {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-size: 10.5px; line-height: 1.5;
+    margin-bottom: auto;
+  }
+  .mock .cta {
+    align-self: flex-start;
+    padding: 7px 12px; border-radius: 2px;
+    font-size: 9.5px; font-weight: 500;
+    margin-top: 10px;
+  }
+  .mock .top-strip {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 22px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px; letter-spacing: 0.06em;
+    border-bottom: 1px solid #ececec;
+    z-index: 5;
+  }
+  .mock .side-content {
+    margin-top: 22px;
+    display: flex; flex-direction: column;
+    height: calc(100% - 22px);
+  }
+
+  /* === A — Soft warm-white minimalist (off-white base) === */
+  .var-a .mock { background: #fbfaf5; }
+  .var-a .top-strip { background: #fbfaf5; color: #888; }
+  .var-a .side.studio { background: #fbfaf5; }
+  .var-a .side.network { background: #fbfaf5; }
+  .var-a .tag.studio { color: #1a3a34; }
+  .var-a .tag.network { color: #ca5d0f; }
+  .var-a .swatch-dot.studio { background: #1a3a34; }
+  .var-a .swatch-dot.network { background: #ca5d0f; }
+  .var-a .name { color: #1a1a1a; }
+  .var-a .tagline { color: #888; }
+  .var-a .rule.studio { background: #1a3a34; }
+  .var-a .rule.network { background: #ca5d0f; }
+  .var-a .body { color: #555; }
+  .var-a .cta.studio { background: #1a3a34; color: #fbfaf5; }
+  .var-a .cta.network { background: #ca5d0f; color: #fbfaf5; }
+
+  /* === B — Cream institutional (v12 baseline) === */
+  .var-b .mock { background: #f4eee2; }
+  .var-b .top-strip { background: #f4eee2; color: #8a8275; }
+  .var-b .side.studio { background: #e9ebde; }
+  .var-b .side.network { background: #f5e8d6; }
+  .var-b .tag.studio { color: #1a3a34; }
+  .var-b .tag.network { color: #ca5d0f; }
+  .var-b .swatch-dot.studio { background: #1a3a34; }
+  .var-b .swatch-dot.network { background: #ca5d0f; }
+  .var-b .name { color: #1c1917; }
+  .var-b .tagline { color: #8a8275; }
+  .var-b .rule.studio { background: #1a3a34; }
+  .var-b .rule.network { background: #ca5d0f; }
+  .var-b .body { color: #4a443c; }
+  .var-b .cta.studio { background: #1a3a34; color: #f4eee2; }
+  .var-b .cta.network { background: #ca5d0f; color: #f4eee2; }
+
+  /* === C — Pure white modernist === */
+  .var-c .mock { background: #ffffff; }
+  .var-c .top-strip { background: #ffffff; color: #888; }
+  .var-c .side.studio { background: #ffffff; }
+  .var-c .side.network { background: #ffffff; }
+  .var-c .side.studio::before {
+    content: ""; position: absolute; top: 22px; left: 0; right: 0;
+    height: 2px; background: #1a3a34;
+  }
+  .var-c .side.network::before {
+    content: ""; position: absolute; top: 22px; left: 0; right: 0;
+    height: 2px; background: #ca5d0f;
+  }
+  .var-c .tag.studio { color: #1a3a34; }
+  .var-c .tag.network { color: #ca5d0f; }
+  .var-c .swatch-dot.studio { background: #1a3a34; }
+  .var-c .swatch-dot.network { background: #ca5d0f; }
+  .var-c .name { color: #1a1a1a; }
+  .var-c .tagline { color: #999; }
+  .var-c .rule.studio { background: #1a3a34; }
+  .var-c .rule.network { background: #ca5d0f; }
+  .var-c .body { color: #555; }
+  .var-c .cta.studio { background: #1a3a34; color: #ffffff; }
+  .var-c .cta.network { background: #ca5d0f; color: #ffffff; }
+
+  /* === D — Asymmetric duotone (Studio dark teal, Network warm cream) === */
+  .var-d .mock { background: #f4eee2; }
+  .var-d .top-strip { background: #f4eee2; color: #8a8275; }
+  .var-d .side.studio { background: #1a3a34; color: #f4eee2; }
+  .var-d .side.network { background: #f4eee2; }
+  .var-d .var-d-tag-studio { color: #ca5d0f; }
+  .var-d .tag.studio { color: rgba(244,238,226,0.65); }
+  .var-d .tag.network { color: #ca5d0f; }
+  .var-d .swatch-dot.studio { background: #ca5d0f; }
+  .var-d .swatch-dot.network { background: #ca5d0f; }
+  .var-d .side.studio .name { color: #f4eee2; }
+  .var-d .side.studio .name em { color: #ca5d0f; }
+  .var-d .side.network .name { color: #1c1917; }
+  .var-d .side.studio .tagline { color: rgba(244,238,226,0.55); }
+  .var-d .side.network .tagline { color: #8a8275; }
+  .var-d .side.studio .rule { background: #ca5d0f; }
+  .var-d .side.network .rule { background: #ca5d0f; }
+  .var-d .side.studio .body { color: rgba(244,238,226,0.75); }
+  .var-d .side.network .body { color: #4a443c; }
+  .var-d .side.studio .cta { background: #ca5d0f; color: #1a3a34; }
+  .var-d .side.network .cta { background: #1a3a34; color: #f4eee2; }
+</style>
+
+<div class="grid">
+
+  <!-- A -->
+  <div class="swatch var-a">
+    <div class="swatch-label">
+      <span class="name">A · Warm-white minimalist</span>
+      <span class="desc">single off-white base, no tints, color only in accents</span>
+    </div>
+    <div class="mock">
+      <div class="top-strip"><span>MERLX.ORG · V2026.04</span><span>STUDIO · NETWORK</span></div>
+      <div class="side studio">
+        <div class="side-content">
+          <div class="tag studio"><span class="swatch-dot studio"></span>THE TECH STUDIO</div>
+          <div class="name">MERL<em>x</em> Studio</div>
+          <div class="tagline">Open analytical tools.</div>
+          <div class="rule studio"></div>
+          <div class="body">Building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning.</div>
+          <div class="cta studio">Enter Studio →</div>
+        </div>
+      </div>
+      <div class="side network">
+        <div class="side-content">
+          <div class="tag network"><span class="swatch-dot network"></span>THE MERL NETWORK</div>
+          <div class="name">MERL<em>x</em> Network</div>
+          <div class="tagline">Locally owned MERL.</div>
+          <div class="rule network"></div>
+          <div class="body">A federation of locally owned MERL cooperatives — research, evaluation, TPM, and field analysis in-country.</div>
+          <div class="cta network">Enter Network →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B -->
+  <div class="swatch var-b">
+    <div class="swatch-label">
+      <span class="name">B · Cream institutional (v12 baseline)</span>
+      <span class="desc">tinted halves, warm + editorial — current</span>
+    </div>
+    <div class="mock">
+      <div class="top-strip"><span>MERLX.ORG · V2026.04</span><span>STUDIO · NETWORK</span></div>
+      <div class="side studio">
+        <div class="side-content">
+          <div class="tag studio"><span class="swatch-dot studio"></span>THE TECH STUDIO</div>
+          <div class="name">MERL<em>x</em> Studio</div>
+          <div class="tagline">Open analytical tools.</div>
+          <div class="rule studio"></div>
+          <div class="body">Building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning.</div>
+          <div class="cta studio">Enter Studio →</div>
+        </div>
+      </div>
+      <div class="side network">
+        <div class="side-content">
+          <div class="tag network"><span class="swatch-dot network"></span>THE MERL NETWORK</div>
+          <div class="name">MERL<em>x</em> Network</div>
+          <div class="tagline">Locally owned MERL.</div>
+          <div class="rule network"></div>
+          <div class="body">A federation of locally owned MERL cooperatives — research, evaluation, TPM, and field analysis in-country.</div>
+          <div class="cta network">Enter Network →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C -->
+  <div class="swatch var-c">
+    <div class="swatch-label">
+      <span class="name">C · Pure white modernist</span>
+      <span class="desc">white base, top hairline as differentiator</span>
+    </div>
+    <div class="mock">
+      <div class="top-strip"><span>MERLX.ORG · V2026.04</span><span>STUDIO · NETWORK</span></div>
+      <div class="side studio">
+        <div class="side-content">
+          <div class="tag studio"><span class="swatch-dot studio"></span>THE TECH STUDIO</div>
+          <div class="name">MERL<em>x</em> Studio</div>
+          <div class="tagline">Open analytical tools.</div>
+          <div class="rule studio"></div>
+          <div class="body">Building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning.</div>
+          <div class="cta studio">Enter Studio →</div>
+        </div>
+      </div>
+      <div class="side network">
+        <div class="side-content">
+          <div class="tag network"><span class="swatch-dot network"></span>THE MERL NETWORK</div>
+          <div class="name">MERL<em>x</em> Network</div>
+          <div class="tagline">Locally owned MERL.</div>
+          <div class="rule network"></div>
+          <div class="body">A federation of locally owned MERL cooperatives — research, evaluation, TPM, and field analysis in-country.</div>
+          <div class="cta network">Enter Network →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D -->
+  <div class="swatch var-d">
+    <div class="swatch-label">
+      <span class="name">D · Asymmetric duotone</span>
+      <span class="desc">Studio = dark teal panel · Network = warm cream</span>
+    </div>
+    <div class="mock">
+      <div class="top-strip"><span>MERLX.ORG · V2026.04</span><span>STUDIO · NETWORK</span></div>
+      <div class="side studio">
+        <div class="side-content">
+          <div class="tag studio"><span class="swatch-dot studio"></span>THE TECH STUDIO</div>
+          <div class="name">MERL<em>x</em> Studio</div>
+          <div class="tagline">Open analytical tools.</div>
+          <div class="rule studio"></div>
+          <div class="body">Building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning.</div>
+          <div class="cta studio">Enter Studio →</div>
+        </div>
+      </div>
+      <div class="side network">
+        <div class="side-content">
+          <div class="tag network"><span class="swatch-dot network"></span>THE MERL NETWORK</div>
+          <div class="name">MERL<em>x</em> Network</div>
+          <div class="tagline">Locally owned MERL.</div>
+          <div class="rule network"></div>
+          <div class="body">A federation of locally owned MERL cooperatives — research, evaluation, TPM, and field analysis in-country.</div>
+          <div class="cta network">Enter Network →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top: 28px;">
+  <p class="subtitle">Click which direction reads right. I'll then take the winner and rebuild it with the full hover dynamics from v12 (70% expand, asymmetric Studio→Network push, themed background SVG fade-in, content left-anchored).</p>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="A" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>A · Warm-white minimalist</h3>
+      <p>Single off-white field, no resting tints, colour only in accents. Cleanest, lightest.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="B" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>B · Cream institutional (v12 baseline)</h3>
+      <p>Tinted halves. The version we already have. Pick if it was right and v13 was the wrong move.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="C" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>C · Pure white modernist</h3>
+      <p>White, with a 2px coloured hairline marking each side. Tech-product feel.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="D" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>D · Asymmetric duotone</h3>
+      <p>Studio sits on a dark teal panel; Network on warm cream. Two entities, two visual worlds, mirroring how distinct they actually are.</p>
+    </div>
+  </div>
+</div>

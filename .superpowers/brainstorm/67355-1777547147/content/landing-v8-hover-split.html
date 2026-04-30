@@ -1,0 +1,510 @@
+<h2>Landing v8 — full-bleed hover-expand split</h2>
+<p class="subtitle">Group framing removed. Two entity halves take the entire viewport. On hover, the side expands to ~58% and a themed background SVG fades in: a faint PRISM hex-grid for Studio, a stylised world map with node pins for Network. Try hovering each side.</p>
+
+<style>
+  :root {
+    --cream: #f4eee2;
+    --cream-2: #ece4d3;
+    --ink: #1c1917;
+    --ink-soft: #4a443c;
+    --ink-mute: #8a8275;
+    --teal: #1a3a34;
+    --teal-deep: #122a26;
+    --purple: #4a3f6b;
+    --orange: #ca5d0f;
+    --rule: #d8cfb9;
+  }
+
+  .landing {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--cream);
+    overflow: hidden;
+    margin-top: 12px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--ink);
+  }
+
+  .top-strip {
+    display: flex; justify-content: space-between;
+    padding: 10px 28px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 9.5px; letter-spacing: 0.06em;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .nav-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .brand-mark { display: flex; align-items: center; gap: 11px; }
+  .brand-mark .logo { width: 30px; height: auto; display: block; }
+  .brand-mark .word {
+    font-family: 'Tiempos Headline', 'GT Sectra', Georgia, serif;
+    font-weight: 600; font-size: 19px;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .brand-mark .word .x { color: var(--purple); }
+  .nav-meta {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; color: var(--ink-mute);
+    display: flex; gap: 18px; align-items: center;
+  }
+  .nav-meta a {
+    color: var(--ink-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+  }
+  .nav-meta .lang .active { color: var(--ink); }
+
+  /* Split — flex-based hover expansion */
+  .entities {
+    display: flex;
+    height: 600px;
+    position: relative;
+  }
+  .entity {
+    flex: 1 1 0;
+    position: relative;
+    overflow: hidden;
+    transition: flex-grow 0.55s cubic-bezier(0.22,1,0.36,1);
+    cursor: pointer;
+  }
+  .entities:hover .entity { flex-grow: 0.6; }
+  .entities .entity:hover { flex-grow: 1.6; }
+
+  .entity:first-child { border-right: 1px solid var(--rule); }
+
+  /* Background SVG layer */
+  .entity-bg {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 0.55s ease;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .entity:hover .entity-bg { opacity: 1; }
+  .entity-bg svg {
+    width: 100%; height: 100%;
+    display: block;
+  }
+
+  /* Content */
+  .entity-content {
+    position: relative; z-index: 2;
+    padding: 64px 44px 48px;
+    height: 100%;
+    display: flex; flex-direction: column;
+  }
+  .entity-tag {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .entity-tag .swatch {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .entity-studio .entity-tag .swatch { background: var(--teal); }
+  .entity-network .entity-tag .swatch { background: var(--orange); }
+
+  .entity-name {
+    font-family: 'Tiempos Headline', Georgia, serif;
+    font-weight: 600;
+    font-size: 38px;
+    color: var(--ink);
+    letter-spacing: -0.014em;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+  .entity-name em { font-style: italic; font-weight: 500; }
+
+  .entity-tagline {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-mute);
+    margin-bottom: 26px;
+  }
+  .entity-rule {
+    width: 56px; height: 2px;
+    margin-bottom: 22px;
+  }
+  .entity-studio .entity-rule { background: var(--teal); }
+  .entity-network .entity-rule { background: var(--orange); }
+
+  .entity-body {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+    max-width: 480px;
+  }
+
+  .entity-list {
+    list-style: none; padding: 0; margin: 0 0 32px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    display: flex; flex-direction: column; gap: 7px;
+    max-width: 480px;
+  }
+  .entity-list li {
+    display: flex; gap: 11px; align-items: baseline;
+    padding-bottom: 7px;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .entity-list .key { color: var(--ink-mute); min-width: 22px; }
+  .entity-list .val { color: var(--ink); }
+
+  .entity-foot {
+    margin-top: auto;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 18px;
+  }
+  .entity-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px;
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px; font-weight: 500; letter-spacing: 0.01em;
+  }
+  .entity-studio .entity-cta { background: var(--teal); color: var(--cream); }
+  .entity-network .entity-cta { background: var(--orange); color: var(--cream); }
+  .entity-domain {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+
+  /* === Studio bg: PRISM hex grid, faint teal === */
+  .hex-bg { fill: none; stroke: var(--teal); stroke-width: 0.6; opacity: 0.18; }
+  .hex-bg-fill-low { fill: var(--teal); opacity: 0.05; }
+  .hex-bg-fill-med { fill: var(--teal); opacity: 0.10; }
+  .hex-bg-fill-high { fill: var(--teal); opacity: 0.16; }
+
+  /* === Network bg: world dot map + node pins === */
+  .land-dot { fill: var(--ink); opacity: 0.10; }
+  .node-pin { fill: var(--orange); }
+  .node-pin-ring {
+    fill: none; stroke: var(--orange); stroke-width: 1; opacity: 0.4;
+  }
+  .node-link { stroke: var(--orange); stroke-width: 0.6; opacity: 0.25; stroke-dasharray: 2 2; }
+  .node-label {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 8px; fill: var(--ink-soft); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>
+
+<div class="landing">
+
+  <div class="top-strip">
+    <span>MERLX.ORG  ·  V2026.04</span>
+    <span>STUDIO &nbsp;·&nbsp; NETWORK</span>
+  </div>
+
+  <div class="nav-row">
+    <div class="brand-mark">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 303.02 236.75" aria-label="MERLx mark">
+        <rect fill="#1a3a34" x="223.02" width="80" height="227.61"/>
+        <rect fill="#ca5d0f" x="0" y="137.61" width="90" height="90" rx="45" ry="45"/>
+        <path fill="#4a3f6b" d="M148.08,236.75h0l-42.58-102.77c-9.65-24.57,10.73-56.34,40.97-57.21.54-.02,1.08-.02,1.62-.02h0c.54,0,1.08,0,1.62.02,30.24.88,50.62,32.64,40.97,57.21l-42.58,102.77Z"/>
+      </svg>
+      <div class="word">MERL<span class="x">x</span></div>
+    </div>
+    <div class="nav-meta">
+      <a>Insights</a>
+      <a>Publications</a>
+      <a>Contact</a>
+      <span class="lang"><span class="active">EN</span> · AR · FR</span>
+    </div>
+  </div>
+
+  <!-- Two-half hover-expand split -->
+  <div class="entities">
+
+    <!-- STUDIO -->
+    <div class="entity entity-studio">
+      <div class="entity-bg">
+        <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+          <!-- Dense hex grid covering the panel -->
+          <g>
+            <!-- row 1 -->
+            <polygon class="hex-bg" points="60,40 100,20 140,40 140,80 100,100 60,80"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="140,40 180,20 220,40 220,80 180,100 140,80"/>
+            <polygon class="hex-bg" points="220,40 260,20 300,40 300,80 260,100 220,80"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="300,40 340,20 380,40 380,80 340,100 300,80"/>
+            <polygon class="hex-bg" points="380,40 420,20 460,40 460,80 420,100 380,80"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="460,40 500,20 540,40 540,80 500,100 460,80"/>
+            <!-- row 2 -->
+            <polygon class="hex-bg" points="20,100 60,80 100,100 100,140 60,160 20,140"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="100,100 140,80 180,100 180,140 140,160 100,140"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="180,100 220,80 260,100 260,140 220,160 180,140"/>
+            <polygon class="hex-bg hex-bg-fill-high" points="260,100 300,80 340,100 340,140 300,160 260,140"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="340,100 380,80 420,100 420,140 380,160 340,140"/>
+            <polygon class="hex-bg" points="420,100 460,80 500,100 500,140 460,160 420,140"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="500,100 540,80 580,100 580,140 540,160 500,140"/>
+            <!-- row 3 -->
+            <polygon class="hex-bg hex-bg-fill-low" points="60,160 100,140 140,160 140,200 100,220 60,200"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="140,160 180,140 220,160 220,200 180,220 140,200"/>
+            <polygon class="hex-bg hex-bg-fill-high" points="220,160 260,140 300,160 300,200 260,220 220,200"/>
+            <polygon class="hex-bg hex-bg-fill-high" points="300,160 340,140 380,160 380,200 340,220 300,200"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="380,160 420,140 460,160 460,200 420,220 380,200"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="460,160 500,140 540,160 540,200 500,220 460,200"/>
+            <!-- row 4 -->
+            <polygon class="hex-bg" points="20,220 60,200 100,220 100,260 60,280 20,260"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="100,220 140,200 180,220 180,260 140,280 100,260"/>
+            <polygon class="hex-bg hex-bg-fill-high" points="180,220 220,200 260,220 260,260 220,280 180,260"/>
+            <polygon class="hex-bg hex-bg-fill-high" points="260,220 300,200 340,220 340,260 300,280 260,260"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="340,220 380,200 420,220 420,260 380,280 340,260"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="420,220 460,200 500,220 500,260 460,280 420,260"/>
+            <polygon class="hex-bg" points="500,220 540,200 580,220 580,260 540,280 500,260"/>
+            <!-- row 5 -->
+            <polygon class="hex-bg hex-bg-fill-low" points="60,280 100,260 140,280 140,320 100,340 60,320"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="140,280 180,260 220,280 220,320 180,340 140,320"/>
+            <polygon class="hex-bg hex-bg-fill-high" points="220,280 260,260 300,280 300,320 260,340 220,320"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="300,280 340,260 380,280 380,320 340,340 300,320"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="380,280 420,260 460,280 460,320 420,340 380,320"/>
+            <polygon class="hex-bg" points="460,280 500,260 540,280 540,320 500,340 460,320"/>
+            <!-- row 6 -->
+            <polygon class="hex-bg" points="20,340 60,320 100,340 100,380 60,400 20,380"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="100,340 140,320 180,340 180,380 140,400 100,380"/>
+            <polygon class="hex-bg hex-bg-fill-med" points="180,340 220,320 260,340 260,380 220,400 180,380"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="260,340 300,320 340,340 340,380 300,400 260,380"/>
+            <polygon class="hex-bg" points="340,340 380,320 420,340 420,380 380,400 340,380"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="420,340 460,320 500,340 500,380 460,400 420,380"/>
+            <polygon class="hex-bg" points="500,340 540,320 580,340 580,380 540,400 500,380"/>
+            <!-- row 7 -->
+            <polygon class="hex-bg" points="60,400 100,380 140,400 140,440 100,460 60,440"/>
+            <polygon class="hex-bg" points="140,400 180,380 220,400 220,440 180,460 140,440"/>
+            <polygon class="hex-bg hex-bg-fill-low" points="220,400 260,380 300,400 300,440 260,460 220,440"/>
+            <polygon class="hex-bg" points="300,400 340,380 380,400 380,440 340,460 300,440"/>
+            <polygon class="hex-bg" points="380,400 420,380 460,400 460,440 420,460 380,440"/>
+            <polygon class="hex-bg" points="460,400 500,380 540,400 540,440 500,460 460,440"/>
+            <!-- row 8 (sparse) -->
+            <polygon class="hex-bg" points="100,460 140,440 180,460 180,500 140,520 100,500"/>
+            <polygon class="hex-bg" points="180,460 220,440 260,460 260,500 220,520 180,500"/>
+            <polygon class="hex-bg" points="260,460 300,440 340,460 340,500 300,520 260,500"/>
+            <polygon class="hex-bg" points="340,460 380,440 420,460 420,500 380,520 340,500"/>
+            <polygon class="hex-bg" points="420,460 460,440 500,460 500,500 460,520 420,500"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="entity-content">
+        <div class="entity-tag"><span class="swatch"></span> THE TECH STUDIO</div>
+        <div class="entity-name">MERL<em>x</em> Studio</div>
+        <div class="entity-tagline">Open analytical tools for fragile contexts.</div>
+        <div class="entity-rule"></div>
+        <p class="entity-body">An independent studio building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning. Conflict-sensitive by design, evidence-grade by default.</p>
+        <ul class="entity-list">
+          <li><span class="key">→</span> <span class="val">The Optics Suite — six tools</span></li>
+          <li><span class="key">→</span> <span class="val">Engagement: hosted, pilots, build-with, advisory</span></li>
+          <li><span class="key">→</span> <span class="val">Open data &middot; open stack &middot; open methods</span></li>
+        </ul>
+        <div class="entity-foot">
+          <a class="entity-cta">Enter MERLx Studio →</a>
+          <span class="entity-domain">studio.merlx.org</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NETWORK -->
+    <div class="entity entity-network">
+      <div class="entity-bg">
+        <svg viewBox="0 0 600 360" preserveAspectRatio="xMidYMid slice">
+          <!-- Stylized world dot-map: simplified continents as point clouds -->
+          <g>
+            <!-- North America -->
+            <g>
+              <circle class="land-dot" cx="80"  cy="100" r="2"/>
+              <circle class="land-dot" cx="100" cy="100" r="2"/>
+              <circle class="land-dot" cx="120" cy="100" r="2"/>
+              <circle class="land-dot" cx="140" cy="100" r="2"/>
+              <circle class="land-dot" cx="60"  cy="120" r="2"/>
+              <circle class="land-dot" cx="80"  cy="120" r="2"/>
+              <circle class="land-dot" cx="100" cy="120" r="2"/>
+              <circle class="land-dot" cx="120" cy="120" r="2"/>
+              <circle class="land-dot" cx="140" cy="120" r="2"/>
+              <circle class="land-dot" cx="160" cy="120" r="2"/>
+              <circle class="land-dot" cx="80"  cy="140" r="2"/>
+              <circle class="land-dot" cx="100" cy="140" r="2"/>
+              <circle class="land-dot" cx="120" cy="140" r="2"/>
+              <circle class="land-dot" cx="140" cy="140" r="2"/>
+              <circle class="land-dot" cx="160" cy="140" r="2"/>
+              <circle class="land-dot" cx="100" cy="160" r="2"/>
+              <circle class="land-dot" cx="120" cy="160" r="2"/>
+              <circle class="land-dot" cx="140" cy="160" r="2"/>
+            </g>
+            <!-- Central + South America -->
+            <g>
+              <circle class="land-dot" cx="140" cy="180" r="2"/>
+              <circle class="land-dot" cx="160" cy="200" r="2"/>
+              <circle class="land-dot" cx="160" cy="220" r="2"/>
+              <circle class="land-dot" cx="180" cy="220" r="2"/>
+              <circle class="land-dot" cx="160" cy="240" r="2"/>
+              <circle class="land-dot" cx="180" cy="240" r="2"/>
+              <circle class="land-dot" cx="200" cy="240" r="2"/>
+              <circle class="land-dot" cx="180" cy="260" r="2"/>
+              <circle class="land-dot" cx="200" cy="260" r="2"/>
+              <circle class="land-dot" cx="180" cy="280" r="2"/>
+              <circle class="land-dot" cx="200" cy="280" r="2"/>
+              <circle class="land-dot" cx="180" cy="300" r="2"/>
+            </g>
+            <!-- Europe -->
+            <g>
+              <circle class="land-dot" cx="280" cy="100" r="2"/>
+              <circle class="land-dot" cx="300" cy="100" r="2"/>
+              <circle class="land-dot" cx="320" cy="100" r="2"/>
+              <circle class="land-dot" cx="280" cy="120" r="2"/>
+              <circle class="land-dot" cx="300" cy="120" r="2"/>
+              <circle class="land-dot" cx="320" cy="120" r="2"/>
+              <circle class="land-dot" cx="340" cy="120" r="2"/>
+              <circle class="land-dot" cx="300" cy="140" r="2"/>
+              <circle class="land-dot" cx="320" cy="140" r="2"/>
+              <circle class="land-dot" cx="340" cy="140" r="2"/>
+            </g>
+            <!-- Africa -->
+            <g>
+              <circle class="land-dot" cx="280" cy="160" r="2"/>
+              <circle class="land-dot" cx="300" cy="160" r="2"/>
+              <circle class="land-dot" cx="320" cy="160" r="2"/>
+              <circle class="land-dot" cx="340" cy="160" r="2"/>
+              <circle class="land-dot" cx="280" cy="180" r="2"/>
+              <circle class="land-dot" cx="300" cy="180" r="2"/>
+              <circle class="land-dot" cx="320" cy="180" r="2"/>
+              <circle class="land-dot" cx="340" cy="180" r="2"/>
+              <circle class="land-dot" cx="300" cy="200" r="2"/>
+              <circle class="land-dot" cx="320" cy="200" r="2"/>
+              <circle class="land-dot" cx="340" cy="200" r="2"/>
+              <circle class="land-dot" cx="300" cy="220" r="2"/>
+              <circle class="land-dot" cx="320" cy="220" r="2"/>
+              <circle class="land-dot" cx="320" cy="240" r="2"/>
+              <circle class="land-dot" cx="320" cy="260" r="2"/>
+            </g>
+            <!-- Asia -->
+            <g>
+              <circle class="land-dot" cx="360" cy="100" r="2"/>
+              <circle class="land-dot" cx="380" cy="100" r="2"/>
+              <circle class="land-dot" cx="400" cy="100" r="2"/>
+              <circle class="land-dot" cx="420" cy="100" r="2"/>
+              <circle class="land-dot" cx="440" cy="100" r="2"/>
+              <circle class="land-dot" cx="460" cy="100" r="2"/>
+              <circle class="land-dot" cx="480" cy="100" r="2"/>
+              <circle class="land-dot" cx="500" cy="100" r="2"/>
+              <circle class="land-dot" cx="360" cy="120" r="2"/>
+              <circle class="land-dot" cx="380" cy="120" r="2"/>
+              <circle class="land-dot" cx="400" cy="120" r="2"/>
+              <circle class="land-dot" cx="420" cy="120" r="2"/>
+              <circle class="land-dot" cx="440" cy="120" r="2"/>
+              <circle class="land-dot" cx="460" cy="120" r="2"/>
+              <circle class="land-dot" cx="480" cy="120" r="2"/>
+              <circle class="land-dot" cx="500" cy="120" r="2"/>
+              <circle class="land-dot" cx="380" cy="140" r="2"/>
+              <circle class="land-dot" cx="400" cy="140" r="2"/>
+              <circle class="land-dot" cx="420" cy="140" r="2"/>
+              <circle class="land-dot" cx="440" cy="140" r="2"/>
+              <circle class="land-dot" cx="460" cy="140" r="2"/>
+              <circle class="land-dot" cx="480" cy="140" r="2"/>
+              <circle class="land-dot" cx="400" cy="160" r="2"/>
+              <circle class="land-dot" cx="420" cy="160" r="2"/>
+              <circle class="land-dot" cx="440" cy="160" r="2"/>
+              <circle class="land-dot" cx="460" cy="160" r="2"/>
+              <circle class="land-dot" cx="420" cy="180" r="2"/>
+              <circle class="land-dot" cx="440" cy="180" r="2"/>
+            </g>
+            <!-- Australia -->
+            <g>
+              <circle class="land-dot" cx="500" cy="240" r="2"/>
+              <circle class="land-dot" cx="520" cy="240" r="2"/>
+              <circle class="land-dot" cx="500" cy="260" r="2"/>
+              <circle class="land-dot" cx="520" cy="260" r="2"/>
+              <circle class="land-dot" cx="540" cy="260" r="2"/>
+            </g>
+
+            <!-- Network links between nodes -->
+            <line class="node-link" x1="320" y1="180" x2="180" y2="240"/>
+            <line class="node-link" x1="320" y1="180" x2="320" y2="200"/>
+            <line class="node-link" x1="320" y1="200" x2="180" y2="240"/>
+
+            <!-- Active node: Sudan / NileX (~32E, 15N) -->
+            <circle class="node-pin-ring" cx="320" cy="180" r="9"/>
+            <circle class="node-pin" cx="320" cy="180" r="4"/>
+            <text class="node-label" x="328" y="174">NILEX · SUDAN</text>
+
+            <!-- Pipeline node: Horn of Africa / Somalia -->
+            <circle class="node-pin-ring" cx="335" cy="195" r="7"/>
+            <circle class="node-pin" cx="335" cy="195" r="3"/>
+            <text class="node-label" x="343" y="200">HORN OF AFRICA</text>
+
+            <!-- Pipeline: Colombia -->
+            <circle class="node-pin-ring" cx="180" cy="240" r="7"/>
+            <circle class="node-pin" cx="180" cy="240" r="3"/>
+            <text class="node-label" x="142" y="258">COLOMBIA</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="entity-content">
+        <div class="entity-tag"><span class="swatch"></span> THE MERL NETWORK</div>
+        <div class="entity-name">MERL<em>x</em> Network</div>
+        <div class="entity-tagline">Locally owned MERL, in-country.</div>
+        <div class="entity-rule"></div>
+        <p class="entity-body">A federation of locally owned MERL cooperatives — research, evaluation, third-party monitoring, and field analysis. The MERL Guild: contextually grounded, locally led, globally connected.</p>
+        <ul class="entity-list">
+          <li><span class="key">→</span> <span class="val">Active nodes &middot; NileX (Sudan / HoA)</span></li>
+          <li><span class="key">→</span> <span class="val">Services: research, evaluation, TPM, training</span></li>
+          <li><span class="key">→</span> <span class="val">Become a node &middot; partner with the network</span></li>
+        </ul>
+        <div class="entity-foot">
+          <a class="entity-cta">Enter the Network →</a>
+          <span class="entity-domain">network.merlx.org</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section" style="margin-top: 28px;">
+  <p class="subtitle">Hover either side to see it expand and the themed background fade in. Studio gets a faint teal hex grid (PRISM-style); Network gets a stylised dot-map of the world with active and pipeline node pins. The mark in the header still reads as a tiny version of the same idea (orange dot = network, teal bar = studio).</p>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="lock-v8" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Lock v8 — go to architecture</h3>
+      <p>Hover-split conglomerate front-door. Move on to the IA proposal.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="more-aggressive" onclick="toggleSelect(this)">
+    <div class="letter">+</div>
+    <div class="content">
+      <h3>Make the hover effect more aggressive</h3>
+      <p>Bigger expansion ratio, content-shift on the shrinking side, possibly a slight color tint.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="bg-louder" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Background visuals should be louder</h3>
+      <p>Bump opacity/contrast on hex grid and world map so they read more clearly.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="bg-quieter" onclick="toggleSelect(this)">
+    <div class="letter">−</div>
+    <div class="content">
+      <h3>Background visuals should be quieter</h3>
+      <p>Pull them back further; let typography dominate.</p>
+    </div>
+  </div>
+</div>

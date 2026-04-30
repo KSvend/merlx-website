@@ -1,0 +1,357 @@
+<h2>Landing v7 — conglomerate front-door pattern</h2>
+<p class="subtitle">merlx.org is now a minimal chooser, not a marketing page. Umbrella intro at top, two parallel entity gateways (Studio + Network), thin common-ground band beneath. Each entity card clicks through to its own full sub-site with its own identity inside the shared design system.</p>
+
+<style>
+  :root {
+    --cream: #f4eee2;
+    --cream-2: #ece4d3;
+    --cream-3: #e3d9c2;
+    --ink: #1c1917;
+    --ink-soft: #4a443c;
+    --ink-mute: #8a8275;
+    --teal: #1a3a34;
+    --teal-deep: #122a26;
+    --teal-soft: #2c5650;
+    --purple: #4a3f6b;
+    --orange: #ca5d0f;
+    --orange-soft: #e3914f;
+    --rule: #d8cfb9;
+  }
+
+  .landing {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--cream);
+    overflow: hidden;
+    margin-top: 12px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--ink);
+  }
+
+  .top-strip {
+    display: flex; justify-content: space-between;
+    padding: 10px 28px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 9.5px; letter-spacing: 0.06em;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .nav-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .brand-mark { display: flex; align-items: center; gap: 12px; }
+  .brand-mark .logo { width: 32px; height: auto; display: block; }
+  .brand-mark .word {
+    font-family: 'Tiempos Headline', 'GT Sectra', Georgia, serif;
+    font-weight: 600; font-size: 20px;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .brand-mark .word .x { color: var(--purple); }
+  .nav-meta {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; color: var(--ink-mute);
+    display: flex; gap: 18px; align-items: center;
+  }
+  .nav-meta .lang .active { color: var(--ink); }
+  .nav-meta a {
+    color: var(--ink-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+  }
+
+  /* Umbrella intro */
+  .umbrella {
+    text-align: center;
+    padding: 80px 32px 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .umbrella .eyebrow {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .umbrella h1 {
+    font-family: 'Tiempos Headline', 'GT Sectra', Georgia, serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 38px;
+    line-height: 1.05;
+    letter-spacing: -0.014em;
+    margin: 0 auto 18px;
+    max-width: 680px;
+  }
+  .umbrella h1 em {
+    font-style: italic; font-weight: 500;
+    color: var(--purple);
+  }
+  .umbrella .lede {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto 26px;
+  }
+  .umbrella .pointer {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .umbrella .pointer .arrow { color: var(--orange); }
+
+  /* Two entity gateways */
+  .entities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .entity {
+    padding: 56px 36px 48px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .entity:first-child { border-right: 1px solid var(--rule); }
+  .entity-studio:hover { background: rgba(26,58,52,0.04); }
+  .entity-network:hover { background: rgba(202,93,15,0.04); }
+
+  .entity-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.14em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .entity-tag .swatch {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .entity-studio .entity-tag .swatch { background: var(--teal); }
+  .entity-network .entity-tag .swatch { background: var(--orange); }
+
+  .entity-name {
+    font-family: 'Tiempos Headline', Georgia, serif;
+    font-weight: 600;
+    font-size: 32px;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+    margin-bottom: 6px;
+  }
+  .entity-name em { font-style: italic; font-weight: 500; }
+
+  .entity-tagline {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-mute);
+    margin-bottom: 24px;
+  }
+
+  .entity-rule {
+    width: 48px; height: 2px;
+    margin-bottom: 20px;
+  }
+  .entity-studio .entity-rule { background: var(--teal); }
+  .entity-network .entity-rule { background: var(--orange); }
+
+  .entity-body {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 26px;
+    max-width: 92%;
+  }
+
+  .entity-list {
+    list-style: none; padding: 0; margin: 0 0 28px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .entity-list li {
+    display: flex; gap: 10px; align-items: baseline;
+    padding-bottom: 6px;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .entity-list .key {
+    color: var(--ink-mute);
+    min-width: 28px;
+  }
+  .entity-list .val { color: var(--ink); }
+
+  .entity-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px;
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px; font-weight: 500; letter-spacing: 0.01em;
+  }
+  .entity-studio .entity-cta {
+    background: var(--teal); color: var(--cream);
+  }
+  .entity-network .entity-cta {
+    background: var(--orange); color: var(--cream);
+  }
+  .entity-domain {
+    margin-top: 14px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+
+  /* Common ground band */
+  .common {
+    border-top: 1px solid var(--rule);
+    background: var(--cream-2);
+    padding: 22px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+  }
+  .common .lbl {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .common .vals {
+    font-family: 'Tiempos Text', Georgia, serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .common .pillars {
+    display: flex; gap: 18px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.06em;
+    color: var(--ink-mute);
+  }
+  .common .pillars span { color: var(--ink); }
+</style>
+
+<div class="landing">
+
+  <div class="top-strip">
+    <span>MERLX.ORG · GROUP</span>
+    <span>STUDIO · NETWORK</span>
+  </div>
+
+  <div class="nav-row">
+    <div class="brand-mark">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 303.02 236.75" aria-label="MERLx mark">
+        <rect fill="#1a3a34" x="223.02" width="80" height="227.61"/>
+        <rect fill="#ca5d0f" x="0" y="137.61" width="90" height="90" rx="45" ry="45"/>
+        <path fill="#4a3f6b" d="M148.08,236.75h0l-42.58-102.77c-9.65-24.57,10.73-56.34,40.97-57.21.54-.02,1.08-.02,1.62-.02h0c.54,0,1.08,0,1.62.02,30.24.88,50.62,32.64,40.97,57.21l-42.58,102.77Z"/>
+      </svg>
+      <div class="word">MERL<span class="x">x</span></div>
+    </div>
+    <div class="nav-meta">
+      <a>About the group</a>
+      <a>Insights</a>
+      <a>Contact</a>
+      <span class="lang"><span class="active">EN</span> · AR · FR</span>
+    </div>
+  </div>
+
+  <!-- Umbrella intro -->
+  <div class="umbrella">
+    <div class="eyebrow">MERLx GROUP · 2026</div>
+    <h1>Advanced analytics and MERL for the <em>global development</em> and humanitarian sectors.</h1>
+    <p class="lede">MERLx is two organisations under one roof: an open-tooling tech studio, and a federated network of locally owned MERL cooperatives. Pick where you'd like to start.</p>
+    <div class="pointer"><span class="arrow">↓</span> &nbsp; choose an entity &nbsp; <span class="arrow">↓</span></div>
+  </div>
+
+  <!-- Two entity gateways -->
+  <div class="entities">
+
+    <div class="entity entity-studio">
+      <div class="entity-tag"><span class="swatch"></span> THE TECH STUDIO</div>
+      <div class="entity-name">MERL<em>x</em> Studio</div>
+      <div class="entity-tagline">Open analytical tools for fragile contexts.</div>
+      <div class="entity-rule"></div>
+      <p class="entity-body">An independent studio building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning. Conflict-sensitive by design, evidence-grade by default.</p>
+      <ul class="entity-list">
+        <li><span class="key">→</span> <span class="val">The Optics Suite — six tools</span></li>
+        <li><span class="key">→</span> <span class="val">Engagement: hosted, pilots, build-with, advisory</span></li>
+        <li><span class="key">→</span> <span class="val">Open data &middot; open stack &middot; open methods</span></li>
+      </ul>
+      <a class="entity-cta">Enter MERLx Studio →</a>
+      <div class="entity-domain">studio.merlx.org</div>
+    </div>
+
+    <div class="entity entity-network">
+      <div class="entity-tag"><span class="swatch"></span> THE MERL NETWORK</div>
+      <div class="entity-name">MERL<em>x</em> Network</div>
+      <div class="entity-tagline">Locally owned MERL, in-country.</div>
+      <div class="entity-rule"></div>
+      <p class="entity-body">A federation of locally owned MERL cooperatives — research, evaluation, third-party monitoring, and field analysis. The MERL Guild: contextually grounded, locally led, globally connected.</p>
+      <ul class="entity-list">
+        <li><span class="key">→</span> <span class="val">Active nodes &middot; NileX (Sudan / HoA)</span></li>
+        <li><span class="key">→</span> <span class="val">Services: research, evaluation, TPM, training</span></li>
+        <li><span class="key">→</span> <span class="val">Become a node &middot; partner with the network</span></li>
+      </ul>
+      <a class="entity-cta">Enter the Network →</a>
+      <div class="entity-domain">network.merlx.org</div>
+    </div>
+
+  </div>
+
+  <!-- Common ground -->
+  <div class="common">
+    <div>
+      <div class="lbl">WHAT BINDS THEM</div>
+      <div class="vals">A shared design discipline. Open methods. Conflict-sensitivity by default. Localisation as a structural commitment, not a slogan.</div>
+    </div>
+    <div class="pillars">
+      <div><span>Sudan</span></div>
+      <div><span>Horn of Africa</span></div>
+      <div><span>South Asia</span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top: 28px;">
+  <p class="subtitle">No tools, no live data, no Cooperative framing on the front door — those live one click in. The chooser-pattern lets visitors self-segment: programme officers / donors interested in tools go left to Studio; agencies looking for in-country MERL partners go right to Network. Each side then becomes its own full marketing site. Click below.</p>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="lock-conglomerate" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Conglomerate front-door locked</h3>
+      <p>Move on to architecture: how the two sub-sites are structured, subdomains vs paths, Payload tenancy, etc.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="too-cold" onclick="toggleSelect(this)">
+    <div class="letter">−</div>
+    <div class="content">
+      <h3>Too cold / corporate-feeling</h3>
+      <p>Add some editorial warmth back — a quote, an image, or a brief manifesto line in the umbrella.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="paths-not-subs" onclick="toggleSelect(this)">
+    <div class="letter">P</div>
+    <div class="content">
+      <h3>Use paths instead of subdomains</h3>
+      <p>merlx.org/studio and merlx.org/network rather than studio.merlx.org / network.merlx.org. Simpler routing.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="alt-layout" onclick="toggleSelect(this)">
+    <div class="letter">L</div>
+    <div class="content">
+      <h3>Try a different layout for the chooser</h3>
+      <p>e.g., vertical-stacked (Studio above Network), or full-bleed split with no umbrella.</p>
+    </div>
+  </div>
+</div>

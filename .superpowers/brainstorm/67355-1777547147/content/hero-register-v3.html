@@ -1,0 +1,223 @@
+<h2>Hero v3 — institutional voice, live-data accent (no proof strip)</h2>
+<p class="subtitle">Editorial title and lede do the institutional job. The analytics-platform signal comes from a small live-data preview embedded in the hero — a mini Sudan compound-risk map and a monospace data-lineage line — not from vanity stats.</p>
+
+<style>
+  .hero-mock {
+    border: 1px solid #e7e1d7;
+    border-radius: 6px;
+    background: #faf7f2;
+    overflow: hidden;
+    margin-top: 12px;
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+  .hero-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 26px; border-bottom: 1px solid #ece7dd;
+    font-size: 11px; color: #5a544a;
+  }
+  .hero-nav .brand { font-weight: 600; color: #2a261f; letter-spacing: 0.04em; }
+  .hero-nav .links { display: flex; gap: 18px; }
+  .hero-nav .lang { font-size: 10px; color: #8a7e6a; }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 0;
+  }
+  .hero-text { padding: 48px 26px 36px; }
+  .hero-eyebrow {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: #8a7e6a; margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400; color: #1f1c17;
+    font-size: 32px; line-height: 1.06;
+    margin: 0 0 16px;
+  }
+  .hero-sub {
+    color: #5a544a; font-size: 13px; line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #1f1c17; color: #faf7f2;
+    padding: 11px 18px; border-radius: 4px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.02em;
+  }
+  .hero-cta-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #1f1c17; padding: 11px 16px;
+    border: 1px solid #1f1c17; border-radius: 4px;
+    font-size: 11px; font-weight: 500; margin-left: 8px;
+  }
+
+  /* Right column — live-data accent */
+  .hero-data {
+    background: #f4efe5;
+    padding: 28px 24px 24px;
+    border-left: 1px solid #ece7dd;
+    display: flex; flex-direction: column;
+  }
+  .data-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: #8a7e6a;
+    margin-bottom: 12px;
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #c95a3a; box-shadow: 0 0 0 3px rgba(201,90,58,0.18);
+  }
+  .data-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 14px; color: #2a261f;
+    margin-bottom: 4px;
+  }
+  .data-subtitle {
+    font-size: 10px; color: #8a7e6a; margin-bottom: 14px;
+  }
+
+  /* Mini hex map */
+  .mini-map {
+    background: #ece5d6;
+    border-radius: 3px;
+    padding: 10px 8px;
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 130px;
+  }
+  .mini-map svg { display: block; }
+  .hex { stroke: #faf7f2; stroke-width: 0.8; }
+  .h-low { fill: #e9d4a8; }
+  .h-med { fill: #d49a5e; }
+  .h-high { fill: #c25e3a; }
+  .h-crit { fill: #8a2f1c; }
+
+  /* Monospace data lineage line */
+  .lineage {
+    margin-top: 14px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 9.5px; color: #6a6256;
+    border-top: 1px dashed #d8cfbf;
+    padding-top: 10px;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .lineage .lbl { color: #8a7e6a; }
+  .lineage .val { color: #1f1c17; }
+</style>
+
+<div class="hero-mock">
+  <div class="hero-nav">
+    <span class="brand">MERLx</span>
+    <span class="links">
+      <span>Optics Suite</span><span>Insights</span><span>Publications</span><span>Network</span><span>About</span>
+    </span>
+    <span class="lang">EN · AR · FR</span>
+  </div>
+
+  <div class="hero-grid">
+
+    <div class="hero-text">
+      <div class="hero-eyebrow">Compound risk · Information environments · Terrain</div>
+      <h1 class="hero-title">Seeing clearly in complex environments.</h1>
+      <p class="hero-sub">MERLx builds AI-powered intelligence for monitoring, evaluation, and early warning in conflict-affected and fragile contexts. Open data, open methods, conflict-sensitive by design.</p>
+      <div>
+        <a class="hero-cta">Explore the Optics Suite →</a>
+        <a class="hero-cta-secondary">Request a demo</a>
+      </div>
+    </div>
+
+    <div class="hero-data">
+      <div class="data-meta">
+        <span class="live-dot"></span>
+        <span>Live · PRISM</span>
+      </div>
+      <div class="data-title">Sudan compound risk</div>
+      <div class="data-subtitle">7-day forecast · H3 r5 · 250 km² cells</div>
+
+      <div class="mini-map">
+        <svg viewBox="0 0 180 130" width="100%" height="130">
+          <!-- Stylised H3 hex grid representing Sudan -->
+          <g>
+            <polygon class="hex h-low"  points="20,30 30,24 40,30 40,42 30,48 20,42"/>
+            <polygon class="hex h-low"  points="40,30 50,24 60,30 60,42 50,48 40,42"/>
+            <polygon class="hex h-med"  points="60,30 70,24 80,30 80,42 70,48 60,42"/>
+            <polygon class="hex h-high" points="80,30 90,24 100,30 100,42 90,48 80,42"/>
+            <polygon class="hex h-med"  points="100,30 110,24 120,30 120,42 110,48 100,42"/>
+            <polygon class="hex h-low"  points="120,30 130,24 140,30 140,42 130,48 120,42"/>
+
+            <polygon class="hex h-low"  points="30,48 40,42 50,48 50,60 40,66 30,60"/>
+            <polygon class="hex h-med"  points="50,48 60,42 70,48 70,60 60,66 50,60"/>
+            <polygon class="hex h-high" points="70,48 80,42 90,48 90,60 80,66 70,60"/>
+            <polygon class="hex h-crit" points="90,48 100,42 110,48 110,60 100,66 90,60"/>
+            <polygon class="hex h-high" points="110,48 120,42 130,48 130,60 120,66 110,60"/>
+            <polygon class="hex h-med"  points="130,48 140,42 150,48 150,60 140,66 130,60"/>
+
+            <polygon class="hex h-low"  points="20,66 30,60 40,66 40,78 30,84 20,78"/>
+            <polygon class="hex h-med"  points="40,66 50,60 60,66 60,78 50,84 40,78"/>
+            <polygon class="hex h-high" points="60,66 70,60 80,66 80,78 70,84 60,78"/>
+            <polygon class="hex h-crit" points="80,66 90,60 100,66 100,78 90,84 80,78"/>
+            <polygon class="hex h-high" points="100,66 110,60 120,66 120,78 110,84 100,78"/>
+            <polygon class="hex h-med"  points="120,66 130,60 140,66 140,78 130,84 120,78"/>
+            <polygon class="hex h-low"  points="140,66 150,60 160,66 160,78 150,84 140,78"/>
+
+            <polygon class="hex h-low"  points="30,84 40,78 50,84 50,96 40,102 30,96"/>
+            <polygon class="hex h-med"  points="50,84 60,78 70,84 70,96 60,102 50,96"/>
+            <polygon class="hex h-high" points="70,84 80,78 90,84 90,96 80,102 70,96"/>
+            <polygon class="hex h-med"  points="90,84 100,78 110,84 110,96 100,102 90,96"/>
+            <polygon class="hex h-low"  points="110,84 120,78 130,84 130,96 120,102 110,96"/>
+            <polygon class="hex h-low"  points="130,84 140,78 150,84 150,96 140,102 130,96"/>
+
+            <polygon class="hex h-low"  points="40,102 50,96 60,102 60,114 50,120 40,114"/>
+            <polygon class="hex h-low"  points="60,102 70,96 80,102 80,114 70,120 60,114"/>
+            <polygon class="hex h-med"  points="80,102 90,96 100,102 100,114 90,120 80,114"/>
+            <polygon class="hex h-low"  points="100,102 110,96 120,102 120,114 110,120 100,114"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="lineage">
+        <span class="lbl">sources&nbsp;</span><span class="val">acled · firms · ipc · wfp · glofas · inform</span><br/>
+        <span class="lbl">updated&nbsp;</span><span class="val">2 hours ago</span><span class="lbl">&nbsp;·&nbsp;model&nbsp;</span><span class="val">prism v0.9 · ensemble</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section" style="margin-top: 28px;">
+  <p class="subtitle">No proof strip. The right-hand column carries the analytics-platform signal: a live indicator, a current PRISM map preview (small, decorative — could click through to the actual dashboard), and a monospace data-lineage line that tells donors and analysts where the signals come from. Editorial dignity intact.</p>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="lock" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Lock this</h3>
+      <p>Editorial left, live-data right (mini map + lineage line).</p>
+    </div>
+  </div>
+  <div class="option" data-choice="text-only" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Drop the data column entirely</h3>
+      <p>Pure editorial hero. No data visible above the fold. Live data lives further down the page.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="lineage-only" onclick="toggleSelect(this)">
+    <div class="letter">L</div>
+    <div class="content">
+      <h3>Keep the lineage line, drop the map</h3>
+      <p>A single monospace strip below the lede ("sources: acled · firms · ipc..."). Tasteful, no map.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="map-only" onclick="toggleSelect(this)">
+    <div class="letter">M</div>
+    <div class="content">
+      <h3>Keep the map, drop the lineage</h3>
+      <p>Visual data signal only, no monospace text.</p>
+    </div>
+  </div>
+</div>

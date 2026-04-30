@@ -1,0 +1,163 @@
+<h2>Hero v2 — institutional voice + analytics-platform proof</h2>
+<p class="subtitle">Editorial typography and the calm research-institute register from A, plus a live-data strip that signals "this is operational, not aspirational" — borrowed from B without going dark/inverted.</p>
+
+<style>
+  .hero-mock {
+    border: 1px solid #e7e1d7;
+    border-radius: 6px;
+    background: #faf7f2;
+    overflow: hidden;
+    margin-top: 12px;
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+  .hero-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 26px; border-bottom: 1px solid #ece7dd;
+    font-size: 11px; color: #5a544a;
+  }
+  .hero-nav .brand { font-weight: 600; color: #2a261f; letter-spacing: 0.04em; }
+  .hero-nav .links { display: flex; gap: 18px; }
+  .hero-nav .lang { font-size: 10px; color: #8a7e6a; }
+  .hero-body { padding: 44px 26px 32px; }
+  .hero-eyebrow {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: #8a7e6a; margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400; color: #1f1c17;
+    font-size: 32px; line-height: 1.06;
+    margin: 0 0 16px; max-width: 92%;
+  }
+  .hero-sub {
+    color: #5a544a; font-size: 13px; line-height: 1.6;
+    max-width: 80%; margin-bottom: 22px;
+  }
+  .hero-ctas { margin-bottom: 0; }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #1f1c17; color: #faf7f2;
+    padding: 11px 18px; border-radius: 4px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.02em;
+  }
+  .hero-cta-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #1f1c17; padding: 11px 16px;
+    border: 1px solid #1f1c17; border-radius: 4px;
+    font-size: 11px; font-weight: 500; margin-left: 8px;
+  }
+
+  /* Data strip — placed below hero body, full-width band */
+  .proof-strip {
+    border-top: 1px solid #ece7dd;
+    background: #f4efe5;
+    padding: 18px 26px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+  }
+  .proof-cell {
+    padding: 4px 14px;
+    border-right: 1px solid #e7e1d7;
+  }
+  .proof-cell:last-child { border-right: none; }
+  .proof-num {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 22px; color: #1f1c17; line-height: 1;
+  }
+  .proof-num .unit { font-size: 12px; color: #8a7e6a; margin-left: 2px; font-family: 'Inter', sans-serif; font-weight: 400; }
+  .proof-lbl {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: #8a7e6a; margin-top: 6px;
+  }
+
+  /* Credibility row */
+  .cred-row {
+    margin-top: 0;
+    padding: 14px 26px;
+    border-top: 1px solid #ece7dd;
+    display: flex; gap: 22px;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: #8a7e6a;
+  }
+  .cred-row .dot { opacity: 0.4; }
+</style>
+
+<div class="hero-mock">
+  <div class="hero-nav">
+    <span class="brand">MERLx</span>
+    <span class="links">
+      <span>Optics Suite</span><span>Insights</span><span>Publications</span><span>Network</span><span>About</span>
+    </span>
+    <span class="lang">EN · AR · FR</span>
+  </div>
+
+  <div class="hero-body">
+    <div class="hero-eyebrow">Compound risk · Information environments · Terrain</div>
+    <h1 class="hero-title">Seeing clearly in complex environments.</h1>
+    <p class="hero-sub">MERLx builds AI-powered intelligence for monitoring, evaluation, and early warning in conflict-affected and fragile contexts. Open data, open methods, conflict-sensitive by design.</p>
+    <div class="hero-ctas">
+      <a class="hero-cta">Explore the Optics Suite →</a>
+      <a class="hero-cta-secondary">Request a demo</a>
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-cell">
+      <div class="proof-num">6</div>
+      <div class="proof-lbl">Tools deployed</div>
+    </div>
+    <div class="proof-cell">
+      <div class="proof-num">80<span class="unit">k+</span></div>
+      <div class="proof-lbl">Posts classified · IRIS</div>
+    </div>
+    <div class="proof-cell">
+      <div class="proof-num">5<span class="unit">d</span></div>
+      <div class="proof-lbl">Risk forecast horizon</div>
+    </div>
+    <div class="proof-cell">
+      <div class="proof-num">3</div>
+      <div class="proof-lbl">Country pilots</div>
+    </div>
+    <div class="proof-cell">
+      <div class="proof-num">100<span class="unit">%</span></div>
+      <div class="proof-lbl">Open source</div>
+    </div>
+  </div>
+
+  <div class="cred-row">
+    <span>Sudan</span><span class="dot">·</span>
+    <span>Somalia</span><span class="dot">·</span>
+    <span>Horn of Africa</span><span class="dot">·</span>
+    <span>Locally governed nodes</span><span class="dot">·</span>
+    <span>Evidence-grade outputs</span>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 28px;">
+  <p class="subtitle">Logic: the title and lede do A's institutional job. The proof strip below adds B's "this is real, here are the numbers" signal — but stays on the warm cream palette. Click below if this is the right direction.</p>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="lock" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Lock this hybrid</h3>
+      <p>Institutional editorial register with an analytics-style data strip and credibility row.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="more-data" onclick="toggleSelect(this)">
+    <div class="letter">+</div>
+    <div class="content">
+      <h3>More data, less editorial</h3>
+      <p>Push the proof strip higher (above the title) and shrink the lede. More dashboard-ish.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="more-edit" onclick="toggleSelect(this)">
+    <div class="letter">−</div>
+    <div class="content">
+      <h3>Less data, more editorial</h3>
+      <p>Move the proof strip lower on the page (separate section), keep hero pure editorial.</p>
+    </div>
+  </div>
+</div>
