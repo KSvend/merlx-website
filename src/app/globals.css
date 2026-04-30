@@ -12,6 +12,8 @@
   --color-orange: #ca5d0f;
   --color-orange-hot: #8a2f0a;
   --color-rule: #e8e3d4;
+  --color-orange-tint-hover: #f9eee0;
+  --color-teal-tint-hover: #f3f5ee;
 
   --font-serif: "Tiempos Headline", "GT Sectra Display", Georgia, serif;
   --font-sans: Inter, system-ui, -apple-system, sans-serif;

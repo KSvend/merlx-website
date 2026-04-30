@@ -1,0 +1,292 @@
+/* v16 hover-split landing chooser
+ * Studio = orange register · Network = teal register
+ * Asymmetric push: hovering Studio shoves Network rightward (20cqw).
+ * Hovering Network overlays Studio without disturbing it.
+ * Content always anchored left within its panel via cqw units.
+ */
+
+.chooser {
+  position: relative;
+  height: 600px;
+  container-type: inline-size;
+  background: var(--color-bg);
+}
+
+.chooser-half {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-bg);
+  cursor: pointer;
+  z-index: 1;
+  transition:
+    width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.55s ease,
+    filter 0.55s ease,
+    background-color 0.55s ease,
+    box-shadow 0.55s ease;
+}
+
+.chooser-half--studio {
+  left: 0;
+  border-right: 1px solid var(--color-rule);
+}
+
+.chooser-half--network {
+  right: 0;
+}
+
+/* Group hover dims inactive */
+.chooser:hover .chooser-half {
+  opacity: 0.42;
+  filter: saturate(0.35);
+}
+
+/* Hovered side expands and z-stacks above */
+.chooser .chooser-half:hover {
+  width: 70%;
+  opacity: 1;
+  filter: saturate(1.05);
+  z-index: 3;
+  box-shadow: 0 0 60px rgba(26, 26, 26, 0.06);
+}
+
+.chooser-half--studio:hover {
+  background: var(--color-orange-tint-hover, #f9eee0);
+}
+
+.chooser-half--network:hover {
+  background: var(--color-teal-tint-hover, #f3f5ee);
+}
+
+/* Asymmetric push: Studio's hover shoves Network rightward */
+.chooser-half--studio:hover ~ .chooser-half--network {
+  transform: translateX(20cqw);
+}
+
+/* Background SVG layer */
+.chooser-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity 0.55s ease;
+}
+
+.chooser-half:hover .chooser-bg {
+  opacity: 1;
+}
+
+.chooser-bg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Content panel — always left-anchored to the chooser container */
+.chooser-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50cqw;
+  height: 100%;
+  padding: 64px 44px 48px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+
+/* Eyebrow tag */
+.chooser-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+  transition: color 0.4s ease;
+}
+
+.chooser-half--studio .chooser-tag {
+  color: var(--color-orange);
+}
+
+.chooser-half--network .chooser-tag {
+  color: var(--color-teal);
+}
+
+.chooser-tag-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.chooser-half--studio .chooser-tag-swatch {
+  background: var(--color-orange);
+}
+
+.chooser-half--network .chooser-tag-swatch {
+  background: var(--color-teal);
+}
+
+/* Name */
+.chooser-name {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 40px;
+  color: var(--color-ink);
+  letter-spacing: -0.014em;
+  margin: 0 0 8px;
+  line-height: 1;
+}
+
+.chooser-name em {
+  font-style: italic;
+  font-weight: 500;
+}
+
+.chooser-half--studio:hover .chooser-name em {
+  color: var(--color-orange);
+}
+
+.chooser-half--network:hover .chooser-name em {
+  color: var(--color-teal);
+}
+
+.chooser-tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--color-ink-mute);
+  margin: 0 0 28px;
+}
+
+.chooser-rule {
+  width: 56px;
+  height: 2px;
+  margin-bottom: 22px;
+  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chooser-half--studio .chooser-rule {
+  background: var(--color-orange);
+}
+
+.chooser-half--network .chooser-rule {
+  background: var(--color-teal);
+}
+
+.chooser-half:hover .chooser-rule {
+  width: 96px;
+}
+
+.chooser-body {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-ink-soft);
+  margin: 0 0 30px;
+  max-width: 480px;
+}
+
+.chooser-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 480px;
+}
+
+.chooser-list li {
+  display: flex;
+  gap: 11px;
+  align-items: baseline;
+  padding-bottom: 7px;
+  border-bottom: 1px dotted var(--color-rule);
+}
+
+.chooser-list-key {
+  color: var(--color-ink-mute);
+  min-width: 22px;
+}
+
+.chooser-half--studio:hover .chooser-list-key {
+  color: var(--color-orange);
+}
+
+.chooser-half--network:hover .chooser-list-key {
+  color: var(--color-teal);
+}
+
+.chooser-list-val {
+  color: var(--color-ink);
+}
+
+.chooser-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.chooser-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chooser-half--studio .chooser-cta {
+  background: var(--color-orange);
+  color: var(--color-bg);
+}
+
+.chooser-half--network .chooser-cta {
+  background: var(--color-teal);
+  color: var(--color-bg);
+}
+
+.chooser-half:hover .chooser-cta {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.12);
+}
+
+.chooser-domain {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-ink-mute);
+  letter-spacing: 0.04em;
+}
+
+/* Reduce motion respect */
+@media (prefers-reduced-motion: reduce) {
+  .chooser-half,
+  .chooser-bg,
+  .chooser-rule,
+  .chooser-cta {
+    transition: none;
+  }
+  .chooser-half--studio:hover ~ .chooser-half--network {
+    transform: none;
+  }
+}
