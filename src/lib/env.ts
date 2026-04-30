@@ -5,6 +5,7 @@ const envSchema = z.object({
   PAYLOAD_SECRET: z.string().min(32),
   NEXT_PUBLIC_SITE_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  BLOB_READ_WRITE_TOKEN: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
   TURNSTILE_SITE_KEY: z.string().optional(),
