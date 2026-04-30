@@ -31,7 +31,19 @@ export default async function LegalPage({ params }: PageProps) {
     where: { domain: { equals: tenantDomain } },
     limit: 1,
   });
-  const tenant = tenantQuery.docs[0];
+  let tenant = tenantQuery.docs[0];
+  if (!tenant) {
+    // Fallback: resolve the canonical group tenant by type. The proxy resolves
+    // `localhost` to kind='group' but no seeded tenant has domain 'localhost',
+    // so a strict domain match fails in dev/test. We've already verified
+    // `isGroupTenant` above, so falling back to the group tenant is safe.
+    const groupQuery = await payload.find({
+      collection: 'tenants',
+      where: { type: { equals: 'group' } },
+      limit: 1,
+    });
+    tenant = groupQuery.docs[0];
+  }
   if (!tenant) notFound();
 
   const pageQuery = await payload.find({
