@@ -1,9 +1,31 @@
-:root {
-  font-family: system-ui, -apple-system, sans-serif;
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #fbfaf5;
+  --color-bg-soft: #f6f4ec;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #555555;
+  --color-ink-mute: #8c8779;
+  --color-teal: #1a3a34;
+  --color-teal-deep: #122a26;
+  --color-purple: #4a3f6b;
+  --color-orange: #ca5d0f;
+  --color-orange-hot: #8a2f0a;
+  --color-rule: #e8e3d4;
+
+  --font-serif: "Tiempos Headline", "GT Sectra Display", Georgia, serif;
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
 }
 
 html {
   box-sizing: border-box;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 *,
 *::before,
