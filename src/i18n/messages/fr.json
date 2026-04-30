@@ -12,5 +12,23 @@
     "tenantHeader": "Locataire",
     "localeHeader": "Langue",
     "directionHeader": "Direction"
+  },
+  "chooser": {
+    "studioTag": "LE STUDIO TECH",
+    "studioName": "MERLx Studio",
+    "studioTagline": "Outils analytiques ouverts pour contextes fragiles.",
+    "studioBody": "Un studio indépendant qui construit l'Optics Suite — des outils d'IA ouverts pour le suivi, l'évaluation, la recherche et l'alerte précoce.",
+    "studioBullet1": "L'Optics Suite — six outils",
+    "studioBullet2": "Engagement : hébergé, pilotes, build-with, conseil",
+    "studioBullet3": "Données ouvertes · pile ouverte · méthodes ouvertes",
+    "studioCta": "Entrer dans MERLx Studio →",
+    "networkTag": "LE RÉSEAU MERL",
+    "networkName": "MERLx Network",
+    "networkTagline": "MERL en propriété locale, sur le terrain.",
+    "networkBody": "Une fédération de coopératives MERL en propriété locale — recherche, évaluation, suivi tiers, et analyse de terrain.",
+    "networkBullet1": "Nœuds actifs · NileX (Soudan / Corne de l'Afrique)",
+    "networkBullet2": "Services : recherche, évaluation, TPM, formation",
+    "networkBullet3": "Devenir un nœud · rejoindre le réseau",
+    "networkCta": "Entrer dans le Réseau →"
   }
 }

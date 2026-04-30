@@ -12,5 +12,23 @@
     "tenantHeader": "المستأجر",
     "localeHeader": "اللغة",
     "directionHeader": "الاتجاه"
+  },
+  "chooser": {
+    "studioTag": "ستوديو التكنولوجيا",
+    "studioName": "MERLx Studio",
+    "studioTagline": "أدوات تحليلية مفتوحة للسياقات الهشة.",
+    "studioBody": "ستوديو مستقل يبني مجموعة Optics — أدوات ذكاء اصطناعي مفتوحة للرصد والتقييم والبحث والإنذار المبكر.",
+    "studioBullet1": "مجموعة Optics — ستة أدوات",
+    "studioBullet2": "التعاون: استضافة، تجارب، بناء معًا، استشارات",
+    "studioBullet3": "بيانات مفتوحة · حزمة مفتوحة · أساليب مفتوحة",
+    "studioCta": "دخول MERLx Studio ←",
+    "networkTag": "شبكة MERL",
+    "networkName": "MERLx Network",
+    "networkTagline": "MERL مملوكة محليًا، داخل البلد.",
+    "networkBody": "اتحاد من تعاونيات MERL المملوكة محليًا — البحث والتقييم والرصد من طرف ثالث والتحليل الميداني.",
+    "networkBullet1": "العقد النشطة · NileX (السودان / القرن الأفريقي)",
+    "networkBullet2": "الخدمات: البحث، التقييم، TPM، التدريب",
+    "networkBullet3": "كن عقدة · شارك في الشبكة",
+    "networkCta": "دخول الشبكة ←"
   }
 }
