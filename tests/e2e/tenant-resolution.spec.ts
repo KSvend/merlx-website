@@ -32,10 +32,11 @@ test('proxy resolves localhost.test as group', async ({ request }) => {
 test('rendered page reflects tenant kind via data-tenant attribute', async ({ request }) => {
   // We can't reliably override the Host header for page.goto() (chromium
   // strips/overrides it), so use an APIRequestContext fetch and parse the HTML.
+  // The landing page only serves group tenants; studio/network/node get 404.
   const res = await request.get('/en', {
-    headers: { host: 'studio.localhost.test' },
+    headers: { host: 'localhost.test' },
   });
   expect(res.status()).toBe(200);
   const html = await res.text();
-  expect(html).toMatch(/<html[^>]*data-tenant="studio"/);
+  expect(html).toMatch(/<html[^>]*data-tenant="group"/);
 });
