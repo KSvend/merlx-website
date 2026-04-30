@@ -12,8 +12,10 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 type ConfigTypes = {
   collections: {
-    pages: { slug: 'pages' };
     tenants: { slug: 'tenants' };
+    pages: { slug: 'pages' };
+    'insights-posts': { slug: 'insights-posts' };
+    publications: { slug: 'publications' };
   };
 };
 
@@ -45,6 +47,8 @@ export default buildConfig({
     multiTenantPlugin<ConfigTypes>({
       collections: {
         pages: {},
+        'insights-posts': {},
+        publications: {},
       },
       tenantField: { name: 'tenant' },
       tenantsArrayField: {

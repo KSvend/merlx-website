@@ -70,6 +70,8 @@ export interface Config {
     users: User;
     tenants: Tenant;
     pages: Page;
+    'insights-posts': InsightsPost;
+    publications: Publication;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +82,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    'insights-posts': InsightsPostsSelect<false> | InsightsPostsSelect<true>;
+    publications: PublicationsSelect<false> | PublicationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -218,6 +222,71 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "insights-posts".
+ */
+export interface InsightsPost {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  category: 'news' | 'analysis' | 'field-note' | 'methods';
+  publishedAt: string;
+  /**
+   * When true, this post bubbles up to parent tenant aggregate feeds (Network → Group, Node → Network → Group).
+   */
+  syndicate?: boolean | null;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications".
+ */
+export interface Publication {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  slug: string;
+  title: string;
+  authors?:
+    | {
+        name: string;
+        affiliation?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  year: number;
+  type: 'peer-reviewed' | 'working-paper' | 'brief' | 'methodology' | 'report';
+  abstract?: string | null;
+  doi?: string | null;
+  /**
+   * URL to PDF (Vercel Blob in production).
+   */
+  fileUrl?: string | null;
+  language?: ('en' | 'ar' | 'fr') | null;
+  syndicate?: boolean | null;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -251,6 +320,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'insights-posts';
+        value: number | InsightsPost;
+      } | null)
+    | ({
+        relationTo: 'publications';
+        value: number | Publication;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -354,6 +431,49 @@ export interface PagesSelect<T extends boolean = true> {
   body?: T;
   status?: T;
   seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "insights-posts_select".
+ */
+export interface InsightsPostsSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  category?: T;
+  publishedAt?: T;
+  syndicate?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications_select".
+ */
+export interface PublicationsSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  authors?:
+    | T
+    | {
+        name?: T;
+        affiliation?: T;
+        id?: T;
+      };
+  year?: T;
+  type?: T;
+  abstract?: T;
+  doi?: T;
+  fileUrl?: T;
+  language?: T;
+  syndicate?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
