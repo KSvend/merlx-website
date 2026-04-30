@@ -11,4 +11,6 @@ node_modules/
 coverage/
 playwright-report/
 test-results/
+*.tsbuildinfo
+next-env.d.ts
 .superpowers/
