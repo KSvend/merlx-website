@@ -23,5 +23,17 @@ export const Users: CollectionConfig = {
         { label: 'Translator', value: 'translator' },
       ],
     },
+    {
+      name: 'tenants',
+      type: 'array',
+      fields: [
+        {
+          name: 'tenant',
+          type: 'relationship',
+          relationTo: 'tenants',
+          required: true,
+        },
+      ],
+    },
   ],
 };
