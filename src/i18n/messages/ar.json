@@ -3,7 +3,10 @@
     "siteName": "MERLx",
     "navInsights": "رؤى",
     "navPublications": "منشورات",
-    "navContact": "تواصل"
+    "navContact": "تواصل",
+    "footerPrivacy": "الخصوصية",
+    "footerTerms": "الشروط",
+    "footerCookies": "ملفات تعريف الارتباط"
   },
   "scaffold": {
     "tenantHeader": "المستأجر",

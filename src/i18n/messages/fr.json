@@ -3,7 +3,10 @@
     "siteName": "MERLx",
     "navInsights": "Analyses",
     "navPublications": "Publications",
-    "navContact": "Contact"
+    "navContact": "Contact",
+    "footerPrivacy": "Confidentialité",
+    "footerTerms": "Conditions",
+    "footerCookies": "Cookies"
   },
   "scaffold": {
     "tenantHeader": "Locataire",
