@@ -36,8 +36,20 @@ const LAND_BANDS: Array<[number, Array<[number, number]>]> = [
   [35, [[-118, -77]]],
   [30, [[-110, -80]]],
   [25, [[-110, -80]]],
-  [20, [[-105, -85], [-78, -72]]],
-  [15, [[-95, -85], [-77, -72]]],
+  [
+    20,
+    [
+      [-105, -85],
+      [-78, -72],
+    ],
+  ],
+  [
+    15,
+    [
+      [-95, -85],
+      [-77, -72],
+    ],
+  ],
   [10, [[-87, -78]]],
   // South America
   [5, [[-78, -50]]],
@@ -124,7 +136,15 @@ interface NodeDef {
 }
 
 const NODES: NodeDef[] = [
-  { id: 'nilex', lat: 14.5, lng: 32.5, label: 'NILEX · SUDAN', active: true, labelDx: 9, labelDy: -8 },
+  {
+    id: 'nilex',
+    lat: 14.5,
+    lng: 32.5,
+    label: 'NILEX · SUDAN',
+    active: true,
+    labelDx: 9,
+    labelDy: -8,
+  },
   { id: 'sahel', lat: 14, lng: 0, label: 'SAHEL', labelDx: -9, labelDy: -8, anchor: 'end' },
   { id: 'horn', lat: 5, lng: 45, label: 'HORN OF AFRICA', labelDx: 9, labelDy: 4 },
   { id: 'maghreb', lat: 33, lng: 0, label: 'MAGHREB', labelDx: -9, labelDy: -8, anchor: 'end' },
@@ -132,7 +152,15 @@ const NODES: NodeDef[] = [
   { id: 'south-asia', lat: 26, lng: 80, label: 'SOUTH ASIA', labelDx: 9, labelDy: -8 },
   { id: 'sea', lat: -2, lng: 117, label: 'SE ASIA', labelDx: 9, labelDy: 4 },
   { id: 'andes', lat: 5, lng: -73, label: 'ANDES · COLOMBIA', labelDx: 9, labelDy: 4 },
-  { id: 'centralam', lat: 14, lng: -88, label: 'CENTRAL AMERICA', labelDx: -9, labelDy: -8, anchor: 'end' },
+  {
+    id: 'centralam',
+    lat: 14,
+    lng: -88,
+    label: 'CENTRAL AMERICA',
+    labelDx: -9,
+    labelDy: -8,
+    anchor: 'end',
+  },
 ];
 
 const PROJECTED_NODES = NODES.map((n) => ({ ...n, p: proj(n.lat, n.lng) }));
@@ -188,13 +216,29 @@ export function NetworkBackground() {
           {[-90, -60, -30, 0, 30, 60, 90, 120, 150].map((lng) => {
             const x = ((lng - LNG_MIN) / LNG_W) * VW;
             return (
-              <line key={`mer-${lng}`} x1={x} y1="0" x2={x} y2={VH} stroke="#e2dfd2" strokeWidth="0.4" />
+              <line
+                key={`mer-${lng}`}
+                x1={x}
+                y1="0"
+                x2={x}
+                y2={VH}
+                stroke="#e2dfd2"
+                strokeWidth="0.4"
+              />
             );
           })}
           {[-30, 0, 30, 60].map((lat) => {
             const y = ((LAT_MAX - lat) / LAT_H) * VH;
             return (
-              <line key={`par-${lat}`} x1="0" y1={y} x2={VW} y2={y} stroke="#e2dfd2" strokeWidth="0.4" />
+              <line
+                key={`par-${lat}`}
+                x1="0"
+                y1={y}
+                x2={VW}
+                y2={y}
+                stroke="#e2dfd2"
+                strokeWidth="0.4"
+              />
             );
           })}
         </g>
@@ -237,8 +281,24 @@ export function NetworkBackground() {
                 >
                   {fmtLat(lat)}
                 </text>
-                <line x1={0} y1={y} x2={4} y2={y} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
-                <line x1={VW - 4} y1={y} x2={VW} y2={y} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+                <line
+                  x1={0}
+                  y1={y}
+                  x2={4}
+                  y2={y}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
+                <line
+                  x1={VW - 4}
+                  y1={y}
+                  x2={VW}
+                  y2={y}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
               </g>
             );
           })}
@@ -271,8 +331,24 @@ export function NetworkBackground() {
                 >
                   {fmtLng(lng)}
                 </text>
-                <line x1={x} y1={0} x2={x} y2={4} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
-                <line x1={x} y1={VH - 4} x2={x} y2={VH} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+                <line
+                  x1={x}
+                  y1={0}
+                  x2={x}
+                  y2={4}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
+                <line
+                  x1={x}
+                  y1={VH - 4}
+                  x2={x}
+                  y2={VH}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
               </g>
             );
           })}
@@ -280,8 +356,14 @@ export function NetworkBackground() {
 
         {/* Continent dots */}
         <g>
-          {LAND_DOTS.map(([cx, cy], i) => (
-            <circle key={`d-${i}`} cx={cx} cy={cy} r="1.2" fill={COUNTRY_DOT} />
+          {LAND_DOTS.map(([cx, cy]) => (
+            <circle
+              key={`d-${cx.toFixed(1)}-${cy.toFixed(1)}`}
+              cx={cx}
+              cy={cy}
+              r="1.2"
+              fill={COUNTRY_DOT}
+            />
           ))}
         </g>
 
@@ -313,11 +395,34 @@ export function NetworkBackground() {
             <g key={n.id}>
               {n.active && (
                 <>
-                  <circle cx={n.p[0]} cy={n.p[1]} r="13" fill="none" stroke={TEAL} strokeWidth="0.5" opacity="0.3" />
-                  <circle cx={n.p[0]} cy={n.p[1]} r="9" fill="none" stroke={TEAL} strokeWidth="0.7" opacity="0.5" />
+                  <circle
+                    cx={n.p[0]}
+                    cy={n.p[1]}
+                    r="13"
+                    fill="none"
+                    stroke={TEAL}
+                    strokeWidth="0.5"
+                    opacity="0.3"
+                  />
+                  <circle
+                    cx={n.p[0]}
+                    cy={n.p[1]}
+                    r="9"
+                    fill="none"
+                    stroke={TEAL}
+                    strokeWidth="0.7"
+                    opacity="0.5"
+                  />
                 </>
               )}
-              <circle cx={n.p[0]} cy={n.p[1]} r={n.active ? 5.5 : 4} fill="#ffffff" stroke={DEEP_TEAL} strokeWidth="1.2" />
+              <circle
+                cx={n.p[0]}
+                cy={n.p[1]}
+                r={n.active ? 5.5 : 4}
+                fill="#ffffff"
+                stroke={DEEP_TEAL}
+                strokeWidth="1.2"
+              />
               <circle cx={n.p[0]} cy={n.p[1]} r={n.active ? 2.6 : 1.8} fill={DEEP_TEAL} />
               <text
                 x={n.p[0] + (n.labelDx ?? 8)}

@@ -72,28 +72,80 @@ const PROJ_ARABIA = ARABIA.map(([lat, lng]) => proj(lat, lng));
 // Internal country borders — simplified pink dashed lines like CARTO.
 const BORDERS: Array<Array<[number, number]>> = [
   // Sudan / South Sudan
-  [[10, 24], [10.5, 28], [10.8, 30], [11, 33.5], [10, 35]],
+  [
+    [10, 24],
+    [10.5, 28],
+    [10.8, 30],
+    [11, 33.5],
+    [10, 35],
+  ],
   // Sudan / Eritrea + Sudan / Ethiopia
-  [[15, 36.5], [13, 36.2], [11, 35], [10, 35]],
+  [
+    [15, 36.5],
+    [13, 36.2],
+    [11, 35],
+    [10, 35],
+  ],
   // Eritrea / Ethiopia
-  [[15, 36.5], [14.5, 38], [13, 42]],
+  [
+    [15, 36.5],
+    [14.5, 38],
+    [13, 42],
+  ],
   // South Sudan / Ethiopia
-  [[10, 35], [7, 34.5], [4.5, 35.5]],
+  [
+    [10, 35],
+    [7, 34.5],
+    [4.5, 35.5],
+  ],
   // Ethiopia / Kenya
-  [[4.5, 35.5], [4.3, 38], [3.7, 41.9]],
+  [
+    [4.5, 35.5],
+    [4.3, 38],
+    [3.7, 41.9],
+  ],
   // Ethiopia / Somalia
-  [[10.8, 44.5], [8, 44], [4, 41.9]],
+  [
+    [10.8, 44.5],
+    [8, 44],
+    [4, 41.9],
+  ],
   // South Sudan / Kenya / Uganda
-  [[4.5, 35.5], [4, 34.5], [4, 33]],
-  [[4, 33], [1.5, 31], [-1, 30]],
+  [
+    [4.5, 35.5],
+    [4, 34.5],
+    [4, 33],
+  ],
+  [
+    [4, 33],
+    [1.5, 31],
+    [-1, 30],
+  ],
   // Kenya / Tanzania
-  [[-1, 30], [-1, 33], [-3, 34.5], [-3, 39.7]],
+  [
+    [-1, 30],
+    [-1, 33],
+    [-3, 34.5],
+    [-3, 39.7],
+  ],
   // Sudan / Egypt (top)
-  [[22, 25], [22, 31], [22, 36.8]],
+  [
+    [22, 25],
+    [22, 31],
+    [22, 36.8],
+  ],
   // Sudan / CAR + S Sudan / CAR
-  [[10, 24], [7, 27], [4, 28.5]],
+  [
+    [10, 24],
+    [7, 27],
+    [4, 28.5],
+  ],
   // Sudan / Chad (left)
-  [[12, 22], [16, 22.5], [22, 22]],
+  [
+    [12, 22],
+    [16, 22.5],
+    [22, 22],
+  ],
 ];
 
 const COUNTRY_LABELS: Array<{ text: string; lat: number; lng: number; size?: number }> = [
@@ -295,9 +347,7 @@ export function StudioBackground() {
           {/* Equator slightly stronger */}
           {(() => {
             const [, y] = proj(0, LNG_MIN);
-            return (
-              <line x1={0} y1={y} x2={VW} y2={y} stroke="#c8c2b0" strokeWidth="0.6" />
-            );
+            return <line x1={0} y1={y} x2={VW} y2={y} stroke="#c8c2b0" strokeWidth="0.6" />;
           })()}
         </g>
 
@@ -332,8 +382,24 @@ export function StudioBackground() {
                 >
                   {fmtLat(lat)}
                 </text>
-                <line x1={0} y1={y} x2={4} y2={y} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
-                <line x1={VW - 4} y1={y} x2={VW} y2={y} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+                <line
+                  x1={0}
+                  y1={y}
+                  x2={4}
+                  y2={y}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
+                <line
+                  x1={VW - 4}
+                  y1={y}
+                  x2={VW}
+                  y2={y}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
               </g>
             );
           })}
@@ -367,23 +433,48 @@ export function StudioBackground() {
                 >
                   {fmtLng(lng)}
                 </text>
-                <line x1={x} y1={0} x2={x} y2={4} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
-                <line x1={x} y1={VH - 4} x2={x} y2={VH} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+                <line
+                  x1={x}
+                  y1={0}
+                  x2={x}
+                  y2={4}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
+                <line
+                  x1={x}
+                  y1={VH - 4}
+                  x2={x}
+                  y2={VH}
+                  stroke={GRATICULE_TICK}
+                  strokeWidth="0.5"
+                  opacity="0.55"
+                />
               </g>
             );
           })}
         </g>
 
-
         {/* Landmasses */}
-        <path d={pathFromPoly(PROJ_AFRICA)} fill={COUNTRY_FILL} stroke={COASTLINE} strokeWidth="0.8" />
-        <path d={pathFromPoly(PROJ_ARABIA)} fill={ARABIA_FILL} stroke={COASTLINE} strokeWidth="0.8" />
+        <path
+          d={pathFromPoly(PROJ_AFRICA)}
+          fill={COUNTRY_FILL}
+          stroke={COASTLINE}
+          strokeWidth="0.8"
+        />
+        <path
+          d={pathFromPoly(PROJ_ARABIA)}
+          fill={ARABIA_FILL}
+          stroke={COASTLINE}
+          strokeWidth="0.8"
+        />
 
         {/* Country borders (faint pink, dashed) */}
         <g opacity="0.85">
-          {BORDERS.map((line, i) => (
+          {BORDERS.map((line) => (
             <path
-              key={`b-${i}`}
+              key={`b-${line[0][0]}-${line[0][1]}-${line.length}`}
               d={pathFromLine(line)}
               fill="none"
               stroke={COUNTRY_BORDER}
