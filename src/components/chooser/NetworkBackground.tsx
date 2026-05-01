@@ -1,9 +1,11 @@
 /**
- * Network side background: federated MERL ops map.
+ * Network side background: federated MERL ops map — same chrome
+ * discipline as the Studio PRISM cutout (no controls, no panels,
+ * no attribution). CARTO-style basemap, faint graticule, continent
+ * dots, nine federated nodes with NileX active, dashed link mesh.
  *
- * Same visual register as the Studio PRISM cutout — CARTO Positron
- * light basemap, faint country dots, minimal control chrome top-left.
- * Nine federated nodes (NileX active), sparse dashed link mesh.
+ * The wrapping <g class="chooser-bg-drift"> drifts on hover (CSS
+ * keyframes in chooser.css) for the same "live map feel" as Studio.
  *
  * Static. Animation deferred.
  */
@@ -11,8 +13,6 @@
 const VW = 600;
 const VH = 360;
 
-// World projection (equirectangular) covering the inhabited band.
-// lng −120 .. 180 (range 300°), lat −40 .. 65 (range 105°)
 const LNG_MIN = -120;
 const LNG_W = 300;
 const LAT_MAX = 65;
@@ -22,14 +22,9 @@ function proj(lat: number, lng: number): [number, number] {
   return [((lng - LNG_MIN) / LNG_W) * VW, ((LAT_MAX - lat) / LAT_H) * VH];
 }
 
-// Continent dot density — sampled lat/lng points across landmasses.
-// Tighter than v1 (≈ every 2.5° lat × 3° lng) but still sparse enough
-// to read as basemap rather than infographic.
 const LAND_DOTS: Array<[number, number]> = [];
-const STEP_LAT = 2.5;
 const STEP_LNG = 3;
 
-// Each row: [lat, [lng ranges as pairs]]
 const LAND_BANDS: Array<[number, Array<[number, number]>]> = [
   // North America
   [62, [[-150, -65]]],
@@ -41,7 +36,6 @@ const LAND_BANDS: Array<[number, Array<[number, number]>]> = [
   [35, [[-118, -77]]],
   [30, [[-110, -80]]],
   [25, [[-110, -80]]],
-  // Central America / Caribbean
   [20, [[-105, -85], [-78, -72]]],
   [15, [[-95, -85], [-77, -72]]],
   [10, [[-87, -78]]],
@@ -62,14 +56,14 @@ const LAND_BANDS: Array<[number, Array<[number, number]>]> = [
   [45, [[-5, 45]]],
   [40, [[-9, 28]]],
   [37, [[-9, 28]]],
-  // North Africa / Sahara
+  // North Africa
   [30, [[-8, 32]]],
   [25, [[-15, 36]]],
   [20, [[-15, 38]]],
   [15, [[-15, 40]]],
   [10, [[-12, 42]]],
   [5, [[-8, 45]]],
-  // Sub-Saharan Africa / Horn
+  // Sub-Saharan Africa
   [0, [[8, 45]]],
   [-5, [[12, 40]]],
   [-10, [[12, 40]]],
@@ -81,7 +75,7 @@ const LAND_BANDS: Array<[number, Array<[number, number]>]> = [
   [35, [[28, 60]]],
   [30, [[34, 60]]],
   [25, [[36, 58]]],
-  // Central Asia / Russia
+  // Russia / Central Asia
   [60, [[33, 175]]],
   [55, [[35, 175]]],
   [50, [[28, 140]]],
@@ -164,214 +158,182 @@ const LINK_PAIRS: Array<[string, string]> = [
   ['sahel', 'maghreb'],
 ];
 
-const PANEL_FILL = '#fafaf6';
-const PANEL_BORDER = '#d8d4ca';
-const BASEMAP = '#eeece5';
-const COUNTRY_DOT = '#c2bfb3';
+const BASEMAP = '#f0eee6';
+const COUNTRY_DOT = '#bdb7a6';
 const TEXT_INK = '#1a1a1a';
-const TEXT_MUTE = '#7a786f';
 const DEEP_TEAL = '#1A3A34';
 const TEAL = '#3d7a72';
+const GRATICULE_TICK = '#a89f8e';
 
-const VIEW_BUTTONS = ['Nodes', 'Mesh', 'Activity'];
-const ACTIVE_VIEW = 0;
+const LAT_LABELS = [-30, 0, 30, 60];
+const LNG_LABELS = [-90, -60, -30, 0, 30, 60, 90, 120, 150];
+
+function fmtLat(lat: number): string {
+  if (lat === 0) return '0°';
+  return `${Math.abs(lat)}°${lat > 0 ? 'N' : 'S'}`;
+}
+function fmtLng(lng: number): string {
+  if (lng === 0) return '0°';
+  return `${Math.abs(lng)}°${lng > 0 ? 'E' : 'W'}`;
+}
 
 export function NetworkBackground() {
   return (
     <svg viewBox={`0 0 ${VW} ${VH}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <rect x="0" y="0" width={VW} height={VH} fill={BASEMAP} />
 
-      {/* Faint graticule every 30° */}
-      <g opacity="0.5">
-        {[-90, -60, -30, 0, 30, 60, 90, 120, 150].map((lng) => {
-          const x = ((lng - LNG_MIN) / LNG_W) * VW;
-          return (
-            <line
-              key={`mer-${lng}`}
-              x1={x}
-              y1="0"
-              x2={x}
-              y2={VH}
-              stroke="#e5e2d8"
-              strokeWidth="0.4"
-            />
-          );
-        })}
-        {[-30, 0, 30, 60].map((lat) => {
-          const y = ((LAT_MAX - lat) / LAT_H) * VH;
-          return (
-            <line
-              key={`par-${lat}`}
-              x1="0"
-              y1={y}
-              x2={VW}
-              y2={y}
-              stroke="#e5e2d8"
-              strokeWidth="0.4"
-            />
-          );
-        })}
-      </g>
-
-      {/* Equator slightly stronger */}
-      <line
-        x1="0"
-        y1={((LAT_MAX - 0) / LAT_H) * VH}
-        x2={VW}
-        y2={((LAT_MAX - 0) / LAT_H) * VH}
-        stroke="#dcd9cd"
-        strokeWidth="0.6"
-      />
-
-      {/* Continent dots */}
-      <g>
-        {LAND_DOTS.map(([cx, cy], i) => (
-          <circle key={`d-${i}`} cx={cx} cy={cy} r="1.2" fill={COUNTRY_DOT} />
-        ))}
-      </g>
-
-      {/* Network links */}
-      <g>
-        {LINK_PAIRS.map(([a, b]) => {
-          const na = NODE_BY_ID[a];
-          const nb = NODE_BY_ID[b];
-          if (!na || !nb) return null;
-          return (
-            <line
-              key={`l-${a}-${b}`}
-              x1={na.p[0]}
-              y1={na.p[1]}
-              x2={nb.p[0]}
-              y2={nb.p[1]}
-              stroke={TEAL}
-              strokeWidth="0.7"
-              opacity="0.5"
-              strokeDasharray="2 3"
-            />
-          );
-        })}
-      </g>
-
-      {/* Nodes */}
-      <g>
-        {PROJECTED_NODES.map((n) => (
-          <g key={n.id}>
-            {n.active && (
-              <>
-                <circle
-                  cx={n.p[0]}
-                  cy={n.p[1]}
-                  r="13"
-                  fill="none"
-                  stroke={TEAL}
-                  strokeWidth="0.5"
-                  opacity="0.3"
-                />
-                <circle
-                  cx={n.p[0]}
-                  cy={n.p[1]}
-                  r="9"
-                  fill="none"
-                  stroke={TEAL}
-                  strokeWidth="0.7"
-                  opacity="0.5"
-                />
-              </>
-            )}
-            <circle
-              cx={n.p[0]}
-              cy={n.p[1]}
-              r={n.active ? 5.5 : 4}
-              fill="#ffffff"
-              stroke={DEEP_TEAL}
-              strokeWidth="1.2"
-            />
-            <circle
-              cx={n.p[0]}
-              cy={n.p[1]}
-              r={n.active ? 2.6 : 1.8}
-              fill={DEEP_TEAL}
-            />
-            <text
-              x={n.p[0] + (n.labelDx ?? 8)}
-              y={n.p[1] + (n.labelDy ?? -8)}
-              fontFamily="var(--font-mono)"
-              fontSize="8.5"
-              letterSpacing="0.06em"
-              textAnchor={n.anchor ?? 'start'}
-              fill={TEXT_INK}
-              opacity="0.85"
-            >
-              {n.label}
-            </text>
-          </g>
-        ))}
-      </g>
-
-      {/* Top-left ViewToggle (mirrors Studio's chrome rhythm) */}
-      <g transform="translate(20, 20)">
-        <rect
-          x="0"
-          y="0"
-          width="180"
-          height="24"
-          rx="4"
-          fill={PANEL_FILL}
-          stroke={PANEL_BORDER}
+      <g className="chooser-bg-drift">
+        {/* Faint graticule every 30° */}
+        <g opacity="0.55">
+          {[-90, -60, -30, 0, 30, 60, 90, 120, 150].map((lng) => {
+            const x = ((lng - LNG_MIN) / LNG_W) * VW;
+            return (
+              <line key={`mer-${lng}`} x1={x} y1="0" x2={x} y2={VH} stroke="#e2dfd2" strokeWidth="0.4" />
+            );
+          })}
+          {[-30, 0, 30, 60].map((lat) => {
+            const y = ((LAT_MAX - lat) / LAT_H) * VH;
+            return (
+              <line key={`par-${lat}`} x1="0" y1={y} x2={VW} y2={y} stroke="#e2dfd2" strokeWidth="0.4" />
+            );
+          })}
+        </g>
+        <line
+          x1="0"
+          y1={((LAT_MAX - 0) / LAT_H) * VH}
+          x2={VW}
+          y2={((LAT_MAX - 0) / LAT_H) * VH}
+          stroke="#d8d4c4"
           strokeWidth="0.6"
         />
-        {VIEW_BUTTONS.map((label, i) => {
-          const w = 180 / VIEW_BUTTONS.length;
-          const isActive = i === ACTIVE_VIEW;
-          return (
-            <g key={label}>
-              {isActive && <rect x={i * w} y="0" width={w} height="24" rx="4" fill={DEEP_TEAL} />}
+
+        {/* Degree labels along edges */}
+        <g>
+          {LAT_LABELS.map((lat) => {
+            const y = ((LAT_MAX - lat) / LAT_H) * VH;
+            if (y < 12 || y > VH - 6) return null;
+            return (
+              <g key={`lat-lbl-${lat}`}>
+                <text
+                  x={6}
+                  y={y - 2}
+                  fontFamily="var(--font-mono)"
+                  fontSize="7"
+                  fill={GRATICULE_TICK}
+                  letterSpacing="0.04em"
+                  opacity="0.7"
+                >
+                  {fmtLat(lat)}
+                </text>
+                <text
+                  x={VW - 6}
+                  y={y - 2}
+                  fontFamily="var(--font-mono)"
+                  fontSize="7"
+                  textAnchor="end"
+                  fill={GRATICULE_TICK}
+                  letterSpacing="0.04em"
+                  opacity="0.7"
+                >
+                  {fmtLat(lat)}
+                </text>
+                <line x1={0} y1={y} x2={4} y2={y} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+                <line x1={VW - 4} y1={y} x2={VW} y2={y} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+              </g>
+            );
+          })}
+          {LNG_LABELS.map((lng) => {
+            const x = ((lng - LNG_MIN) / LNG_W) * VW;
+            if (x < 18 || x > VW - 18) return null;
+            return (
+              <g key={`lng-lbl-${lng}`}>
+                <text
+                  x={x}
+                  y={9}
+                  fontFamily="var(--font-mono)"
+                  fontSize="7"
+                  textAnchor="middle"
+                  fill={GRATICULE_TICK}
+                  letterSpacing="0.04em"
+                  opacity="0.7"
+                >
+                  {fmtLng(lng)}
+                </text>
+                <text
+                  x={x}
+                  y={VH - 4}
+                  fontFamily="var(--font-mono)"
+                  fontSize="7"
+                  textAnchor="middle"
+                  fill={GRATICULE_TICK}
+                  letterSpacing="0.04em"
+                  opacity="0.7"
+                >
+                  {fmtLng(lng)}
+                </text>
+                <line x1={x} y1={0} x2={x} y2={4} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+                <line x1={x} y1={VH - 4} x2={x} y2={VH} stroke={GRATICULE_TICK} strokeWidth="0.5" opacity="0.55" />
+              </g>
+            );
+          })}
+        </g>
+
+        {/* Continent dots */}
+        <g>
+          {LAND_DOTS.map(([cx, cy], i) => (
+            <circle key={`d-${i}`} cx={cx} cy={cy} r="1.2" fill={COUNTRY_DOT} />
+          ))}
+        </g>
+
+        {/* Network links */}
+        <g>
+          {LINK_PAIRS.map(([a, b]) => {
+            const na = NODE_BY_ID[a];
+            const nb = NODE_BY_ID[b];
+            if (!na || !nb) return null;
+            return (
+              <line
+                key={`l-${a}-${b}`}
+                x1={na.p[0]}
+                y1={na.p[1]}
+                x2={nb.p[0]}
+                y2={nb.p[1]}
+                stroke={TEAL}
+                strokeWidth="0.7"
+                opacity="0.5"
+                strokeDasharray="2 3"
+              />
+            );
+          })}
+        </g>
+
+        {/* Nodes */}
+        <g>
+          {PROJECTED_NODES.map((n) => (
+            <g key={n.id}>
+              {n.active && (
+                <>
+                  <circle cx={n.p[0]} cy={n.p[1]} r="13" fill="none" stroke={TEAL} strokeWidth="0.5" opacity="0.3" />
+                  <circle cx={n.p[0]} cy={n.p[1]} r="9" fill="none" stroke={TEAL} strokeWidth="0.7" opacity="0.5" />
+                </>
+              )}
+              <circle cx={n.p[0]} cy={n.p[1]} r={n.active ? 5.5 : 4} fill="#ffffff" stroke={DEEP_TEAL} strokeWidth="1.2" />
+              <circle cx={n.p[0]} cy={n.p[1]} r={n.active ? 2.6 : 1.8} fill={DEEP_TEAL} />
               <text
-                x={i * w + w / 2}
-                y="16"
+                x={n.p[0] + (n.labelDx ?? 8)}
+                y={n.p[1] + (n.labelDy ?? -8)}
                 fontFamily="var(--font-mono)"
-                fontSize="9.5"
-                textAnchor="middle"
-                letterSpacing="0.04em"
-                fill={isActive ? '#ffffff' : TEXT_MUTE}
+                fontSize="8.5"
+                letterSpacing="0.06em"
+                textAnchor={n.anchor ?? 'start'}
+                fill={TEXT_INK}
+                opacity="0.85"
               >
-                {label}
+                {n.label}
               </text>
             </g>
-          );
-        })}
-      </g>
-
-      {/* Compact summary chip */}
-      <g transform="translate(20, 56)">
-        <rect
-          x="0"
-          y="0"
-          width="180"
-          height="24"
-          rx="4"
-          fill={PANEL_FILL}
-          stroke={PANEL_BORDER}
-          strokeWidth="0.6"
-        />
-        <circle cx="14" cy="12" r="2.5" fill={TEAL} />
-        <text
-          x="22"
-          y="15"
-          fontFamily="var(--font-mono)"
-          fontSize="9.5"
-          fill={TEXT_INK}
-          letterSpacing="0.04em"
-        >
-          9 nodes online · 11 links
-        </text>
-      </g>
-
-      {/* Bottom-right attribution */}
-      <g transform={`translate(${VW - 140}, ${VH - 16})`}>
-        <text x="0" y="0" fontFamily="var(--font-mono)" fontSize="7.5" fill={TEXT_MUTE} letterSpacing="0.04em">
-          © CARTO · OpenStreetMap
-        </text>
+          ))}
+        </g>
       </g>
     </svg>
   );

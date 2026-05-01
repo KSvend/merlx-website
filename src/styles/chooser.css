@@ -88,6 +88,42 @@
   display: block;
 }
 
+/* Slow ambient drift on the map content — gives the cutout a "live"
+ * MapLibre-canvas feel without the bundle weight of an actual map.
+ * Only animates while the panel is hovered (chooser-bg fades in). */
+.chooser-bg-drift {
+  transform-origin: 50% 50%;
+}
+
+.chooser-half:hover .chooser-bg-drift {
+  animation: chooser-drift 60s ease-in-out infinite alternate;
+}
+
+@keyframes chooser-drift {
+  0% {
+    transform: translate(0, 0) scale(1.02);
+  }
+  25% {
+    transform: translate(-1.2%, -0.8%) scale(1.03);
+  }
+  50% {
+    transform: translate(0.8%, 1.2%) scale(1.025);
+  }
+  75% {
+    transform: translate(1.2%, -0.5%) scale(1.035);
+  }
+  100% {
+    transform: translate(-0.5%, 0.8%) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chooser-half:hover .chooser-bg-drift {
+    animation: none;
+    transform: scale(1.02);
+  }
+}
+
 /* Content panel — always left-anchored to the chooser container */
 .chooser-content {
   position: absolute;
