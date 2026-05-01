@@ -11,7 +11,7 @@ export function PageShell({ locale, children }: PageShellProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <SiteNav locale={locale} />
-      <main style={{ flex: 1 }}>{children}</main>
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>{children}</main>
       <SiteFooter locale={locale} />
     </div>
   );

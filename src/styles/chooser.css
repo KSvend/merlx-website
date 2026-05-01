@@ -7,7 +7,8 @@
 
 .chooser {
   position: relative;
-  height: 600px;
+  flex: 1;
+  min-height: 600px;
   container-type: inline-size;
   background: var(--color-bg);
 }
@@ -97,6 +98,7 @@
   padding: 64px 44px 48px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   z-index: 2;
 }
 
@@ -235,7 +237,7 @@
 }
 
 .chooser-foot {
-  margin-top: auto;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
