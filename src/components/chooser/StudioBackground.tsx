@@ -243,12 +243,13 @@ function cellColor(cx: number, cy: number): { fill: string; opacity: number } | 
     if (w > v) v = w;
   }
   if (v < 0.18) return null;
-  // MERLx orange ramp — sequential warmth (cream → orange → orange-hot)
-  if (v > 0.78) return { fill: '#7a2a0a', opacity: 0.95 }; // orange-hot deepest
-  if (v > 0.6) return { fill: '#a8421a', opacity: 0.9 };
-  if (v > 0.42) return { fill: '#c8682a', opacity: 0.82 };
-  if (v > 0.28) return { fill: '#dca06a', opacity: 0.7 };
-  return { fill: '#ecccaa', opacity: 0.58 };
+  // MERLx ember ramp — sand-light → ember-light → ember → ember-dark → error
+  // (semantic: warning/attention/critical, per MERLx design guide §2)
+  if (v > 0.78) return { fill: '#B83A2A', opacity: 0.95 }; // error
+  if (v > 0.6) return { fill: '#A84B0C', opacity: 0.92 }; // ember-dark
+  if (v > 0.42) return { fill: '#CA5D0F', opacity: 0.85 }; // ember
+  if (v > 0.28) return { fill: '#E07B33', opacity: 0.72 }; // ember-light
+  return { fill: '#E8D4C0', opacity: 0.65 }; // sand
 }
 
 interface Cell {
@@ -277,23 +278,12 @@ function buildCells(): Cell[] {
 
 const CELLS = buildCells();
 
-// Sidebar feature-importance bars — gives a "deep learning is happening"
-// signal without being a literal model dump.
-const FEATURE_BARS = [
-  { name: 'conflict', val: 0.34 },
-  { name: 'food', val: 0.21 },
-  { name: 'climate', val: 0.18 },
-  { name: 'actors', val: 0.14 },
-  { name: 'structural', val: 0.09 },
-  { name: 'spatial', val: 0.04 },
-];
-
-const LOG_LINES = [
-  '[14:32:08] load tensor(5089, 52)',
-  '[14:32:09] inflate r=5 d=0.85',
-  '[14:32:11] postsmooth ok',
-  '[14:32:11] write 5089 → cells',
-  '[14:32:11] mode=delta · w/w',
+// Top-K cells at risk (compact prediction-output rows for the sidebar)
+const TOP_CELLS = [
+  { hash: '8c4f3a', val: 0.61, dir: 'up' as const },
+  { hash: '8c2b71', val: 0.48, dir: 'up' as const },
+  { hash: '8c1d9e', val: 0.42, dir: 'up' as const },
+  { hash: '8c3e22', val: 0.31, dir: 'down' as const },
 ];
 
 const COUNTRY_LABELS: Array<{ text: string; lat: number; lng: number; size?: number }> = [
@@ -324,12 +314,25 @@ const COUNTRY_LABELS: Array<{ text: string; lat: number; lng: number; size?: num
   { text: 'MALAWI', lat: -13, lng: 34, size: 8 },
 ];
 
-const BASEMAP = '#f0eee6';
-const COUNTRY_FILL = '#f4f2eb';
-const ARABIA_FILL = '#f1efe8';
-const COUNTRY_BORDER = '#e6c8c5';
-const COASTLINE = '#cfc8b6';
-const LABEL_INK = '#a89f8e';
+// MERLx tokens — see ~/.claude/design-systems/MERLx-design-system.md
+const BASEMAP = '#F5F3EE'; // shell
+const COUNTRY_FILL = '#EDE9E1'; // shell-warm
+const ARABIA_FILL = '#F0E2D4'; // sand-light (warmer cousin)
+const COUNTRY_BORDER = '#D5D0C7'; // border
+const COASTLINE = '#9E9E9E'; // ink-faint
+const LABEL_INK = '#9E9E9E'; // ink-faint
+const PANEL_FILL = '#FFFFFF'; // surface
+const PANEL_BORDER = '#E5E1DA'; // border-light
+const INK = '#111111';
+const INK_LIGHT = '#2A2A2A';
+const INK_MUTED = '#6B6B6B';
+const INK_FAINT = '#9E9E9E';
+const IRIS = '#8071BC';
+const IRIS_DIM = 'rgba(128, 113, 188, 0.12)';
+const DEEP_TEAL = '#1A3A34';
+const DEEP_TEAL_DIM = 'rgba(26, 58, 52, 0.10)';
+const EMBER = '#CA5D0F';
+const EMBER_DARK = '#A84B0C';
 
 export function StudioBackground() {
   return (
@@ -434,180 +437,212 @@ export function StudioBackground() {
           ))}
         </g>
 
-        {/* Right-side data-science sidebar — model header, feature
-         * importance bars, log line stream. All mono, faint, restrained. */}
-        <g transform={`translate(${VW - 162}, 22)`}>
+        {/* Compact prediction sidebar — ML focus, MERLx tokens.
+         * surface card · border-light edge · iris/deep-teal active states ·
+         * ember for risk · Inter 600 uppercase labels · Plex Mono numerics. */}
+        <g transform={`translate(${VW - 138}, 36)`}>
           <rect
             x="0"
             y="0"
-            width="148"
-            height={VH - 60}
-            rx="2"
-            fill="#fafaf6"
-            stroke="#bdb7a6"
-            strokeWidth="0.5"
-            opacity="0.78"
+            width="124"
+            height="298"
+            rx="4"
+            fill={PANEL_FILL}
+            stroke={PANEL_BORDER}
+            strokeWidth="0.6"
           />
 
-          {/* Header */}
           <text
             x="10"
-            y="16"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            letterSpacing="0.16em"
-            fill="var(--color-orange-hot, #7a2a0a)"
-            fontWeight="500"
+            y="18"
+            fontFamily="var(--font-sans)"
+            fontSize="11"
+            fill={INK}
+            fontWeight="600"
           >
-            PRISM · v1.5
+            <tspan>PRISM</tspan>
+            <tspan dx="3" fill={INK_FAINT} fontWeight="400" fontSize="9.5">
+              v1.5
+            </tspan>
           </text>
-          <line x1="10" y1="22" x2="138" y2="22" stroke="#bdb7a6" strokeWidth="0.4" opacity="0.6" />
           <text
             x="10"
-            y="34"
+            y="30"
             fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill="#7a786f"
+            fontSize="8"
+            fill={INK_MUTED}
             letterSpacing="0.04em"
           >
             tensor[5089, 52]
           </text>
-          <text
-            x="10"
-            y="44"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill="#7a786f"
-            letterSpacing="0.04em"
-          >
-            model · 9a7f3b2
-          </text>
 
-          {/* Feature importance bars */}
           <text
             x="10"
-            y="64"
-            fontFamily="var(--font-mono)"
-            fontSize="7"
+            y="50"
+            fontFamily="var(--font-sans)"
+            fontSize="8"
+            fontWeight="600"
             letterSpacing="0.16em"
-            fill="#7a786f"
-            opacity="0.85"
+            fill={INK_MUTED}
           >
-            FEATURE IMPORTANCE
+            FORECAST
           </text>
-          {FEATURE_BARS.map((f, i) => {
-            const y = 76 + i * 14;
-            const barW = f.val * 130;
-            return (
-              <g key={`fb-${f.name}`}>
-                <text x="10" y={y + 5} fontFamily="var(--font-mono)" fontSize="7.5" fill="#3a3a3a">
-                  {f.name}
-                </text>
-                <rect x="62" y={y} width="76" height="6" fill="#e8e4d4" opacity="0.7" />
+          <g transform="translate(10, 56)">
+            {[
+              { k: '7d', active: false },
+              { k: '30d', active: true },
+              { k: '90d', active: false },
+            ].map((p, i) => (
+              <g key={p.k} transform={`translate(${i * 36}, 0)`}>
                 <rect
-                  x="62"
-                  y={y}
-                  width={Math.min(barW, 76)}
-                  height="6"
-                  fill="var(--color-orange, #c8682a)"
-                  opacity="0.85"
+                  x="0"
+                  y="0"
+                  width="33"
+                  height="16"
+                  rx="3"
+                  fill={p.active ? IRIS : 'transparent'}
+                  stroke={p.active ? IRIS : PANEL_BORDER}
+                  strokeWidth="0.5"
                 />
                 <text
-                  x="138"
-                  y={y + 5}
+                  x="16.5"
+                  y="11.5"
                   fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  textAnchor="end"
-                  fill="#7a786f"
+                  fontSize="8.5"
+                  textAnchor="middle"
+                  fill={p.active ? '#FFFFFF' : INK_MUTED}
+                  letterSpacing="0.04em"
                 >
-                  {f.val.toFixed(2)}
+                  T+{p.k}
+                </text>
+              </g>
+            ))}
+          </g>
+
+          <text
+            x="10"
+            y="92"
+            fontFamily="var(--font-sans)"
+            fontSize="8"
+            fontWeight="600"
+            letterSpacing="0.16em"
+            fill={INK_MUTED}
+          >
+            CONFIDENCE
+          </text>
+          <g transform="translate(10, 99)">
+            <rect x="0" y="0" width="104" height="6" rx="1" fill={IRIS_DIM} />
+            <rect x="0" y="0" width="90" height="6" rx="1" fill={IRIS} />
+          </g>
+          <text
+            x="10"
+            y="120"
+            fontFamily="var(--font-mono)"
+            fontSize="9"
+            fontWeight="500"
+            fill={INK_LIGHT}
+          >
+            0.87
+          </text>
+          <text
+            x="114"
+            y="120"
+            fontFamily="var(--font-mono)"
+            fontSize="8"
+            textAnchor="end"
+            fill={INK_FAINT}
+          >
+            ±0.04
+          </text>
+
+          <line x1="10" y1="132" x2="114" y2="132" stroke={PANEL_BORDER} strokeWidth="0.5" />
+          <text
+            x="10"
+            y="146"
+            fontFamily="var(--font-sans)"
+            fontSize="8"
+            fontWeight="600"
+            letterSpacing="0.16em"
+            fill={INK_MUTED}
+          >
+            TOP @ T+30d
+          </text>
+          {TOP_CELLS.map((c, i) => {
+            const y = 158 + i * 16;
+            const arrow = c.dir === 'up' ? '▲' : '▼';
+            const arrowColor = c.dir === 'up' ? EMBER_DARK : DEEP_TEAL;
+            return (
+              <g key={c.hash}>
+                <text x="10" y={y + 6} fontFamily="var(--font-mono)" fontSize="8" fill={INK_MUTED}>
+                  {c.hash}
+                </text>
+                <text
+                  x="76"
+                  y={y + 6}
+                  fontFamily="var(--font-mono)"
+                  fontSize="8.5"
+                  textAnchor="end"
+                  fill={INK}
+                  fontWeight="500"
+                >
+                  {c.val.toFixed(2)}
+                </text>
+                <text
+                  x="114"
+                  y={y + 6}
+                  fontFamily="var(--font-mono)"
+                  fontSize="8"
+                  textAnchor="end"
+                  fill={arrowColor}
+                >
+                  {arrow}
                 </text>
               </g>
             );
           })}
 
-          {/* Loss curve */}
-          <text
-            x="10"
-            y="180"
-            fontFamily="var(--font-mono)"
-            fontSize="7"
-            letterSpacing="0.16em"
-            fill="#7a786f"
-            opacity="0.85"
-          >
-            LOSS · EPOCH 4 / 4
-          </text>
-          <g transform="translate(10, 188)">
-            <rect x="0" y="0" width="128" height="22" fill="#f0ede4" opacity="0.5" />
-            <polyline
-              points="0,18 16,15 32,12 48,8 64,9 80,7 96,5 112,4 128,3"
+          <line x1="10" y1="234" x2="114" y2="234" stroke={PANEL_BORDER} strokeWidth="0.5" />
+          <g transform="translate(10, 244)">
+            <circle cx="3" cy="6" r="2.5" fill={EMBER} />
+            <circle
+              cx="3"
+              cy="6"
+              r="5"
               fill="none"
-              stroke="var(--color-orange, #c8682a)"
-              strokeWidth="0.9"
-              opacity="0.85"
+              stroke={EMBER}
+              strokeWidth="0.4"
+              opacity="0.4"
             />
-            <circle cx="128" cy="3" r="1.6" fill="var(--color-orange-hot, #7a2a0a)" />
+            <text
+              x="12"
+              y="9"
+              fontFamily="var(--font-sans)"
+              fontSize="9"
+              fontWeight="500"
+              fill={INK_LIGHT}
+            >
+              predicting
+            </text>
           </g>
-          <text x="10" y="222" fontFamily="var(--font-mono)" fontSize="7" fill="#7a786f">
-            loss 0.0218
-          </text>
-
-          {/* Log lines */}
           <text
             x="10"
-            y="248"
-            fontFamily="var(--font-mono)"
-            fontSize="7"
-            letterSpacing="0.16em"
-            fill="#7a786f"
-            opacity="0.85"
-          >
-            INFERENCE LOG
-          </text>
-          {LOG_LINES.map((line, i) => (
-            <text
-              key={`log-${i}-${line.length}`}
-              x="10"
-              y={262 + i * 12}
-              fontFamily="var(--font-mono)"
-              fontSize="7"
-              fill="#3a3a3a"
-              opacity="0.85"
-            >
-              {line}
-            </text>
-          ))}
-
-          {/* Footer status */}
-          <line
-            x1="10"
-            y1={VH - 88}
-            x2="138"
-            y2={VH - 88}
-            stroke="#bdb7a6"
-            strokeWidth="0.4"
-            opacity="0.6"
-          />
-          <circle
-            cx="14"
-            cy={VH - 78}
-            r="2"
-            fill="var(--color-orange-hot, #7a2a0a)"
-            opacity="0.85"
-          />
-          <text
-            x="22"
-            y={VH - 75}
+            y="270"
             fontFamily="var(--font-mono)"
             fontSize="7.5"
-            fill="#3a3a3a"
-            letterSpacing="0.06em"
+            fill={INK_MUTED}
+            letterSpacing="0.04em"
           >
-            LIVE · w/w delta
+            inference 1.2s · 5089
           </text>
-          <text x="10" y={VH - 64} fontFamily="var(--font-mono)" fontSize="7" fill="#7a786f">
-            27 MAR 2026 · 5089
+          <text
+            x="10"
+            y="284"
+            fontFamily="var(--font-mono)"
+            fontSize="7.5"
+            fill={INK_FAINT}
+            letterSpacing="0.04em"
+          >
+            mode delta · w/w
           </text>
         </g>
 
