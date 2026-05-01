@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     tenants: Tenant;
+    pages: Page;
+    'insights-posts': InsightsPost;
+    publications: Publication;
+    leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +82,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    'insights-posts': InsightsPostsSelect<false> | InsightsPostsSelect<true>;
+    publications: PublicationsSelect<false> | PublicationsSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -180,6 +188,134 @@ export interface Tenant {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * URL slug — e.g. "about", "legal/privacy"
+   */
+  slug: string;
+  title: string;
+  subtitle?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  status: 'draft' | 'published';
+  /**
+   * Used for OpenGraph + meta description.
+   */
+  seoDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "insights-posts".
+ */
+export interface InsightsPost {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  category: 'news' | 'analysis' | 'field-note' | 'methods';
+  publishedAt: string;
+  /**
+   * When true, this post bubbles up to parent tenant aggregate feeds (Network → Group, Node → Network → Group).
+   */
+  syndicate?: boolean | null;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications".
+ */
+export interface Publication {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  slug: string;
+  title: string;
+  authors?:
+    | {
+        name: string;
+        affiliation?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  year: number;
+  type: 'peer-reviewed' | 'working-paper' | 'brief' | 'methodology' | 'report';
+  abstract?: string | null;
+  doi?: string | null;
+  /**
+   * URL to PDF (Vercel Blob in production).
+   */
+  fileUrl?: string | null;
+  language?: ('en' | 'ar' | 'fr') | null;
+  syndicate?: boolean | null;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  name: string;
+  email: string;
+  organisation?: string | null;
+  role?: string | null;
+  country?: string | null;
+  message: string;
+  interest?: ('studio' | 'network' | 'hosted' | 'pilot' | 'build-with' | 'advisory')[] | null;
+  /**
+   * Which tenant + page the submission came from (e.g., "group:/contact").
+   */
+  tenantOrigin: string;
+  utm?: {
+    source?: string | null;
+    medium?: string | null;
+    campaign?: string | null;
+  };
+  submittedAt: string;
+  status: 'new' | 'in-progress' | 'resolved' | 'spam';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -209,6 +345,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tenants';
         value: number | Tenant;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'insights-posts';
+        value: number | InsightsPost;
+      } | null)
+    | ({
+        relationTo: 'publications';
+        value: number | Publication;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -297,6 +449,89 @@ export interface TenantsSelect<T extends boolean = true> {
   tagline?: T;
   hasInsights?: T;
   blobBucketPrefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  subtitle?: T;
+  body?: T;
+  status?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "insights-posts_select".
+ */
+export interface InsightsPostsSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  category?: T;
+  publishedAt?: T;
+  syndicate?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications_select".
+ */
+export interface PublicationsSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  authors?:
+    | T
+    | {
+        name?: T;
+        affiliation?: T;
+        id?: T;
+      };
+  year?: T;
+  type?: T;
+  abstract?: T;
+  doi?: T;
+  fileUrl?: T;
+  language?: T;
+  syndicate?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  organisation?: T;
+  role?: T;
+  country?: T;
+  message?: T;
+  interest?: T;
+  tenantOrigin?: T;
+  utm?:
+    | T
+    | {
+        source?: T;
+        medium?: T;
+        campaign?: T;
+      };
+  submittedAt?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

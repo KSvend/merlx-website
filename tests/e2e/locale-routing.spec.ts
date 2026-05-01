@@ -10,18 +10,18 @@ test('/en serves English chrome strings', async ({ page }) => {
   await page.goto('/en');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
-  await expect(page.getByText('Tenant')).toBeVisible();
+  await expect(page.getByText('THE TECH STUDIO')).toBeVisible();
 });
 
 test('/fr serves French chrome strings', async ({ page }) => {
   await page.goto('/fr');
   await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-  await expect(page.getByText('Locataire')).toBeVisible();
+  await expect(page.getByText('LE STUDIO TECH')).toBeVisible();
 });
 
 test('/ar serves Arabic + RTL', async ({ page }) => {
   await page.goto('/ar');
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  await expect(page.getByText('المستأجر')).toBeVisible();
+  await expect(page.getByText('ستوديو التكنولوجيا')).toBeVisible();
 });

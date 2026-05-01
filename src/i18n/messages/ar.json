@@ -3,11 +3,43 @@
     "siteName": "MERLx",
     "navInsights": "رؤى",
     "navPublications": "منشورات",
-    "navContact": "تواصل"
+    "navContact": "تواصل",
+    "footerPrivacy": "الخصوصية",
+    "footerTerms": "الشروط",
+    "footerCookies": "ملفات تعريف الارتباط"
   },
   "scaffold": {
     "tenantHeader": "المستأجر",
     "localeHeader": "اللغة",
     "directionHeader": "الاتجاه"
+  },
+  "chooser": {
+    "studioTag": "ستوديو التكنولوجيا",
+    "studioName": "MERLx Studio",
+    "studioTagline": "أدوات تحليلية مفتوحة للسياقات الهشة.",
+    "studioBody": "ستوديو مستقل يبني مجموعة Optics — أدوات ذكاء اصطناعي مفتوحة للرصد والتقييم والبحث والإنذار المبكر.",
+    "studioBullet1": "مجموعة Optics — ستة أدوات",
+    "studioBullet2": "التعاون: استضافة، تجارب، بناء معًا، استشارات",
+    "studioBullet3": "بيانات مفتوحة · حزمة مفتوحة · أساليب مفتوحة",
+    "studioCta": "دخول MERLx Studio ←",
+    "networkTag": "شبكة MERL",
+    "networkName": "MERLx Network",
+    "networkTagline": "MERL مملوكة محليًا، داخل البلد.",
+    "networkBody": "اتحاد من تعاونيات MERL المملوكة محليًا — البحث والتقييم والرصد من طرف ثالث والتحليل الميداني.",
+    "networkBullet1": "العقد النشطة · NileX (السودان / القرن الأفريقي)",
+    "networkBullet2": "الخدمات: البحث، التقييم، TPM، التدريب",
+    "networkBullet3": "كن عقدة · شارك في الشبكة",
+    "networkCta": "دخول الشبكة ←"
+  },
+  "feeds": {
+    "insightsHeading": "رؤى",
+    "publicationsHeading": "منشورات",
+    "emptyInsights": "لم يُنشر شيء بعد. تحقق لاحقًا.",
+    "emptyPublications": "لم يُنشر شيء بعد.",
+    "tableYear": "السنة",
+    "tableType": "النوع",
+    "tableTitle": "العنوان",
+    "tableAuthors": "المؤلفون",
+    "downloadPdf": "تنزيل PDF ←"
   }
 }

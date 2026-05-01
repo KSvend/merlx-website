@@ -1,9 +1,10 @@
+import { publicRead } from '@/access/public-read';
 import type { CollectionConfig } from 'payload';
 
 export const Tenants: CollectionConfig = {
   slug: 'tenants',
   access: {
-    read: () => true,
+    read: publicRead,
   },
   admin: { useAsTitle: 'displayName', defaultColumns: ['displayName', 'domain', 'type', 'status'] },
   fields: [

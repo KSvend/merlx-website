@@ -11,7 +11,12 @@ const env = loadEnv();
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 type ConfigTypes = {
-  collections: { tenants: { slug: 'tenants' } };
+  collections: {
+    tenants: { slug: 'tenants' };
+    pages: { slug: 'pages' };
+    'insights-posts': { slug: 'insights-posts' };
+    publications: { slug: 'publications' };
+  };
 };
 
 export default buildConfig({
@@ -40,7 +45,11 @@ export default buildConfig({
   },
   plugins: [
     multiTenantPlugin<ConfigTypes>({
-      collections: {},
+      collections: {
+        pages: {},
+        'insights-posts': {},
+        publications: {},
+      },
       tenantField: { name: 'tenant' },
       tenantsArrayField: {
         includeDefaultField: false,

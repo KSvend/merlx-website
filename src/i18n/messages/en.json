@@ -3,11 +3,43 @@
     "siteName": "MERLx",
     "navInsights": "Insights",
     "navPublications": "Publications",
-    "navContact": "Contact"
+    "navContact": "Contact",
+    "footerPrivacy": "Privacy",
+    "footerTerms": "Terms",
+    "footerCookies": "Cookies"
   },
   "scaffold": {
     "tenantHeader": "Tenant",
     "localeHeader": "Locale",
     "directionHeader": "Direction"
+  },
+  "chooser": {
+    "studioTag": "THE TECH STUDIO",
+    "studioName": "MERLx Studio",
+    "studioTagline": "Open analytical tools for fragile contexts.",
+    "studioBody": "An independent studio building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning. Conflict-sensitive by design, evidence-grade by default.",
+    "studioBullet1": "The Optics Suite — six tools",
+    "studioBullet2": "Engagement: hosted, pilots, build-with, advisory",
+    "studioBullet3": "Open data · open stack · open methods",
+    "studioCta": "Enter MERLx Studio →",
+    "networkTag": "THE MERL NETWORK",
+    "networkName": "MERLx Network",
+    "networkTagline": "Locally owned MERL, in-country.",
+    "networkBody": "A federation of locally owned MERL cooperatives — research, evaluation, third-party monitoring, and field analysis. The MERL Guild: contextually grounded, locally led, globally connected.",
+    "networkBullet1": "Active nodes · NileX (Sudan / HoA)",
+    "networkBullet2": "Services: research, evaluation, TPM, training",
+    "networkBullet3": "Become a node · partner with the network",
+    "networkCta": "Enter the Network →"
+  },
+  "feeds": {
+    "insightsHeading": "Insights",
+    "publicationsHeading": "Publications",
+    "emptyInsights": "Nothing published yet. Check back soon.",
+    "emptyPublications": "Nothing published yet.",
+    "tableYear": "Year",
+    "tableType": "Type",
+    "tableTitle": "Title",
+    "tableAuthors": "Authors",
+    "downloadPdf": "Download PDF →"
   }
 }
