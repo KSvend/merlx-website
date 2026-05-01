@@ -76,10 +76,28 @@
   pointer-events: none;
   overflow: hidden;
   transition: opacity 0.55s ease;
+  /* Fade the basemap behind the text panel on the left so the type
+   * always reads cleanly and the data viz "lives" in the right half. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 6%,
+    rgba(0, 0, 0, 0.18) 26%,
+    rgba(0, 0, 0, 0.55) 48%,
+    rgba(0, 0, 0, 0.92) 70%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 6%,
+    rgba(0, 0, 0, 0.18) 26%,
+    rgba(0, 0, 0, 0.55) 48%,
+    rgba(0, 0, 0, 0.92) 70%,
+    rgba(0, 0, 0, 1) 100%
+  );
 }
 
 .chooser-half:hover .chooser-bg {
-  opacity: 1;
+  opacity: 0.78;
 }
 
 .chooser-bg svg {

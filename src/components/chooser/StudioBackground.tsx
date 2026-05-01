@@ -114,12 +114,14 @@ const VISIBLE_NAMES = new Set([...AFRICAN, ...ARABIAN]);
 const africaFeatures = allFeatures.filter((f) => AFRICAN.has(f.properties.name));
 const arabiaFeatures = allFeatures.filter((f) => ARABIAN.has(f.properties.name));
 
-const africaPaths = africaFeatures.map((f) => ({
-  name: f.properties.name,
+// biome-ignore lint/suspicious/noExplicitAny: feature objects pass through unchanged
+const africaPaths = africaFeatures.map((f: any) => ({
+  name: f.properties.name as string,
   d: pathFn(f) ?? '',
 }));
-const arabiaPaths = arabiaFeatures.map((f) => ({
-  name: f.properties.name,
+// biome-ignore lint/suspicious/noExplicitAny: same as above
+const arabiaPaths = arabiaFeatures.map((f: any) => ({
+  name: f.properties.name as string,
   d: pathFn(f) ?? '',
 }));
 
@@ -176,8 +178,8 @@ function pointInPolygon(x: number, y: number, poly: Array<[number, number]>): bo
   return inside;
 }
 
-// Hex grid (pointy-top, H3-ish density)
-const HEX_R = 5.5;
+// Hex grid (pointy-top, H3-ish density) — small + dense like real H3 res-6/7
+const HEX_R = 2.6;
 const HEX_DX = HEX_R * Math.sqrt(3);
 const HEX_DY = HEX_R * 1.5;
 
@@ -192,52 +194,61 @@ function hexPoints(cx: number, cy: number, r: number): string {
 
 interface Cluster {
   pos: [number, number];
-  polarity: 'red' | 'teal';
   radius: number;
   intensity: number;
 }
 
+// Sequential heat clusters using MERLx orange register only (Studio side
+// = warmth/risk register; teal lives on the Network half).
 const CLUSTERS: Cluster[] = [
-  { pos: proj(15.5, 32.5), polarity: 'red', radius: 38, intensity: 1.0 },
-  { pos: proj(13, 24.5), polarity: 'red', radius: 28, intensity: 0.85 },
-  { pos: proj(11, 33), polarity: 'teal', radius: 30, intensity: 0.8 },
-  { pos: proj(13, 35), polarity: 'teal', radius: 22, intensity: 0.7 },
-  { pos: proj(9.5, 39), polarity: 'red', radius: 26, intensity: 0.7 },
-  { pos: proj(7, 38), polarity: 'teal', radius: 24, intensity: 0.6 },
-  { pos: proj(9, 42), polarity: 'red', radius: 24, intensity: 0.7 },
-  { pos: proj(3.5, 36), polarity: 'red', radius: 26, intensity: 0.75 },
-  { pos: proj(2, 45), polarity: 'red', radius: 22, intensity: 0.7 },
-  { pos: proj(7, 33), polarity: 'teal', radius: 22, intensity: 0.55 },
-  { pos: proj(0, 41), polarity: 'red', radius: 22, intensity: 0.65 },
-  { pos: proj(-1, 37.5), polarity: 'teal', radius: 20, intensity: 0.55 },
-  { pos: proj(8, 27), polarity: 'teal', radius: 20, intensity: 0.5 },
-  { pos: proj(5, 32), polarity: 'red', radius: 22, intensity: 0.6 },
+  // Sudan
+  { pos: proj(15.5, 32.5), radius: 14, intensity: 1.0 },
+  { pos: proj(14.2, 31.5), radius: 10, intensity: 0.8 },
+  { pos: proj(13.8, 33.6), radius: 9, intensity: 0.6 },
+  // Darfur
+  { pos: proj(13, 24.5), radius: 11, intensity: 0.85 },
+  { pos: proj(11.5, 25.7), radius: 8, intensity: 0.6 },
+  // South Sudan
+  { pos: proj(8, 31), radius: 9, intensity: 0.7 },
+  { pos: proj(9, 28), radius: 8, intensity: 0.5 },
+  { pos: proj(6.5, 30.5), radius: 7, intensity: 0.5 },
+  // Ethiopia
+  { pos: proj(13.6, 39.5), radius: 9, intensity: 0.65 },
+  { pos: proj(11.8, 39.7), radius: 8, intensity: 0.6 },
+  { pos: proj(9.5, 39), radius: 9, intensity: 0.7 },
+  { pos: proj(7.5, 38.5), radius: 8, intensity: 0.55 },
+  { pos: proj(7.2, 41.5), radius: 9, intensity: 0.6 },
+  // Somalia / Ogaden
+  { pos: proj(8.8, 43), radius: 9, intensity: 0.7 },
+  { pos: proj(6.2, 44.2), radius: 7, intensity: 0.55 },
+  // N Kenya
+  { pos: proj(3.5, 36), radius: 10, intensity: 0.75 },
+  { pos: proj(2.5, 37.8), radius: 7, intensity: 0.45 },
+  // Mogadishu
+  { pos: proj(2, 45), radius: 9, intensity: 0.7 },
+  { pos: proj(0.5, 42.7), radius: 7, intensity: 0.5 },
+  // Kenya
+  { pos: proj(-1, 37.5), radius: 7, intensity: 0.5 },
+  { pos: proj(-2.5, 39.5), radius: 6, intensity: 0.4 },
+  // Uganda
+  { pos: proj(0.8, 32.4), radius: 7, intensity: 0.45 },
 ];
 
-function cellColor(cx: number, cy: number): { fill: string; opacity: number } {
-  let red = 0;
-  let teal = 0;
+function cellColor(cx: number, cy: number): { fill: string; opacity: number } | null {
+  let v = 0;
   for (const c of CLUSTERS) {
     const d = Math.hypot(cx - c.pos[0], cy - c.pos[1]);
-    if (d > c.radius * 1.6) continue;
-    const w = c.intensity * Math.exp(-(d * d) / (c.radius * c.radius * 0.6));
-    if (c.polarity === 'red') red = Math.max(red, w);
-    else teal = Math.max(teal, w);
+    if (d > c.radius * 1.5) continue;
+    const w = c.intensity * Math.exp(-(d * d) / (c.radius * c.radius * 0.5));
+    if (w > v) v = w;
   }
-  const v = Math.max(red, teal);
-  if (v < 0.04) return { fill: '#bcb6a8', opacity: 0.18 };
-  if (red > teal) {
-    if (v > 0.7) return { fill: '#a83227', opacity: 0.92 };
-    if (v > 0.45) return { fill: '#c44a3b', opacity: 0.85 };
-    if (v > 0.25) return { fill: '#dc7864', opacity: 0.7 };
-    if (v > 0.12) return { fill: '#e8a896', opacity: 0.55 };
-    return { fill: '#bcb6a8', opacity: 0.32 };
-  }
-  if (v > 0.7) return { fill: '#1f4a42', opacity: 0.92 };
-  if (v > 0.45) return { fill: '#2c6359', opacity: 0.82 };
-  if (v > 0.25) return { fill: '#5c8480', opacity: 0.65 };
-  if (v > 0.12) return { fill: '#9ab8b3', opacity: 0.5 };
-  return { fill: '#bcb6a8', opacity: 0.32 };
+  if (v < 0.18) return null;
+  // MERLx orange ramp — sequential warmth (cream → orange → orange-hot)
+  if (v > 0.78) return { fill: '#7a2a0a', opacity: 0.95 }; // orange-hot deepest
+  if (v > 0.6) return { fill: '#a8421a', opacity: 0.9 };
+  if (v > 0.42) return { fill: '#c8682a', opacity: 0.82 };
+  if (v > 0.28) return { fill: '#dca06a', opacity: 0.7 };
+  return { fill: '#ecccaa', opacity: 0.58 };
 }
 
 interface Cell {
@@ -256,6 +267,7 @@ function buildCells(): Cell[] {
     for (let cx = HEX_R + offset; cx <= VW - HEX_R; cx += HEX_DX) {
       if (!pointInPolygon(cx, cy, HEX_MASK)) continue;
       const c = cellColor(cx, cy);
+      if (!c) continue;
       cells.push({ key: `${cx.toFixed(0)}-${cy.toFixed(0)}`, cx, cy, ...c });
     }
     row += 1;
@@ -264,6 +276,25 @@ function buildCells(): Cell[] {
 }
 
 const CELLS = buildCells();
+
+// Sidebar feature-importance bars — gives a "deep learning is happening"
+// signal without being a literal model dump.
+const FEATURE_BARS = [
+  { name: 'conflict', val: 0.34 },
+  { name: 'food', val: 0.21 },
+  { name: 'climate', val: 0.18 },
+  { name: 'actors', val: 0.14 },
+  { name: 'structural', val: 0.09 },
+  { name: 'spatial', val: 0.04 },
+];
+
+const LOG_LINES = [
+  '[14:32:08] load tensor(5089, 52)',
+  '[14:32:09] inflate r=5 d=0.85',
+  '[14:32:11] postsmooth ok',
+  '[14:32:11] write 5089 → cells',
+  '[14:32:11] mode=delta · w/w',
+];
 
 const COUNTRY_LABELS: Array<{ text: string; lat: number; lng: number; size?: number }> = [
   { text: 'EGYPT', lat: 26, lng: 30, size: 12 },
@@ -294,25 +325,11 @@ const COUNTRY_LABELS: Array<{ text: string; lat: number; lng: number; size?: num
 ];
 
 const BASEMAP = '#f0eee6';
-const COUNTRY_FILL = '#f7f5ee';
-const ARABIA_FILL = '#f3f1ea';
+const COUNTRY_FILL = '#f4f2eb';
+const ARABIA_FILL = '#f1efe8';
 const COUNTRY_BORDER = '#e6c8c5';
 const COASTLINE = '#cfc8b6';
 const LABEL_INK = '#a89f8e';
-const GRATICULE_LINE = '#dad6c8';
-const GRATICULE_TICK = '#a89f8e';
-
-const LAT_TICKS = [-15, -10, -5, 0, 5, 10, 15, 20, 25];
-const LNG_TICKS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-
-function fmtLat(lat: number): string {
-  if (lat === 0) return '0°';
-  return `${Math.abs(lat)}°${lat > 0 ? 'N' : 'S'}`;
-}
-function fmtLng(lng: number): string {
-  if (lng === 0) return '0°';
-  return `${Math.abs(lng)}°${lng > 0 ? 'E' : 'W'}`;
-}
 
 export function StudioBackground() {
   return (
@@ -320,40 +337,66 @@ export function StudioBackground() {
       <rect x="0" y="0" width={VW} height={VH} fill={BASEMAP} />
 
       <g className="chooser-bg-drift">
-        {/* Lat/lng graticule */}
+        {/* Blueprint grid — regular px grid, minor + major + corner ticks.
+         * Reads as engineering drawing, not cartographic graticule. */}
+        <g opacity="0.45">
+          {Array.from({ length: Math.floor(VW / 30) + 1 }, (_, i) => i * 30).map((x) => (
+            <line
+              key={`bp-mv-${x}`}
+              x1={x}
+              y1={0}
+              x2={x}
+              y2={VH}
+              stroke="#dcd8ca"
+              strokeWidth="0.3"
+            />
+          ))}
+          {Array.from({ length: Math.floor(VH / 30) + 1 }, (_, i) => i * 30).map((y) => (
+            <line
+              key={`bp-mh-${y}`}
+              x1={0}
+              y1={y}
+              x2={VW}
+              y2={y}
+              stroke="#dcd8ca"
+              strokeWidth="0.3"
+            />
+          ))}
+        </g>
+        <g opacity="0.7">
+          {[0, 150, 300, 450, 600].map((x) => (
+            <line
+              key={`bp-Mv-${x}`}
+              x1={x}
+              y1={0}
+              x2={x}
+              y2={VH}
+              stroke="#bdb7a6"
+              strokeWidth="0.45"
+            />
+          ))}
+          {[0, 150, 300, 450, 600].map((y) => (
+            <line
+              key={`bp-Mh-${y}`}
+              x1={0}
+              y1={y}
+              x2={VW}
+              y2={y}
+              stroke="#bdb7a6"
+              strokeWidth="0.45"
+            />
+          ))}
+        </g>
+        {/* Corner crosses at major intersections */}
         <g opacity="0.55">
-          {LAT_TICKS.map((lat) => {
-            const [, y] = proj(lat, LNG_MIN);
-            return (
-              <line
-                key={`grat-h-${lat}`}
-                x1={0}
-                y1={y}
-                x2={VW}
-                y2={y}
-                stroke={GRATICULE_LINE}
-                strokeWidth="0.4"
-              />
-            );
-          })}
-          {LNG_TICKS.map((lng) => {
-            const [x] = proj(LAT_MAX, lng);
-            return (
-              <line
-                key={`grat-v-${lng}`}
-                x1={x}
-                y1={0}
-                x2={x}
-                y2={VH}
-                stroke={GRATICULE_LINE}
-                strokeWidth="0.4"
-              />
-            );
-          })}
-          {(() => {
-            const [, y] = proj(0, LNG_MIN);
-            return <line x1={0} y1={y} x2={VW} y2={y} stroke="#c8c2b0" strokeWidth="0.6" />;
-          })()}
+          {[0, 150, 300, 450, 600].map((x) =>
+            [0, 150, 300, 450, 600].map((y) => (
+              <g key={`bp-x-${x}-${y}`}>
+                <line x1={x - 4} y1={y} x2={x + 4} y2={y} stroke="#8a8474" strokeWidth="0.6" />
+                <line x1={x} y1={y - 4} x2={x} y2={y + 4} stroke="#8a8474" strokeWidth="0.6" />
+              </g>
+            )),
+          )}
         </g>
 
         {/* Country fills */}
@@ -391,6 +434,183 @@ export function StudioBackground() {
           ))}
         </g>
 
+        {/* Right-side data-science sidebar — model header, feature
+         * importance bars, log line stream. All mono, faint, restrained. */}
+        <g transform={`translate(${VW - 162}, 22)`}>
+          <rect
+            x="0"
+            y="0"
+            width="148"
+            height={VH - 60}
+            rx="2"
+            fill="#fafaf6"
+            stroke="#bdb7a6"
+            strokeWidth="0.5"
+            opacity="0.78"
+          />
+
+          {/* Header */}
+          <text
+            x="10"
+            y="16"
+            fontFamily="var(--font-mono)"
+            fontSize="9"
+            letterSpacing="0.16em"
+            fill="var(--color-orange-hot, #7a2a0a)"
+            fontWeight="500"
+          >
+            PRISM · v1.5
+          </text>
+          <line x1="10" y1="22" x2="138" y2="22" stroke="#bdb7a6" strokeWidth="0.4" opacity="0.6" />
+          <text
+            x="10"
+            y="34"
+            fontFamily="var(--font-mono)"
+            fontSize="7.5"
+            fill="#7a786f"
+            letterSpacing="0.04em"
+          >
+            tensor[5089, 52]
+          </text>
+          <text
+            x="10"
+            y="44"
+            fontFamily="var(--font-mono)"
+            fontSize="7.5"
+            fill="#7a786f"
+            letterSpacing="0.04em"
+          >
+            model · 9a7f3b2
+          </text>
+
+          {/* Feature importance bars */}
+          <text
+            x="10"
+            y="64"
+            fontFamily="var(--font-mono)"
+            fontSize="7"
+            letterSpacing="0.16em"
+            fill="#7a786f"
+            opacity="0.85"
+          >
+            FEATURE IMPORTANCE
+          </text>
+          {FEATURE_BARS.map((f, i) => {
+            const y = 76 + i * 14;
+            const barW = f.val * 130;
+            return (
+              <g key={`fb-${f.name}`}>
+                <text x="10" y={y + 5} fontFamily="var(--font-mono)" fontSize="7.5" fill="#3a3a3a">
+                  {f.name}
+                </text>
+                <rect x="62" y={y} width="76" height="6" fill="#e8e4d4" opacity="0.7" />
+                <rect
+                  x="62"
+                  y={y}
+                  width={Math.min(barW, 76)}
+                  height="6"
+                  fill="var(--color-orange, #c8682a)"
+                  opacity="0.85"
+                />
+                <text
+                  x="138"
+                  y={y + 5}
+                  fontFamily="var(--font-mono)"
+                  fontSize="7"
+                  textAnchor="end"
+                  fill="#7a786f"
+                >
+                  {f.val.toFixed(2)}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Loss curve */}
+          <text
+            x="10"
+            y="180"
+            fontFamily="var(--font-mono)"
+            fontSize="7"
+            letterSpacing="0.16em"
+            fill="#7a786f"
+            opacity="0.85"
+          >
+            LOSS · EPOCH 4 / 4
+          </text>
+          <g transform="translate(10, 188)">
+            <rect x="0" y="0" width="128" height="22" fill="#f0ede4" opacity="0.5" />
+            <polyline
+              points="0,18 16,15 32,12 48,8 64,9 80,7 96,5 112,4 128,3"
+              fill="none"
+              stroke="var(--color-orange, #c8682a)"
+              strokeWidth="0.9"
+              opacity="0.85"
+            />
+            <circle cx="128" cy="3" r="1.6" fill="var(--color-orange-hot, #7a2a0a)" />
+          </g>
+          <text x="10" y="222" fontFamily="var(--font-mono)" fontSize="7" fill="#7a786f">
+            loss 0.0218
+          </text>
+
+          {/* Log lines */}
+          <text
+            x="10"
+            y="248"
+            fontFamily="var(--font-mono)"
+            fontSize="7"
+            letterSpacing="0.16em"
+            fill="#7a786f"
+            opacity="0.85"
+          >
+            INFERENCE LOG
+          </text>
+          {LOG_LINES.map((line, i) => (
+            <text
+              key={`log-${i}-${line.length}`}
+              x="10"
+              y={262 + i * 12}
+              fontFamily="var(--font-mono)"
+              fontSize="7"
+              fill="#3a3a3a"
+              opacity="0.85"
+            >
+              {line}
+            </text>
+          ))}
+
+          {/* Footer status */}
+          <line
+            x1="10"
+            y1={VH - 88}
+            x2="138"
+            y2={VH - 88}
+            stroke="#bdb7a6"
+            strokeWidth="0.4"
+            opacity="0.6"
+          />
+          <circle
+            cx="14"
+            cy={VH - 78}
+            r="2"
+            fill="var(--color-orange-hot, #7a2a0a)"
+            opacity="0.85"
+          />
+          <text
+            x="22"
+            y={VH - 75}
+            fontFamily="var(--font-mono)"
+            fontSize="7.5"
+            fill="#3a3a3a"
+            letterSpacing="0.06em"
+          >
+            LIVE · w/w delta
+          </text>
+          <text x="10" y={VH - 64} fontFamily="var(--font-mono)" fontSize="7" fill="#7a786f">
+            27 MAR 2026 · 5089
+          </text>
+        </g>
+
         {/* Country labels */}
         <g>
           {COUNTRY_LABELS.map((l) => {
@@ -410,109 +630,6 @@ export function StudioBackground() {
               >
                 {l.text}
               </text>
-            );
-          })}
-        </g>
-
-        {/* Degree labels along edges */}
-        <g>
-          {LAT_TICKS.map((lat) => {
-            const [, y] = proj(lat, LNG_MIN);
-            if (y < 12 || y > VH - 6) return null;
-            return (
-              <g key={`lat-lbl-${lat}`}>
-                <text
-                  x={6}
-                  y={y - 2}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLat(lat)}
-                </text>
-                <text
-                  x={VW - 6}
-                  y={y - 2}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  textAnchor="end"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLat(lat)}
-                </text>
-                <line
-                  x1={0}
-                  y1={y}
-                  x2={4}
-                  y2={y}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-                <line
-                  x1={VW - 4}
-                  y1={y}
-                  x2={VW}
-                  y2={y}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-              </g>
-            );
-          })}
-          {LNG_TICKS.map((lng) => {
-            const [x] = proj(LAT_MAX, lng);
-            if (x < 18 || x > VW - 18) return null;
-            return (
-              <g key={`lng-lbl-${lng}`}>
-                <text
-                  x={x}
-                  y={9}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  textAnchor="middle"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLng(lng)}
-                </text>
-                <text
-                  x={x}
-                  y={VH - 4}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  textAnchor="middle"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLng(lng)}
-                </text>
-                <line
-                  x1={x}
-                  y1={0}
-                  x2={x}
-                  y2={4}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-                <line
-                  x1={x}
-                  y1={VH - 4}
-                  x2={x}
-                  y2={VH}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-              </g>
             );
           })}
         </g>
