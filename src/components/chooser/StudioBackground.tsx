@@ -851,6 +851,9 @@ export function StudioBackground() {
             >
               Delta
             </text>
+            {/* Iris triangle pointing at the legend below — PRISM_01's
+             * 'this tab → this panel' affordance */}
+            <polygon points="121,22 133,22 127,28" fill={IRIS} />
             <line x1="150" y1="4" x2="150" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
             <text
               x="182"
