@@ -1,9 +1,11 @@
-export type TenantKind = 'group' | 'studio' | 'network' | 'node';
+export type TenantKind = 'group' | 'studio' | 'network' | 'node' | 'tool';
 
 export interface ParsedTenant {
   kind: TenantKind;
   subdomain: string | null;
   domain: string;
+  /** Optics-Suite slug; only set when kind === 'tool'. */
+  toolSlug?: string;
 }
 
 const RESERVED_SUBDOMAINS: Record<string, TenantKind> = {
@@ -11,7 +13,20 @@ const RESERVED_SUBDOMAINS: Record<string, TenantKind> = {
   network: 'network',
 };
 
-const TOOL_SUBDOMAINS = new Set(['prism', 'iris', 'aperture', 'toc', 'oasis', 'echo']);
+/**
+ * Each tool has its own marketing subdomain. The proxy rewrites these
+ * to /optics/[slug] under the studio tenant — so the URL stays at the
+ * tool subdomain (good for SEO and future direct-to-app cutovers) while
+ * the rendered content is the studio's per-tool marketing page.
+ */
+const TOOL_SUBDOMAIN_SLUGS: Record<string, string> = {
+  prism: 'prism',
+  iris: 'iris',
+  aperture: 'aperture',
+  toctester: 'toc-tester',
+  oasis: 'oasis',
+  echo: 'echo',
+};
 
 export function normalizeHost(host: string): string {
   return host.toLowerCase().replace(/:\d+$/, '');
@@ -34,8 +49,9 @@ export function parseTenantFromHost(rawHost: string): ParsedTenant {
     return { kind: 'group', subdomain, domain: host };
   }
 
-  if (TOOL_SUBDOMAINS.has(subdomain)) {
-    throw new Error(`Tool subdomain ${subdomain} is not handled by the website tenant resolver`);
+  const toolSlug = TOOL_SUBDOMAIN_SLUGS[subdomain];
+  if (toolSlug) {
+    return { kind: 'tool', subdomain, domain: host, toolSlug };
   }
 
   const reserved = RESERVED_SUBDOMAINS[subdomain];

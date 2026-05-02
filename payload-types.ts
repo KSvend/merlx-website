@@ -72,6 +72,7 @@ export interface Config {
     pages: Page;
     'insights-posts': InsightsPost;
     publications: Publication;
+    'optics-tools': OpticsTool;
     leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -85,6 +86,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     'insights-posts': InsightsPostsSelect<false> | InsightsPostsSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
+    'optics-tools': OpticsToolsSelect<false> | OpticsToolsSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -288,6 +290,86 @@ export interface Publication {
   createdAt: string;
 }
 /**
+ * Studio Optics Suite tool entries.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "optics-tools".
+ */
+export interface OpticsTool {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * URL slug — e.g. "prism", "toc-tester"
+   */
+  slug: string;
+  name: string;
+  /**
+   * One-liner for cards and hero.
+   */
+  tagline: string;
+  /**
+   * Short paragraph used in cards / hero.
+   */
+  summary?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Full marketing copy on /optics/[slug].
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  screenshots?:
+    | {
+        caption?: string | null;
+        /**
+         * Image URL or media ID (uploads collection deferred to v1.5).
+         */
+        image?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  status: 'live' | 'beta' | 'coming-soon';
+  /**
+   * Where the live tool lives (if any). Renders the "Launch tool →" CTA.
+   */
+  externalUrl?: string | null;
+  /**
+   * e.g., "prism.merlx.org" — used by the proxy rule.
+   */
+  subdomain?: string | null;
+  /**
+   * Sort order on /optics. Lower = earlier.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leads".
  */
@@ -357,6 +439,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'publications';
         value: number | Publication;
+      } | null)
+    | ({
+        relationTo: 'optics-tools';
+        value: number | OpticsTool;
       } | null)
     | ({
         relationTo: 'leads';
@@ -507,6 +593,31 @@ export interface PublicationsSelect<T extends boolean = true> {
   language?: T;
   syndicate?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "optics-tools_select".
+ */
+export interface OpticsToolsSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  name?: T;
+  tagline?: T;
+  summary?: T;
+  description?: T;
+  screenshots?:
+    | T
+    | {
+        caption?: T;
+        image?: T;
+        id?: T;
+      };
+  status?: T;
+  externalUrl?: T;
+  subdomain?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

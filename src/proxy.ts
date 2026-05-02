@@ -2,7 +2,7 @@ import createIntlMiddleware from 'next-intl/middleware';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { routing } from './i18n/routing';
-import { type ParsedTenant, parseTenantFromHost } from './lib/tenant';
+import { parseTenantFromHost } from './lib/tenant';
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -10,17 +10,32 @@ export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|api|admin|brand).*)'],
 };
 
+const LOCALE_PREFIX = /^\/(en|ar|fr)(\/|$)/;
+
 export function proxy(request: NextRequest): NextResponse {
   const host = request.headers.get('host') ?? '';
+  const tenant = parseTenantFromHost(host);
 
-  let tenant: ParsedTenant;
-  try {
-    tenant = parseTenantFromHost(host);
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('Tool subdomain')) {
-      return NextResponse.next();
+  // Tool subdomain (prism.merlx.org, etc.) → rewrite to the studio
+  // per-tool marketing page, stamp studio tenant headers. URL bar stays
+  // at the tool subdomain.
+  if (tenant.kind === 'tool' && tenant.toolSlug) {
+    const url = request.nextUrl.clone();
+    const path = url.pathname;
+    if (path === '/' || path === '') {
+      url.pathname = `/en/optics/${tenant.toolSlug}`;
+    } else if (!LOCALE_PREFIX.test(path)) {
+      url.pathname = `/en${path}`;
     }
-    throw error;
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-tenant-kind', 'studio');
+    requestHeaders.set('x-tenant-subdomain', tenant.subdomain ?? '');
+    requestHeaders.set('x-tenant-domain', `${tenant.subdomain}.merlx.org`);
+    const rewrite = NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    rewrite.headers.set('x-tenant-kind', 'studio');
+    rewrite.headers.set('x-tenant-subdomain', tenant.subdomain ?? '');
+    rewrite.headers.set('x-tenant-domain', `${tenant.subdomain}.merlx.org`);
+    return rewrite;
   }
 
   // Mutate the request headers in place so that downstream `headers()` calls

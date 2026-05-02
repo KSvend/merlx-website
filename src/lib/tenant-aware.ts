@@ -19,6 +19,14 @@ export function isGroupTenant(headers: Headers): boolean {
   return parseTenantHeaders(headers).kind === 'group';
 }
 
+export function isStudioTenant(headers: Headers): boolean {
+  return parseTenantHeaders(headers).kind === 'studio';
+}
+
+export function isNetworkTenant(headers: Headers): boolean {
+  return parseTenantHeaders(headers).kind === 'network';
+}
+
 /**
  * Gate-and-resolve helper for group-tenant-only CMS routes.
  *
@@ -33,9 +41,39 @@ export function isGroupTenant(headers: Headers): boolean {
  * Returns the resolved Tenant doc.
  */
 export async function requireGroupTenant(headers: Headers, payload: Payload): Promise<Tenant> {
-  if (!isGroupTenant(headers)) notFound();
+  return requireTenantByKind(headers, payload, 'group', 'merlx.org');
+}
 
-  const tenantDomain = headers.get('x-tenant-domain') ?? 'merlx.org';
+export async function requireStudioTenant(headers: Headers, payload: Payload): Promise<Tenant> {
+  return requireTenantByKind(headers, payload, 'studio', 'studio.merlx.org');
+}
+
+export async function requireNetworkTenant(headers: Headers, payload: Payload): Promise<Tenant> {
+  return requireTenantByKind(headers, payload, 'network', 'network.merlx.org');
+}
+
+/**
+ * Resolves the request's own tenant if it's the group, studio, or
+ * network tenant. 404s otherwise. Used by routes that exist on
+ * multiple sub-sites (Insights, Publications, About, Contact).
+ */
+export async function requireKnownTenant(headers: Headers, payload: Payload): Promise<Tenant> {
+  const { kind } = parseTenantHeaders(headers);
+  if (kind === 'group') return requireGroupTenant(headers, payload);
+  if (kind === 'studio') return requireStudioTenant(headers, payload);
+  if (kind === 'network') return requireNetworkTenant(headers, payload);
+  notFound();
+}
+
+async function requireTenantByKind(
+  headers: Headers,
+  payload: Payload,
+  kind: TenantContext['kind'],
+  defaultDomain: string,
+): Promise<Tenant> {
+  if (parseTenantHeaders(headers).kind !== kind) notFound();
+
+  const tenantDomain = headers.get('x-tenant-domain') ?? defaultDomain;
 
   const byDomain = await payload.find({
     collection: 'tenants',
@@ -47,7 +85,7 @@ export async function requireGroupTenant(headers: Headers, payload: Payload): Pr
   if (!tenant) {
     const byType = await payload.find({
       collection: 'tenants',
-      where: { type: { equals: 'group' } },
+      where: { type: { equals: kind } },
       limit: 1,
     });
     tenant = byType.docs[0];
