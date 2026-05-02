@@ -1,200 +1,47 @@
 /**
- * Studio side background: 1:1 PRISM screenshot match.
+ * Studio side background: minimalist terminal + reactive hex grid.
  *
- * Reproduces the actual PRISM map UI exactly:
- * - Light-grey water + cream-shell land via Natural Earth admin0 paths.
- * - Solid faint pink country borders (CARTO Positron style).
- * - Dense bipolar Delta hex carpet — most cells are faint grey
- *   (stable), cluster cells are red (escalating) or teal (de-escalating)
- *   matching the screenshot's distribution across Sudan, S. Sudan,
- *   Ethiopia, Kenya, Somalia, Tanzania, DRC border.
- * - Top-left PRISM controls panel: CONTROLS pill + view toggle
- *   (Conflict Systems / Hex active / Admin Areas) + mode toggle
- *   (Now / Trend / Delta active / Predicted / i) + legend with
- *   bipolar ramp, "Week-over-week change · 5,089", "threshold ≥ 0.25".
- * - City dots (Riyadh, Addis Ababa, Nairobi).
- * - Country labels in faint grey ALL-CAPS sans.
+ * No map, no chrome, no panels, no roundness. Just:
+ * - A column of mono code lines that read like a PRISM inference
+ *   script running (load tensor → features → forward → write cells).
+ * - A hex grid to the right that "responds" to the script — cells
+ *   flip from neutral grey to ember (escalating) or deep-teal
+ *   (de-escalating) at staggered offsets, looping with the code.
  *
- * Wrapping <g class="chooser-bg-drift"> animates the map content
- * (not the controls) so the cutout feels alive on hover.
+ * Animation runs continuously (CSS keyframes from chooser.css). The
+ * default state shows the chooser orange tint overlay; on hover the
+ * tint fades and this composition becomes visible.
  */
-
-import { geoPath, geoTransform } from 'd3-geo';
-import { feature, mesh } from 'topojson-client';
-// biome-ignore lint/suspicious/noExplicitAny: TopoJSON shape varies by source
-import worldAtlas from 'world-atlas/countries-50m.json' with { type: 'json' };
 
 const VW = 600;
 const VH = 600;
 
-// Frame matches the PRISM screenshot: Riyadh top-right, Tanzania bottom,
-// Chad top-left, Yemen right edge. Square aspect, no projection stretch.
-const LNG_MIN = 14;
-const VIEW_W_DEG = 38;
-const LAT_MAX = 28;
-const VIEW_H_DEG = 38;
+// Code lines — left column of the composition
+const CODE_LINES: Array<{ text: string; tone?: 'cmd' | 'log' | 'score' | 'done' }> = [
+  { text: "> prism.predict(date='2026-04-09', mode='delta')", tone: 'cmd' },
+  { text: '[14:32:08] load tensor[5089, 52]', tone: 'log' },
+  { text: '[14:32:09] features.conflict.aggregate(7d)', tone: 'log' },
+  { text: '[14:32:10] features.food.carryforward()', tone: 'log' },
+  { text: '[14:32:11] features.climate.ndvi_anom()', tone: 'log' },
+  { text: '[14:32:12] model.crisis_3m.forward()', tone: 'log' },
+  { text: '[14:32:13] inflate(r=5, decay=0.85)', tone: 'log' },
+  { text: '[14:32:14] postsmooth(kernel=3)', tone: 'log' },
+  { text: '[14:32:15] write 5089 → cells', tone: 'log' },
+  { text: '   8c4f3a   0.61  ▲', tone: 'score' },
+  { text: '   8c2b71   0.48  ▲', tone: 'score' },
+  { text: '   8c1d9e   0.42  ▲', tone: 'score' },
+  { text: '   8c3e22   0.31  ▼', tone: 'score' },
+  { text: 'done. Δ w/w = +5,089', tone: 'done' },
+];
 
-function proj(lat: number, lng: number): [number, number] {
-  return [((lng - LNG_MIN) / VIEW_W_DEG) * VW, ((LAT_MAX - lat) / VIEW_H_DEG) * VH];
-}
-
-const transform = geoTransform({
-  point(lng: number, lat: number) {
-    this.stream.point(((lng - LNG_MIN) / VIEW_W_DEG) * VW, ((LAT_MAX - lat) / VIEW_H_DEG) * VH);
-  },
-});
-const pathFn = geoPath(transform);
-
-// biome-ignore lint/suspicious/noExplicitAny: world-atlas TopoJSON is loose
-const world = worldAtlas as unknown as any;
-const countriesObj = world.objects.countries;
-// biome-ignore lint/suspicious/noExplicitAny: feature() returns FeatureCollection
-const allFeatures = (feature(world, countriesObj) as any).features as Array<{
-  // biome-ignore lint/suspicious/noExplicitAny: GeoJSON geometry
-  geometry: any;
-  properties: { name: string };
-}>;
-
-const VISIBLE_NAMES = new Set([
-  'Sudan',
-  'S. Sudan',
-  'Ethiopia',
-  'Eritrea',
-  'Djibouti',
-  'Somalia',
-  'Somaliland',
-  'Kenya',
-  'Uganda',
-  'Tanzania',
-  'Burundi',
-  'Rwanda',
-  'Egypt',
-  'Libya',
-  'Chad',
-  'Niger',
-  'Nigeria',
-  'Cameroon',
-  'Central African Rep.',
-  'Congo',
-  'Dem. Rep. Congo',
-  'Mozambique',
-  'Madagascar',
-  'Malawi',
-  'Zambia',
-  'Zimbabwe',
-  'Saudi Arabia',
-  'Yemen',
-  'Oman',
-  'United Arab Emirates',
-  'Qatar',
-  'Bahrain',
-  'Kuwait',
-  'Iraq',
-  'Iran',
-  'Jordan',
-  'Israel',
-  'Palestine',
-  'Syria',
-  'Lebanon',
-  'Turkey',
-]);
-
-// H3-coverage mask — anywhere PRISM has data. Roughly: Africa east of
-// Cameroon, south of Egypt, north of Tanzania border. Includes all the
-// countries the screenshot shows hexes over.
-const H3_COVERAGE_NAMES = new Set([
-  'Sudan',
-  'S. Sudan',
-  'Ethiopia',
-  'Eritrea',
-  'Djibouti',
-  'Somalia',
-  'Somaliland',
-  'Kenya',
-  'Uganda',
-  'Tanzania',
-  'Burundi',
-  'Rwanda',
-  'Central African Rep.',
-  'Dem. Rep. Congo',
-  'Congo',
-]);
-
-const visibleFeatures = allFeatures.filter((f) => VISIBLE_NAMES.has(f.properties.name));
-const h3Features = allFeatures.filter((f) => H3_COVERAGE_NAMES.has(f.properties.name));
-
-// biome-ignore lint/suspicious/noExplicitAny: feature passthrough
-const visiblePaths = visibleFeatures.map((f: any) => ({
-  name: f.properties.name as string,
-  d: pathFn(f) ?? '',
-}));
-
-const visibleObj = {
-  type: 'GeometryCollection' as const,
-  geometries: countriesObj.geometries.filter(
-    // biome-ignore lint/suspicious/noExplicitAny: TopoJSON geometry typing
-    (g: any) => g.properties && VISIBLE_NAMES.has(g.properties.name),
-  ),
-};
-// biome-ignore lint/suspicious/noExplicitAny: mesh filter
-const INTERIOR_PATH = pathFn(mesh(world, visibleObj as any, (a: any, b: any) => a !== b)) ?? '';
-// biome-ignore lint/suspicious/noExplicitAny: mesh filter
-const COASTLINE_PATH = pathFn(mesh(world, visibleObj as any, (a: any, b: any) => a === b)) ?? '';
-
-// H3-coverage path used to mask hex cells to the data-coverage region.
-const h3Obj = {
-  type: 'GeometryCollection' as const,
-  geometries: countriesObj.geometries.filter(
-    // biome-ignore lint/suspicious/noExplicitAny: TopoJSON geometry typing
-    (g: any) => g.properties && H3_COVERAGE_NAMES.has(g.properties.name),
-  ),
-};
-
-// Compute a coarse bounding-box test for hex cells: only render hexes
-// whose center falls within an H3 country. We project the country
-// boundaries and use a rasterized lookup via a viewBox-sized array of
-// "is this pixel land" — but since we need point-in-polygon, simpler:
-// build all polygon rings and test each cell.
-
-// Extract polygons from h3Features as projected ring arrays.
-const H3_RINGS: Array<Array<[number, number]>> = [];
-for (const f of h3Features) {
-  // biome-ignore lint/suspicious/noExplicitAny: GeoJSON traversal
-  const geom: any = f.geometry;
-  const polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
-  for (const poly of polys) {
-    for (const ring of poly) {
-      const projected: Array<[number, number]> = ring.map(([lng, lat]: [number, number]) =>
-        proj(lat, lng),
-      );
-      H3_RINGS.push(projected);
-    }
-  }
-}
-
-function pointInRing(x: number, y: number, ring: Array<[number, number]>): boolean {
-  let inside = false;
-  for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
-    const [xi, yi] = ring[i];
-    const [xj, yj] = ring[j];
-    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
-      inside = !inside;
-    }
-  }
-  return inside;
-}
-
-function pointInH3Coverage(x: number, y: number): boolean {
-  for (const ring of H3_RINGS) {
-    if (pointInRing(x, y, ring)) return true;
-  }
-  return false;
-}
-
-// Hex grid (pointy-top, dense H3-res-ish)
-const HEX_R = 3.2;
-const HEX_DX = HEX_R * Math.sqrt(3);
-const HEX_DY = HEX_R * 1.5;
+// Hex grid: pointy-top hexes laid out in a tight grid, right column
+const HEX_R = 11;
+const HEX_DX = HEX_R * Math.sqrt(3); // ~19
+const HEX_DY = HEX_R * 1.5; // ~16.5
+const GRID_X0 = 360;
+const GRID_Y0 = 70;
+const GRID_W = 220;
+const GRID_H = 460;
 
 function hexPoints(cx: number, cy: number, r: number): string {
   const pts: string[] = [];
@@ -205,112 +52,36 @@ function hexPoints(cx: number, cy: number, r: number): string {
   return pts.join(' ');
 }
 
-interface Cluster {
-  pos: [number, number];
-  polarity: 'red' | 'teal';
-  radius: number;
-  intensity: number;
-}
-
-const CLUSTERS: Cluster[] = [
-  // Darfur — strong red
-  { pos: proj(13, 24.5), polarity: 'red', radius: 18, intensity: 0.9 },
-  { pos: proj(11.5, 25.7), polarity: 'red', radius: 12, intensity: 0.7 },
-  { pos: proj(15, 26), polarity: 'red', radius: 10, intensity: 0.55 },
-  // Sudan east + Blue Nile
-  { pos: proj(13, 35), polarity: 'teal', radius: 12, intensity: 0.65 },
-  { pos: proj(11.5, 33.5), polarity: 'red', radius: 10, intensity: 0.5 },
-  { pos: proj(15.5, 32), polarity: 'teal', radius: 8, intensity: 0.4 },
-  // South Sudan / Bahr el-Ghazal / Upper Nile
-  { pos: proj(8.5, 28), polarity: 'red', radius: 14, intensity: 0.75 },
-  { pos: proj(7, 30), polarity: 'red', radius: 12, intensity: 0.7 },
-  { pos: proj(6, 32), polarity: 'red', radius: 11, intensity: 0.65 },
-  { pos: proj(8, 33.5), polarity: 'teal', radius: 10, intensity: 0.55 },
-  // Ethiopia central / Addis
-  { pos: proj(11, 39), polarity: 'red', radius: 10, intensity: 0.65 },
-  { pos: proj(10, 40), polarity: 'teal', radius: 9, intensity: 0.55 },
-  { pos: proj(8.5, 38), polarity: 'teal', radius: 11, intensity: 0.6 },
-  { pos: proj(7, 38.5), polarity: 'red', radius: 10, intensity: 0.55 },
-  // Ethiopia south / Somali region
-  { pos: proj(7.5, 41.5), polarity: 'red', radius: 11, intensity: 0.6 },
-  { pos: proj(6, 42.5), polarity: 'teal', radius: 9, intensity: 0.5 },
-  // Northern Kenya / Turkana
-  { pos: proj(3.5, 36), polarity: 'red', radius: 12, intensity: 0.7 },
-  { pos: proj(2, 37), polarity: 'teal', radius: 9, intensity: 0.5 },
-  // Central Kenya
-  { pos: proj(0, 36.5), polarity: 'red', radius: 9, intensity: 0.55 },
-  { pos: proj(-1.5, 37), polarity: 'teal', radius: 8, intensity: 0.5 },
-  { pos: proj(-1, 38.5), polarity: 'red', radius: 9, intensity: 0.6 },
-  // Mogadishu coast
-  { pos: proj(2, 45), polarity: 'red', radius: 11, intensity: 0.7 },
-  { pos: proj(0.5, 42.5), polarity: 'red', radius: 8, intensity: 0.5 },
-  // Tanzania north + Lake Victoria
-  { pos: proj(-3, 32), polarity: 'red', radius: 10, intensity: 0.6 },
-  { pos: proj(-2, 33.5), polarity: 'teal', radius: 8, intensity: 0.45 },
-  { pos: proj(-4, 35), polarity: 'red', radius: 9, intensity: 0.5 },
-  // Uganda
-  { pos: proj(1.5, 32.5), polarity: 'teal', radius: 9, intensity: 0.5 },
-  { pos: proj(2.5, 31), polarity: 'red', radius: 8, intensity: 0.45 },
-];
-
-function clusterValue(cx: number, cy: number): { red: number; teal: number } {
-  let red = 0;
-  let teal = 0;
-  for (const c of CLUSTERS) {
-    const d = Math.hypot(cx - c.pos[0], cy - c.pos[1]);
-    if (d > c.radius * 1.5) continue;
-    const w = c.intensity * Math.exp(-(d * d) / (c.radius * c.radius * 0.55));
-    if (c.polarity === 'red') red = Math.max(red, w);
-    else teal = Math.max(teal, w);
-  }
-  return { red, teal };
-}
-
-// PRISM-faithful Delta colors.
-// Red ramp (escalating): light → deep
-// Teal ramp (de-escalating): light → deep
-// Stable (carpet): faint grey
-function cellColor(cx: number, cy: number): { fill: string; opacity: number } {
-  const { red, teal } = clusterValue(cx, cy);
-  const v = Math.max(red, teal);
-  if (v < 0.06) {
-    return { fill: '#cfcabc', opacity: 0.32 };
-  }
-  if (red > teal) {
-    if (v > 0.7) return { fill: '#a83227', opacity: 0.92 };
-    if (v > 0.5) return { fill: '#c44a3b', opacity: 0.85 };
-    if (v > 0.3) return { fill: '#dc7864', opacity: 0.72 };
-    if (v > 0.15) return { fill: '#e8a896', opacity: 0.6 };
-    return { fill: '#cfcabc', opacity: 0.45 };
-  }
-  if (v > 0.7) return { fill: '#1f4a42', opacity: 0.92 };
-  if (v > 0.5) return { fill: '#2c6359', opacity: 0.82 };
-  if (v > 0.3) return { fill: '#5c8480', opacity: 0.7 };
-  if (v > 0.15) return { fill: '#9ab8b3', opacity: 0.55 };
-  return { fill: '#cfcabc', opacity: 0.45 };
-}
-
 interface Cell {
   key: string;
   cx: number;
   cy: number;
-  fill: string;
-  opacity: number;
+  variant: 'idle' | 'up' | 'down';
+  delay: number;
+}
+
+// Deterministic pseudo-random based on (col, row) so the same cells
+// flip on every render
+function classifyCell(col: number, row: number): { variant: Cell['variant']; delay: number } {
+  // Hash to [0, 1)
+  const h = (Math.sin(col * 12.9898 + row * 78.233) * 43758.5453) % 1;
+  const r = h < 0 ? h + 1 : h;
+  // ~30% of cells flip; of those, ~70% up, 30% down
+  if (r < 0.18) return { variant: 'up', delay: r * 12 };
+  if (r < 0.28) return { variant: 'down', delay: r * 12 };
+  return { variant: 'idle', delay: 0 };
 }
 
 function buildCells(): Cell[] {
   const cells: Cell[] = [];
   let row = 0;
-  for (let cy = HEX_R; cy <= VH - HEX_R; cy += HEX_DY) {
+  for (let cy = GRID_Y0 + HEX_R; cy <= GRID_Y0 + GRID_H - HEX_R; cy += HEX_DY) {
     const offset = row % 2 === 1 ? HEX_DX / 2 : 0;
-    for (let cx = HEX_R + offset; cx <= VW - HEX_R; cx += HEX_DX) {
-      if (!pointInH3Coverage(cx, cy)) continue;
-      cells.push({
-        key: `${cx.toFixed(0)}-${cy.toFixed(0)}`,
-        cx,
-        cy,
-        ...cellColor(cx, cy),
-      });
+    let col = 0;
+    for (let cx = GRID_X0 + HEX_R + offset; cx <= GRID_X0 + GRID_W - HEX_R; cx += HEX_DX) {
+      const { variant, delay } = classifyCell(col, row);
+      cells.push({ key: `${col}-${row}`, cx, cy, variant, delay });
+      col += 1;
     }
     row += 1;
   }
@@ -319,425 +90,136 @@ function buildCells(): Cell[] {
 
 const CELLS = buildCells();
 
-// City labels (small dot + name)
-const CITIES: Array<{ name: string; lat: number; lng: number; dx?: number; dy?: number }> = [
-  { name: 'Riyadh', lat: 24.7, lng: 46.7, dx: 6, dy: -3 },
-  { name: 'Addis Ababa', lat: 9, lng: 38.7, dx: 6, dy: 2 },
-  { name: 'Nairobi', lat: -1.3, lng: 36.8, dx: 6, dy: 3 },
-];
-
-const COUNTRY_LABELS: Array<{
-  text: string;
-  lat: number;
-  lng: number;
-  size?: number;
-  lines?: string[];
-}> = [
-  { text: 'EGYPT', lat: 26, lng: 30, size: 11 },
-  { text: 'CHAD', lat: 16, lng: 18, size: 11 },
-  { text: 'SUDAN', lat: 15, lng: 30, size: 13 },
-  { text: 'ERITREA', lat: 15.3, lng: 38.5, size: 9 },
-  { text: 'DJIBOUTI', lat: 11.6, lng: 43, size: 7.5 },
-  { text: 'YEMEN', lat: 15.5, lng: 47, size: 11 },
-  { text: 'SAUDI ARABIA', lat: 23, lng: 44.5, size: 10 },
-  { text: 'SOUTH SUDAN', lat: 7.5, lng: 30, size: 10 },
-  { text: 'ETHIOPIA', lat: 8.5, lng: 39.5, size: 12 },
-  { text: 'SOMALIA', lat: 4, lng: 47, size: 12 },
-  {
-    text: 'CENTRAL AFRICAN',
-    lat: 6.5,
-    lng: 21,
-    size: 8,
-    lines: ['CENTRAL AFRICAN', 'REPUBLIC'],
-  },
-  { text: 'UGANDA', lat: 1, lng: 32.5, size: 9 },
-  { text: 'KENYA', lat: 0, lng: 38.5, size: 12 },
-  { text: 'RWANDA', lat: -2, lng: 30, size: 8 },
-  { text: 'BURUNDI', lat: -3, lng: 30, size: 8 },
-  {
-    text: 'DEM. REP. OF THE CONGO',
-    lat: -3,
-    lng: 22,
-    size: 8,
-    lines: ['DEMOCRATIC', 'REPUBLIC OF', 'THE CONGO'],
-  },
-  { text: 'TANZANIA', lat: -7, lng: 35, size: 11 },
-];
-
-// MERLx-aligned tokens (per the design guide §2 + per-product PRISM look)
-const WATER = '#e7e3d6'; // slightly cooler than land (Positron-style sea)
-const LAND_FILL = '#f5f3ee'; // shell
-const COUNTRY_BORDER = '#e6c8c5'; // CARTO Positron pink, solid
-const COASTLINE = '#9e9e9e'; // ink-faint
-const LABEL_INK = '#9e9e9e'; // ink-faint
-const PANEL_FILL = '#FFFFFF';
-const PANEL_BORDER = '#E5E1DA';
+// MERLx tokens
+const SHELL = '#F5F3EE';
 const INK = '#111111';
+const INK_LIGHT = '#2A2A2A';
 const INK_MUTED = '#6B6B6B';
 const INK_FAINT = '#9E9E9E';
 const IRIS = '#8071BC';
+const IRIS_DARK = '#635499';
+const EMBER = '#CA5D0F';
 const DEEP_TEAL = '#1A3A34';
+const BORDER_LIGHT = '#E5E1DA';
+const SHELL_WARM = '#EDE9E1';
 
-// Bipolar Delta legend ramp colors
-const RAMP_TEAL_DARK = '#1f4a42';
-const RAMP_TEAL_MID = '#5c8480';
-const RAMP_GREY = '#cfcabc';
-const RAMP_RED_MID = '#c44a3b';
-const RAMP_RED_DARK = '#a83227';
+const TONE_COLOR: Record<NonNullable<(typeof CODE_LINES)[number]['tone']>, string> = {
+  cmd: IRIS_DARK,
+  log: INK_LIGHT,
+  score: EMBER,
+  done: DEEP_TEAL,
+};
+
+const LINE_HEIGHT = 18;
+const CODE_X = 28;
+const CODE_Y0 = 56;
 
 export function StudioBackground() {
   return (
     <svg viewBox={`0 0 ${VW} ${VH}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      {/* Water */}
-      <rect x="0" y="0" width={VW} height={VH} fill={WATER} />
+      <rect x="0" y="0" width={VW} height={VH} fill={SHELL} />
 
-      <g className="chooser-bg-drift">
-        {/* Land fills */}
-        <g>
-          {visiblePaths.map((p) => (
-            <path key={`land-${p.name}`} d={p.d} fill={LAND_FILL} stroke="none" />
-          ))}
-        </g>
+      {/* Top header bar — minimalist, sharp corners */}
+      <text
+        x={CODE_X}
+        y={32}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        letterSpacing="0.16em"
+        fill={INK_MUTED}
+        textTransform="uppercase"
+      >
+        PRISM · INFERENCE
+      </text>
+      <line x1={CODE_X} y1={42} x2={VW - 28} y2={42} stroke={BORDER_LIGHT} strokeWidth="0.6" />
 
-        {/* Internal country borders — solid faint pink, CARTO style */}
-        <path
-          d={INTERIOR_PATH}
-          fill="none"
-          stroke={COUNTRY_BORDER}
-          strokeWidth="0.55"
-          opacity="0.85"
+      {/* Code lines — staggered fade-in */}
+      <g>
+        {CODE_LINES.map((line, i) => (
+          <text
+            key={`line-${i}-${line.text.length}`}
+            x={CODE_X}
+            y={CODE_Y0 + i * LINE_HEIGHT + 14}
+            fontFamily="var(--font-mono)"
+            fontSize="11"
+            fill={TONE_COLOR[line.tone ?? 'log']}
+            className={`studio-code-line studio-code-line--${i}`}
+          >
+            {line.text}
+          </text>
+        ))}
+        {/* Blinking cursor */}
+        <rect
+          x={CODE_X}
+          y={CODE_Y0 + CODE_LINES.length * LINE_HEIGHT + 4}
+          width="7"
+          height="12"
+          fill={INK}
+          className="studio-code-cursor"
         />
+      </g>
 
-        {/* Coastlines — slightly darker grey */}
-        <path d={COASTLINE_PATH} fill="none" stroke={COASTLINE} strokeWidth="0.5" opacity="0.55" />
+      {/* Hex grid — column header */}
+      <text
+        x={GRID_X0}
+        y={CODE_Y0 - 4}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        letterSpacing="0.16em"
+        fill={INK_MUTED}
+        textTransform="uppercase"
+      >
+        CELLS
+      </text>
 
-        {/* Hex cells — bipolar Delta carpet */}
-        <g>
-          {CELLS.map((c) => (
+      {/* Hex grid — sharp vertices, color flips with delay */}
+      <g>
+        {CELLS.map((c) => {
+          const isFlipping = c.variant !== 'idle';
+          return (
             <polygon
               key={c.key}
-              points={hexPoints(c.cx, c.cy, HEX_R)}
-              fill={c.fill}
-              opacity={c.opacity}
+              points={hexPoints(c.cx, c.cy, HEX_R - 1.5)}
+              fill={SHELL_WARM}
+              stroke={BORDER_LIGHT}
+              strokeWidth="0.6"
+              className={isFlipping ? `studio-hex studio-hex--${c.variant}` : undefined}
+              style={isFlipping ? { animationDelay: `${c.delay}s` } : undefined}
             />
-          ))}
-        </g>
-
-        {/* City dots */}
-        <g>
-          {CITIES.map((city) => {
-            const [cx, cy] = proj(city.lat, city.lng);
-            return (
-              <g key={`city-${city.name}`}>
-                <circle cx={cx} cy={cy} r="2" fill={INK} opacity="0.7" />
-                <text
-                  x={cx + (city.dx ?? 5)}
-                  y={cy + (city.dy ?? 2)}
-                  fontFamily="var(--font-sans)"
-                  fontSize="9"
-                  fill={INK_MUTED}
-                  letterSpacing="0.02em"
-                >
-                  {city.name}
-                </text>
-              </g>
-            );
-          })}
-        </g>
-
-        {/* Country labels — faint grey ALL CAPS sans, multi-line where needed */}
-        <g>
-          {COUNTRY_LABELS.map((l) => {
-            const [x, y] = proj(l.lat, l.lng);
-            const size = l.size ?? 10;
-            if (l.lines) {
-              return (
-                <text
-                  key={`lbl-${l.text}`}
-                  x={x}
-                  y={y}
-                  fontFamily="var(--font-sans)"
-                  fontSize={size}
-                  textAnchor="middle"
-                  fill={LABEL_INK}
-                  letterSpacing="0.08em"
-                  fontWeight="500"
-                  opacity="0.75"
-                >
-                  {l.lines.map((line, i) => (
-                    <tspan key={`${l.text}-${i}-${line}`} x={x} dy={i === 0 ? 0 : size + 2}>
-                      {line}
-                    </tspan>
-                  ))}
-                </text>
-              );
-            }
-            return (
-              <text
-                key={`lbl-${l.text}`}
-                x={x}
-                y={y}
-                fontFamily="var(--font-sans)"
-                fontSize={size}
-                textAnchor="middle"
-                fill={LABEL_INK}
-                letterSpacing="0.08em"
-                fontWeight="500"
-                opacity="0.75"
-              >
-                {l.text}
-              </text>
-            );
-          })}
-        </g>
+          );
+        })}
       </g>
 
-      {/* Top-left PRISM controls panel — does NOT drift, fixed in viewBox */}
-      <g transform="translate(20, 20)">
-        {/* CONTROLS pill */}
-        <g>
-          <rect
-            x="0"
-            y="0"
-            width="78"
-            height="20"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          <text
-            x="10"
-            y="13.5"
-            fontFamily="var(--font-mono)"
-            fontSize="8.5"
-            letterSpacing="0.16em"
-            fill={INK}
-            fontWeight="500"
-          >
-            CONTROLS
-          </text>
-          <text
-            x="68"
-            y="13.5"
-            fontFamily="var(--font-mono)"
-            fontSize="8.5"
-            fill={INK_MUTED}
-            textAnchor="middle"
-          >
-            ‹
-          </text>
-        </g>
-
-        {/* View toggle (Conflict Systems / Hex / Admin Areas) */}
-        <g transform="translate(0, 28)">
-          <rect
-            x="0"
-            y="0"
-            width="244"
-            height="22"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          <text
-            x="48"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Conflict Systems
-          </text>
-          <line x1="96" y1="4" x2="96" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          {/* Hex active in deep-teal */}
-          <rect x="96" y="0" width="48" height="22" rx="3" fill={DEEP_TEAL} />
-          <text
-            x="120"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontWeight="500"
-          >
-            Hex
-          </text>
-          <line x1="144" y1="4" x2="144" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="194"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Admin Areas
-          </text>
-        </g>
-
-        {/* Mode toggle (Now / Trend / Delta / Predicted / i) */}
-        <g transform="translate(0, 58)">
-          <rect
-            x="0"
-            y="0"
-            width="244"
-            height="22"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          <text
-            x="22"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Now
-          </text>
-          <line x1="44" y1="4" x2="44" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="74"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Trend
-          </text>
-          <line x1="104" y1="4" x2="104" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          {/* Delta active in iris */}
-          <rect x="104" y="0" width="46" height="22" rx="3" fill={IRIS} />
-          <text
-            x="127"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontWeight="500"
-          >
-            Delta
-          </text>
-          <line x1="150" y1="4" x2="150" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="182"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Predicted
-          </text>
-          <line x1="214" y1="4" x2="214" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="229"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-            fontStyle="italic"
-          >
-            i
-          </text>
-        </g>
-
-        {/* Legend — bipolar ramp + delta count + threshold */}
-        <g transform="translate(0, 88)">
-          <rect
-            x="0"
-            y="0"
-            width="244"
-            height="64"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          {/* Bipolar gradient ramp */}
-          <defs>
-            <linearGradient id="delta-ramp" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={RAMP_TEAL_DARK} />
-              <stop offset="25%" stopColor={RAMP_TEAL_MID} />
-              <stop offset="50%" stopColor={RAMP_GREY} />
-              <stop offset="75%" stopColor={RAMP_RED_MID} />
-              <stop offset="100%" stopColor={RAMP_RED_DARK} />
-            </linearGradient>
-          </defs>
-          <rect x="10" y="10" width="224" height="6" fill="url(#delta-ramp)" />
-          <text
-            x="10"
-            y="26"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_MUTED}
-            letterSpacing="0.04em"
-          >
-            de-escalating
-          </text>
-          <text
-            x="122"
-            y="26"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_MUTED}
-            textAnchor="middle"
-            letterSpacing="0.04em"
-          >
-            stable
-          </text>
-          <text
-            x="234"
-            y="26"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_MUTED}
-            textAnchor="end"
-            letterSpacing="0.04em"
-          >
-            escalating
-          </text>
-          <text
-            x="10"
-            y="44"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            fill={INK}
-            fontWeight="500"
-          >
-            Week-over-week change
-          </text>
-          <text
-            x="234"
-            y="44"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            fill={INK}
-            textAnchor="end"
-            fontWeight="500"
-          >
-            5,089
-          </text>
-          <text
-            x="10"
-            y="56"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_FAINT}
-            letterSpacing="0.04em"
-          >
-            threshold ≥ 0.25
-          </text>
-        </g>
-      </g>
+      {/* Footer line — total cell count */}
+      <line
+        x1={CODE_X}
+        y1={VH - 38}
+        x2={VW - 28}
+        y2={VH - 38}
+        stroke={BORDER_LIGHT}
+        strokeWidth="0.6"
+      />
+      <text
+        x={CODE_X}
+        y={VH - 22}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        letterSpacing="0.12em"
+        fill={INK_FAINT}
+      >
+        tensor[5089, 52] · model 9a7f3b2 · iris-purple = active
+      </text>
+      <text
+        x={VW - 28}
+        y={VH - 22}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        textAnchor="end"
+        fill={IRIS}
+        fontWeight="500"
+      >
+        ▶ predicting
+      </text>
     </svg>
   );
 }
