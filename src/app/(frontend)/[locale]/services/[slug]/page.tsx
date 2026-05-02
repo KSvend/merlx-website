@@ -1,6 +1,7 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import { SERVICES } from '@/content/services';
 import { isNetworkTenant } from '@/lib/tenant-aware';
+import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Link from 'next/link';
@@ -8,6 +9,17 @@ import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const service = SERVICES.find((s) => s.slug === slug);
+  if (!service) return {};
+  return {
+    title: service.name,
+    description: service.tagline,
+    openGraph: { title: service.name, description: service.tagline },
+  };
 }
 
 export default async function ServiceDetail({ params }: PageProps) {

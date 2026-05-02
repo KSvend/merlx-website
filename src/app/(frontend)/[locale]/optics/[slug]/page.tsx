@@ -3,6 +3,7 @@ import { RichTextRenderer } from '@/components/pages/RichTextRenderer';
 import type { AppLocale } from '@/i18n/routing';
 import { isStudioTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
+import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Link from 'next/link';
@@ -12,6 +13,25 @@ import type { OpticsTool } from '../../../../../../payload-types';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const payload = await getPayload({ config });
+  const result = await payload.find({
+    collection: 'optics-tools',
+    where: { slug: { equals: slug } },
+    limit: 1,
+    locale: locale as AppLocale,
+  });
+  // biome-ignore lint/suspicious/noExplicitAny: OpticsTool type
+  const tool = result.docs[0] as any;
+  if (!tool) return {};
+  return {
+    title: tool.name,
+    description: tool.tagline,
+    openGraph: { title: tool.name, description: tool.tagline },
+  };
 }
 
 const STATUS_LABEL: Record<string, string> = {

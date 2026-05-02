@@ -1,6 +1,7 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import { ENGAGEMENT_MODELS } from '@/content/engage';
 import { isStudioTenant } from '@/lib/tenant-aware';
+import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Link from 'next/link';
@@ -8,6 +9,17 @@ import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const model = ENGAGEMENT_MODELS.find((m) => m.slug === slug);
+  if (!model) return {};
+  return {
+    title: `${model.name} engagement`,
+    description: model.tagline,
+    openGraph: { title: `${model.name} engagement`, description: model.tagline },
+  };
 }
 
 export default async function EngagementModelPage({ params }: PageProps) {

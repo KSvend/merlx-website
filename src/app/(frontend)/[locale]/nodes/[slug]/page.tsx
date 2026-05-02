@@ -1,6 +1,7 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import { NODES } from '@/content/nodes';
 import { isNetworkTenant } from '@/lib/tenant-aware';
+import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Link from 'next/link';
@@ -8,6 +9,17 @@ import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const node = NODES.find((n) => n.slug === slug);
+  if (!node) return {};
+  return {
+    title: node.name,
+    description: node.tagline,
+    openGraph: { title: node.name, description: node.tagline },
+  };
 }
 
 const STATUS_LABEL: Record<string, string> = {
