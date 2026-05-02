@@ -241,53 +241,50 @@
   }
 }
 
+/* Hottest plume cells pulse on a stagger — opacity-based so the
+ * cell's painterly fill (red or teal intensity from plumeColor) is
+ * preserved through the flash. */
 .studio-hex {
-  animation: studio-hex-flip 14s linear infinite;
+  animation: studio-hex-pulse 14s linear infinite;
 }
 
-.studio-hex--up {
-  animation-name: studio-hex-up;
+.studio-hex--red {
+  animation-name: studio-hex-pulse-red;
 }
 
-.studio-hex--down {
-  animation-name: studio-hex-down;
+.studio-hex--teal {
+  animation-name: studio-hex-pulse-teal;
 }
 
-@keyframes studio-hex-up {
+@keyframes studio-hex-pulse-red {
   0%,
-  35% {
-    fill: var(--color-shell-warm, #ede9e1);
+  28% {
+    opacity: 1;
   }
-  40% {
-    fill: #ca5d0f;
+  32% {
+    opacity: 0.45;
   }
-  85% {
-    fill: #ca5d0f;
-  }
-  92% {
-    fill: var(--color-shell-warm, #ede9e1);
+  38% {
+    opacity: 1;
   }
   100% {
-    fill: var(--color-shell-warm, #ede9e1);
+    opacity: 1;
   }
 }
 
-@keyframes studio-hex-down {
+@keyframes studio-hex-pulse-teal {
   0%,
-  50% {
-    fill: var(--color-shell-warm, #ede9e1);
+  52% {
+    opacity: 1;
   }
-  55% {
-    fill: #1a3a34;
+  56% {
+    opacity: 0.45;
   }
-  85% {
-    fill: #1a3a34;
-  }
-  92% {
-    fill: var(--color-shell-warm, #ede9e1);
+  62% {
+    opacity: 1;
   }
   100% {
-    fill: var(--color-shell-warm, #ede9e1);
+    opacity: 1;
   }
 }
 
