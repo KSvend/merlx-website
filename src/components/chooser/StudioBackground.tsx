@@ -213,19 +213,21 @@ interface Cluster {
 }
 
 const CLUSTERS: Cluster[] = [
-  // Darfur — strong red
-  { pos: proj(13, 24.5), polarity: 'red', radius: 18, intensity: 0.9 },
-  { pos: proj(11.5, 25.7), polarity: 'red', radius: 12, intensity: 0.7 },
-  { pos: proj(15, 26), polarity: 'red', radius: 10, intensity: 0.55 },
+  // Darfur — strong red (matches PRISM_01's heaviest cluster)
+  { pos: proj(13, 24.5), polarity: 'red', radius: 22, intensity: 1.0 },
+  { pos: proj(11.5, 25.7), polarity: 'red', radius: 14, intensity: 0.85 },
+  { pos: proj(15, 26), polarity: 'red', radius: 12, intensity: 0.7 },
+  { pos: proj(14, 23), polarity: 'red', radius: 10, intensity: 0.6 },
   // Sudan east + Blue Nile
   { pos: proj(13, 35), polarity: 'teal', radius: 12, intensity: 0.65 },
   { pos: proj(11.5, 33.5), polarity: 'red', radius: 10, intensity: 0.5 },
   { pos: proj(15.5, 32), polarity: 'teal', radius: 8, intensity: 0.4 },
-  // South Sudan / Bahr el-Ghazal / Upper Nile
-  { pos: proj(8.5, 28), polarity: 'red', radius: 14, intensity: 0.75 },
-  { pos: proj(7, 30), polarity: 'red', radius: 12, intensity: 0.7 },
-  { pos: proj(6, 32), polarity: 'red', radius: 11, intensity: 0.65 },
+  // South Sudan / Bahr el-Ghazal / Upper Nile (also strong red)
+  { pos: proj(8.5, 28), polarity: 'red', radius: 16, intensity: 0.85 },
+  { pos: proj(7, 30), polarity: 'red', radius: 14, intensity: 0.8 },
+  { pos: proj(6, 32), polarity: 'red', radius: 13, intensity: 0.75 },
   { pos: proj(8, 33.5), polarity: 'teal', radius: 10, intensity: 0.55 },
+  { pos: proj(5.5, 30), polarity: 'red', radius: 10, intensity: 0.6 },
   // Ethiopia central / Addis
   { pos: proj(11, 39), polarity: 'red', radius: 10, intensity: 0.65 },
   { pos: proj(10, 40), polarity: 'teal', radius: 9, intensity: 0.55 },
@@ -241,9 +243,10 @@ const CLUSTERS: Cluster[] = [
   { pos: proj(0, 36.5), polarity: 'red', radius: 9, intensity: 0.55 },
   { pos: proj(-1.5, 37), polarity: 'teal', radius: 8, intensity: 0.5 },
   { pos: proj(-1, 38.5), polarity: 'red', radius: 9, intensity: 0.6 },
-  // Mogadishu coast
-  { pos: proj(2, 45), polarity: 'red', radius: 11, intensity: 0.7 },
-  { pos: proj(0.5, 42.5), polarity: 'red', radius: 8, intensity: 0.5 },
+  // Mogadishu coast — strong red along Indian Ocean
+  { pos: proj(2, 45), polarity: 'red', radius: 12, intensity: 0.85 },
+  { pos: proj(0.5, 42.5), polarity: 'red', radius: 10, intensity: 0.65 },
+  { pos: proj(-0.5, 42), polarity: 'red', radius: 9, intensity: 0.55 },
   // Tanzania north + Lake Victoria
   { pos: proj(-3, 32), polarity: 'red', radius: 10, intensity: 0.6 },
   { pos: proj(-2, 33.5), polarity: 'teal', radius: 8, intensity: 0.45 },
