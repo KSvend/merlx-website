@@ -273,9 +273,16 @@ function clusterValue(cx: number, cy: number): { red: number; teal: number } {
 // Red ramp (escalating): light → deep
 // Teal ramp (de-escalating): light → deep
 // Stable (carpet): faint grey
+// Deterministic per-cell hash → [-1, 1) for noise jitter
+function cellNoise(cx: number, cy: number): number {
+  const h = (Math.sin(cx * 12.9898 + cy * 78.233) * 43758.5453) % 1;
+  return (h < 0 ? h + 1 : h) * 2 - 1;
+}
+
 function cellColor(cx: number, cy: number): { fill: string; opacity: number } {
   const { red, teal } = clusterValue(cx, cy);
-  const v = Math.max(red, teal);
+  const noise = cellNoise(cx, cy) * 0.18; // ±18% intensity jitter
+  const v = Math.max(red, teal) * (1 + noise);
   // Stable carpet — clearly visible grey hex tiling like PRISM_01.
   // Most of the H3 coverage area shows these stable cells with red/
   // teal clusters punching through.
