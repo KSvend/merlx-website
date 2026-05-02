@@ -143,28 +143,78 @@ export function NetworkBackground() {
     <svg viewBox={`0 0 ${VW} ${VH}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <rect x="0" y="0" width={VW} height={VH} fill="#FAFAF7" />
 
-      {/* DEFAULT-STATE BRAND MARK — visible until hover.
-       * Network panel emphasises the deep-teal block (the federation
-       * spine) with iris teardrop + smaller orange circle as supporting
-       * marks, mirroring the company profile cover. */}
+      {/* DEFAULT-STATE BRAND MARK — company-profile cover layout
+       * scaled into the chooser panel. Network panel emphasises the
+       * deep-teal block (the federation spine), with iris teardrop +
+       * smaller orange circle as supporting marks. */}
       <g className="brand-mark">
-        <rect x={VW * 0.55} y={VH * 0.18} width="80" height="180" fill="#1A3A34" />
-        <path
-          d={`M ${VW * 0.42} ${VH * 0.3} q -32 0 -32 32 q 0 32 32 64 q 32 -32 32 -64 q 0 -32 -32 -32 z`}
-          fill="#4A3F6B"
-        />
-        <circle cx={VW * 0.32} cy={VH * 0.62} r="32" fill="#CA5D0F" />
+        {/* Top-row annotations — NETWORK / V2026.04 */}
         <text
-          x={VW - 22}
-          y={VH - 14}
+          x={26}
+          y={26}
           fontFamily="var(--font-mono)"
-          fontSize="9"
-          letterSpacing="0.16em"
+          fontSize="8"
+          letterSpacing="0.18em"
           fill="#6B6B6B"
+        >
+          NETWORK
+        </text>
+        <text
+          x={VW - 26}
+          y={26}
+          fontFamily="var(--font-mono)"
+          fontSize="8"
+          letterSpacing="0.18em"
+          fill="#9E9E9E"
           textAnchor="end"
         >
-          MERLx · NETWORK
+          V2026.04
         </text>
+
+        {/* Logo composition — same DNA as Studio but reordered so the
+         * deep-teal rectangle is the dominant central element. */}
+        <g transform={`translate(${VW / 2 - 140}, ${VH * 0.18})`}>
+          <circle cx="60" cy="80" r="34" fill="#CA5D0F" />
+          <path
+            d="M 132 26 q -28 0 -28 28 q 0 28 28 56 q 28 -28 28 -56 q 0 -28 -28 -28 z"
+            fill="#4A3F6B"
+          />
+          <rect x="216" y="-6" width="64" height="160" fill="#1A3A34" />
+        </g>
+
+        {/* MERLx wordmark */}
+        <text
+          x={VW / 2}
+          y={VH * 0.66}
+          fontFamily="var(--font-serif)"
+          fontSize="46"
+          fontWeight="700"
+          textAnchor="middle"
+          fill="#1a1a1a"
+          letterSpacing="-0.01em"
+        >
+          MERL<tspan fill="#8071BC">x</tspan>
+        </text>
+        {/* Italic tagline */}
+        <text
+          x={VW / 2}
+          y={VH * 0.78}
+          fontFamily="var(--font-serif)"
+          fontStyle="italic"
+          fontSize="13"
+          textAnchor="middle"
+          fill="#2A2A2A"
+        >
+          A federation of locally-owned MERL cooperatives.
+        </text>
+        <line
+          x1={VW / 2 - 28}
+          y1={VH * 0.84}
+          x2={VW / 2 + 28}
+          y2={VH * 0.84}
+          stroke="#8071BC"
+          strokeWidth="1.6"
+        />
       </g>
 
       {/* HOVER-STATE MAP COMPOSITION */}

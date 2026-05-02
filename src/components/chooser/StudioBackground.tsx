@@ -393,30 +393,124 @@ export function StudioBackground() {
        * filled the chooser panel. Brand mark and map sit on top. */}
       <rect x="0" y="0" width={VW} height={VH} fill="#FAFAF7" />
 
-      {/* DEFAULT-STATE BRAND MARK — visible until hover.
-       * Mirrors the company profile cover: deep-teal rectangle, orange
-       * circle, iris teardrop. Studio panel emphasizes the orange. */}
+      {/* DEFAULT-STATE BRAND MARK — full company-profile cover layout
+       * scaled into the chooser panel. Deep-teal rect dominant on right,
+       * iris teardrop centre, orange circle left, MERLx wordmark below
+       * the composition, italic tagline. Sized so the geometric pieces
+       * are PRESENT (visible color blocks) without flooding the panel
+       * with a cream tint. */}
       <g className="brand-mark">
-        {/* Tall deep-teal rectangle (right) */}
-        <rect x={VW - 220} y={VH * 0.32} width="60" height="160" fill="#1A3A34" />
-        {/* Iris teardrop (centre) — drawn as a pin shape */}
-        <path
-          d={`M ${VW - 280} ${VH * 0.36} q -28 0 -28 28 q 0 28 28 56 q 28 -28 28 -56 q 0 -28 -28 -28 z`}
-          fill="#4A3F6B"
-        />
-        {/* Orange filled circle (left) — the dominant Studio mark */}
-        <circle cx={VW - 360} cy={VH * 0.46} r="42" fill="#CA5D0F" />
-        {/* Tiny mono caption */}
+        {/* Top-left version annotation — like the cover */}
         <text
-          x={VW - 22}
-          y={VH - 20}
+          x={26}
+          y={36}
           fontFamily="var(--font-mono)"
           fontSize="9"
-          letterSpacing="0.16em"
+          letterSpacing="0.18em"
           fill="#6B6B6B"
+        >
+          STUDIO
+        </text>
+        <text
+          x={VW - 26}
+          y={36}
+          fontFamily="var(--font-mono)"
+          fontSize="9"
+          letterSpacing="0.18em"
+          fill="#9E9E9E"
           textAnchor="end"
         >
-          MERLx · STUDIO
+          V2026.04
+        </text>
+
+        {/* Logo composition — centred, large, like the cover.
+         * Total composition spans ~280px wide × ~200px tall, sitting
+         * in the upper-middle of the panel. */}
+        <g transform={`translate(${VW / 2 - 140}, ${VH * 0.32})`}>
+          {/* Orange filled circle — left, dominant Studio mark */}
+          <circle cx="40" cy="100" r="46" fill="#CA5D0F" className="brand-mark-pulse" />
+          {/* Iris teardrop (pin shape) — centre */}
+          <path
+            d="M 130 38 q -34 0 -34 34 q 0 34 34 68 q 34 -34 34 -68 q 0 -34 -34 -34 z"
+            fill="#4A3F6B"
+          />
+          {/* Deep-teal rectangle — right, the federation/structure mark */}
+          <rect x="220" y="0" width="60" height="200" fill="#1A3A34" />
+        </g>
+
+        {/* MERLx wordmark — serif, big, with x in iris */}
+        <text
+          x={VW / 2}
+          y={VH * 0.62}
+          fontFamily="var(--font-serif)"
+          fontSize="64"
+          fontWeight="700"
+          textAnchor="middle"
+          fill="#1a1a1a"
+          letterSpacing="-0.01em"
+        >
+          MERL<tspan fill="#8071BC">x</tspan>
+        </text>
+        {/* Italic tagline */}
+        <text
+          x={VW / 2}
+          y={VH * 0.68}
+          fontFamily="var(--font-serif)"
+          fontStyle="italic"
+          fontSize="17"
+          textAnchor="middle"
+          fill="#2A2A2A"
+        >
+          Advanced analytics for humanitarian
+        </text>
+        <text
+          x={VW / 2}
+          y={VH * 0.71}
+          fontFamily="var(--font-serif)"
+          fontStyle="italic"
+          fontSize="17"
+          textAnchor="middle"
+          fill="#2A2A2A"
+        >
+          and peacebuilding programming.
+        </text>
+        {/* Iris underline accent — like the cover */}
+        <line
+          x1={VW / 2 - 36}
+          y1={VH * 0.74}
+          x2={VW / 2 + 36}
+          y2={VH * 0.74}
+          stroke="#8071BC"
+          strokeWidth="2"
+        />
+
+        {/* Bottom row — practice / focus split, mirroring cover */}
+        <line x1={26} y1={VH - 60} x2={VW - 26} y2={VH - 60} stroke="#E5E1DA" strokeWidth="0.6" />
+        <text
+          x={26}
+          y={VH - 38}
+          fontFamily="var(--font-mono)"
+          fontSize="8"
+          letterSpacing="0.18em"
+          fill="#6B6B6B"
+        >
+          PRACTICE
+        </text>
+        <text x={26} y={VH - 22} fontFamily="var(--font-mono)" fontSize="9" fill="#2A2A2A">
+          Research · MERL · Early warning
+        </text>
+        <text
+          x={VW * 0.55}
+          y={VH - 38}
+          fontFamily="var(--font-mono)"
+          fontSize="8"
+          letterSpacing="0.18em"
+          fill="#6B6B6B"
+        >
+          FOCUS
+        </text>
+        <text x={VW * 0.55} y={VH - 22} fontFamily="var(--font-mono)" fontSize="9" fill="#2A2A2A">
+          Global development · peacebuilding
         </text>
       </g>
 
