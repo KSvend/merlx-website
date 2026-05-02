@@ -273,34 +273,58 @@ function clusterValue(cx: number, cy: number): { red: number; teal: number } {
 // Red ramp (escalating): light → deep
 // Teal ramp (de-escalating): light → deep
 // Stable (carpet): faint grey
-// Deterministic per-cell hash → [-1, 1) for noise jitter
+// Deterministic per-cell hash → [0, 1)
+function cellRand(cx: number, cy: number, salt = 0): number {
+  const h = (Math.sin(cx * 12.9898 + cy * 78.233 + salt * 37.719) * 43758.5453) % 1;
+  return h < 0 ? h + 1 : h;
+}
+// Centered noise → [-1, 1)
 function cellNoise(cx: number, cy: number): number {
-  const h = (Math.sin(cx * 12.9898 + cy * 78.233) * 43758.5453) % 1;
-  return (h < 0 ? h + 1 : h) * 2 - 1;
+  return cellRand(cx, cy) * 2 - 1;
 }
 
-function cellColor(cx: number, cy: number): { fill: string; opacity: number } {
+// PRISM Delta classification: every cell is either escalating (red),
+// stable (grey, multiple confidence shades), de-escalating (teal), or
+// has NO classification (cell doesn't render — basemap shows through).
+// Noise jitter + sparse coverage gaps keep adjacent cells from looking
+// banded.
+function cellColor(cx: number, cy: number): { fill: string; opacity: number } | null {
   const { red, teal } = clusterValue(cx, cy);
-  const noise = cellNoise(cx, cy) * 0.18; // ±18% intensity jitter
+  const noise = cellNoise(cx, cy) * 0.22;
   const v = Math.max(red, teal) * (1 + noise);
-  // Stable carpet — clearly visible grey hex tiling like PRISM_01.
-  // Most of the H3 coverage area shows these stable cells with red/
-  // teal clusters punching through.
-  if (v < 0.06) {
-    return { fill: '#c5beb0', opacity: 0.5 };
+  const polarity = red > teal ? 'red' : 'teal';
+  // Strong / mid clusters always render
+  if (v > 0.7)
+    return polarity === 'red'
+      ? { fill: '#a83227', opacity: 0.95 }
+      : { fill: '#1f4a42', opacity: 0.95 };
+  if (v > 0.5)
+    return polarity === 'red'
+      ? { fill: '#c44a3b', opacity: 0.88 }
+      : { fill: '#2c6359', opacity: 0.85 };
+  if (v > 0.3)
+    return polarity === 'red'
+      ? { fill: '#dc7864', opacity: 0.78 }
+      : { fill: '#5c8480', opacity: 0.72 };
+  if (v > 0.18)
+    return polarity === 'red'
+      ? { fill: '#e8a896', opacity: 0.65 }
+      : { fill: '#9ab8b3', opacity: 0.6 };
+  // Shoulder cells: ~50% render as a pale variant of the polarity
+  if (v > 0.08 && cellRand(cx, cy, 1) > 0.5) {
+    return polarity === 'red'
+      ? { fill: '#efc9b8', opacity: 0.55 }
+      : { fill: '#c0d4d0', opacity: 0.55 };
   }
-  if (red > teal) {
-    if (v > 0.7) return { fill: '#a83227', opacity: 0.95 };
-    if (v > 0.5) return { fill: '#c44a3b', opacity: 0.88 };
-    if (v > 0.3) return { fill: '#dc7864', opacity: 0.78 };
-    if (v > 0.15) return { fill: '#e8a896', opacity: 0.6 };
-    return { fill: '#c5beb0', opacity: 0.55 };
-  }
-  if (v > 0.7) return { fill: '#1f4a42', opacity: 0.95 };
-  if (v > 0.5) return { fill: '#2c6359', opacity: 0.85 };
-  if (v > 0.3) return { fill: '#5c8480', opacity: 0.72 };
-  if (v > 0.15) return { fill: '#9ab8b3', opacity: 0.55 };
-  return { fill: '#c5beb0', opacity: 0.55 };
+  // Stable / unclassified cells:
+  //  - ~25% drop entirely (basemap shows through, like PRISM_01)
+  //  - ~75% render in one of 3 grey shades chosen per-cell
+  const skip = cellRand(cx, cy, 2);
+  if (skip < 0.25) return null;
+  const shade = cellRand(cx, cy, 3);
+  if (shade < 0.33) return { fill: '#dad3c2', opacity: 0.55 };
+  if (shade < 0.67) return { fill: '#c5beb0', opacity: 0.55 };
+  return { fill: '#aea899', opacity: 0.5 };
 }
 
 interface Cell {
