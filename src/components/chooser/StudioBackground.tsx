@@ -541,6 +541,74 @@ export function StudioBackground() {
             ))}
           </g>
 
+          {/* Lakes — Victoria, Tana, Turkana, Albert. Faint water-grey
+           * fills, rendered above the country fills so they punch
+           * through landmass. Hand-drawn polygons (TopoJSON admin0
+           * doesn't include hydrography). */}
+          <g>
+            {/* Lake Victoria — Uganda/Kenya/Tanzania border */}
+            <path
+              d={(() => {
+                const ring = [
+                  [0.4, 32.0],
+                  [0.4, 33.2],
+                  [0.0, 34.0],
+                  [-0.8, 34.4],
+                  [-1.8, 34.0],
+                  [-2.5, 33.4],
+                  [-2.7, 32.6],
+                  [-2.4, 31.7],
+                  [-1.6, 31.5],
+                  [-0.8, 31.6],
+                  [-0.2, 31.7],
+                  [0.4, 32.0],
+                ].map(([lat, lng]) => proj(lat, lng));
+                return (
+                  ring
+                    .map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
+                    .join(' ') + ' Z'
+                );
+              })()}
+              fill={WATER}
+              stroke={COASTLINE}
+              strokeWidth="0.4"
+              opacity="0.85"
+            />
+            {/* Lake Tana — Ethiopia */}
+            <ellipse
+              cx={proj(12, 37.4)[0]}
+              cy={proj(12, 37.4)[1]}
+              rx="6"
+              ry="5"
+              fill={WATER}
+              stroke={COASTLINE}
+              strokeWidth="0.4"
+              opacity="0.85"
+            />
+            {/* Lake Turkana — Kenya/Ethiopia border, long N-S */}
+            <ellipse
+              cx={proj(3.5, 36.1)[0]}
+              cy={proj(3.5, 36.1)[1]}
+              rx="2.5"
+              ry="14"
+              fill={WATER}
+              stroke={COASTLINE}
+              strokeWidth="0.4"
+              opacity="0.85"
+            />
+            {/* Lake Albert — Uganda/DRC border */}
+            <ellipse
+              cx={proj(1.7, 30.9)[0]}
+              cy={proj(1.7, 30.9)[1]}
+              rx="2"
+              ry="6"
+              fill={WATER}
+              stroke={COASTLINE}
+              strokeWidth="0.4"
+              opacity="0.85"
+            />
+          </g>
+
           {/* Internal country borders — solid faint pink, CARTO style */}
           <path
             d={INTERIOR_PATH}
