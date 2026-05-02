@@ -273,21 +273,22 @@ function clusterValue(cx: number, cy: number): { red: number; teal: number } {
 function cellColor(cx: number, cy: number): { fill: string; opacity: number } {
   const { red, teal } = clusterValue(cx, cy);
   const v = Math.max(red, teal);
+  // Stable carpet — barely visible against cream land, like PRISM_01
   if (v < 0.06) {
-    return { fill: '#cfcabc', opacity: 0.32 };
+    return { fill: '#dcd6c8', opacity: 0.18 };
   }
   if (red > teal) {
-    if (v > 0.7) return { fill: '#a83227', opacity: 0.92 };
-    if (v > 0.5) return { fill: '#c44a3b', opacity: 0.85 };
-    if (v > 0.3) return { fill: '#dc7864', opacity: 0.72 };
-    if (v > 0.15) return { fill: '#e8a896', opacity: 0.6 };
-    return { fill: '#cfcabc', opacity: 0.45 };
+    if (v > 0.7) return { fill: '#a83227', opacity: 0.95 };
+    if (v > 0.5) return { fill: '#c44a3b', opacity: 0.88 };
+    if (v > 0.3) return { fill: '#dc7864', opacity: 0.75 };
+    if (v > 0.15) return { fill: '#e8a896', opacity: 0.55 };
+    return { fill: '#dcd6c8', opacity: 0.28 };
   }
-  if (v > 0.7) return { fill: '#1f4a42', opacity: 0.92 };
-  if (v > 0.5) return { fill: '#2c6359', opacity: 0.82 };
+  if (v > 0.7) return { fill: '#1f4a42', opacity: 0.95 };
+  if (v > 0.5) return { fill: '#2c6359', opacity: 0.85 };
   if (v > 0.3) return { fill: '#5c8480', opacity: 0.7 };
-  if (v > 0.15) return { fill: '#9ab8b3', opacity: 0.55 };
-  return { fill: '#cfcabc', opacity: 0.45 };
+  if (v > 0.15) return { fill: '#9ab8b3', opacity: 0.5 };
+  return { fill: '#dcd6c8', opacity: 0.28 };
 }
 
 interface Cell {
@@ -333,16 +334,16 @@ const COUNTRY_LABELS: Array<{
   size?: number;
   lines?: string[];
 }> = [
-  { text: 'EGYPT', lat: 26, lng: 30, size: 11 },
-  { text: 'CHAD', lat: 16, lng: 18, size: 11 },
-  { text: 'SUDAN', lat: 15, lng: 30, size: 13 },
-  { text: 'ERITREA', lat: 15.3, lng: 38.5, size: 9 },
-  { text: 'DJIBOUTI', lat: 11.6, lng: 43, size: 7.5 },
-  { text: 'YEMEN', lat: 15.5, lng: 47, size: 11 },
-  { text: 'SAUDI ARABIA', lat: 23, lng: 44.5, size: 10 },
-  { text: 'SOUTH SUDAN', lat: 7.5, lng: 30, size: 10 },
-  { text: 'ETHIOPIA', lat: 8.5, lng: 39.5, size: 12 },
-  { text: 'SOMALIA', lat: 4, lng: 47, size: 12 },
+  { text: 'EGYPT', lat: 26, lng: 30, size: 9 },
+  { text: 'CHAD', lat: 16, lng: 18, size: 9 },
+  { text: 'SUDAN', lat: 15, lng: 30, size: 10 },
+  { text: 'ERITREA', lat: 15.3, lng: 38.5, size: 7.5 },
+  { text: 'DJIBOUTI', lat: 11.6, lng: 43, size: 6.5 },
+  { text: 'YEMEN', lat: 15.5, lng: 47, size: 9 },
+  { text: 'SAUDI ARABIA', lat: 23, lng: 44.5, size: 8.5 },
+  { text: 'SOUTH SUDAN', lat: 7.5, lng: 30, size: 8.5 },
+  { text: 'ETHIOPIA', lat: 8.5, lng: 39.5, size: 10 },
+  { text: 'SOMALIA', lat: 4, lng: 47, size: 10 },
   {
     text: 'CENTRAL AFRICAN',
     lat: 6.5,
@@ -350,10 +351,10 @@ const COUNTRY_LABELS: Array<{
     size: 8,
     lines: ['CENTRAL AFRICAN', 'REPUBLIC'],
   },
-  { text: 'UGANDA', lat: 1, lng: 32.5, size: 9 },
-  { text: 'KENYA', lat: 0, lng: 38.5, size: 12 },
-  { text: 'RWANDA', lat: -2, lng: 30, size: 8 },
-  { text: 'BURUNDI', lat: -3, lng: 30, size: 8 },
+  { text: 'UGANDA', lat: 1, lng: 32.5, size: 8 },
+  { text: 'KENYA', lat: 0, lng: 38.5, size: 10 },
+  { text: 'RWANDA', lat: -2, lng: 30, size: 7 },
+  { text: 'BURUNDI', lat: -3, lng: 30, size: 7 },
   {
     text: 'DEM. REP. OF THE CONGO',
     lat: -3,
@@ -361,7 +362,7 @@ const COUNTRY_LABELS: Array<{
     size: 8,
     lines: ['DEMOCRATIC', 'REPUBLIC OF', 'THE CONGO'],
   },
-  { text: 'TANZANIA', lat: -7, lng: 35, size: 11 },
+  { text: 'TANZANIA', lat: -7, lng: 35, size: 9 },
 ];
 
 // MERLx-aligned tokens (per the design guide §2 + per-product PRISM look)
