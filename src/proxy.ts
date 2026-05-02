@@ -10,6 +10,10 @@ export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|api|admin|brand).*)'],
 };
 
+// Paths handled by Next's metadata routes (sitemap/robots) — they need
+// tenant headers stamped but NOT the next-intl locale redirect.
+const METADATA_PATHS = new Set(['/sitemap.xml', '/robots.txt']);
+
 const LOCALE_PREFIX = /^\/(en|ar|fr)(\/|$)/;
 
 export function proxy(request: NextRequest): NextResponse {
@@ -44,6 +48,12 @@ export function proxy(request: NextRequest): NextResponse {
   request.headers.set('x-tenant-kind', tenant.kind);
   request.headers.set('x-tenant-subdomain', tenant.subdomain ?? '');
   request.headers.set('x-tenant-domain', tenant.domain);
+
+  // Sitemap + robots: skip intl, just forward with tenant headers.
+  if (METADATA_PATHS.has(request.nextUrl.pathname)) {
+    const requestHeaders = new Headers(request.headers);
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
 
   if (request.nextUrl.pathname.startsWith('/tenant-debug')) {
     // Build a NextResponse.next that explicitly forwards the rewritten
