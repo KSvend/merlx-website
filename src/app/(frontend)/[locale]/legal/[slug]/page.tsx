@@ -1,7 +1,7 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import { RichTextRenderer } from '@/components/pages/RichTextRenderer';
 import type { AppLocale } from '@/i18n/routing';
-import { requireGroupTenant } from '@/lib/tenant-aware';
+import { requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
@@ -22,7 +22,7 @@ export default async function LegalPage({ params }: PageProps) {
 
   const headerList = await headers();
   const payload = await getPayload({ config });
-  const tenant = await requireGroupTenant(headerList, payload);
+  const tenant = await requireKnownTenant(headerList, payload);
 
   const pageQuery = await payload.find({
     collection: 'pages',

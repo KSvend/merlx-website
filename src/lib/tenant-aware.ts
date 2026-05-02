@@ -52,6 +52,19 @@ export async function requireNetworkTenant(headers: Headers, payload: Payload): 
   return requireTenantByKind(headers, payload, 'network', 'network.merlx.org');
 }
 
+/**
+ * Resolves the request's own tenant if it's the group, studio, or
+ * network tenant. 404s otherwise. Used by routes that exist on
+ * multiple sub-sites (Insights, Publications, About, Contact).
+ */
+export async function requireKnownTenant(headers: Headers, payload: Payload): Promise<Tenant> {
+  const { kind } = parseTenantHeaders(headers);
+  if (kind === 'group') return requireGroupTenant(headers, payload);
+  if (kind === 'studio') return requireStudioTenant(headers, payload);
+  if (kind === 'network') return requireNetworkTenant(headers, payload);
+  notFound();
+}
+
 async function requireTenantByKind(
   headers: Headers,
   payload: Payload,

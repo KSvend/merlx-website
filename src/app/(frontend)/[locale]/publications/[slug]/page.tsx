@@ -1,6 +1,6 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import type { AppLocale } from '@/i18n/routing';
-import { requireGroupTenant } from '@/lib/tenant-aware';
+import { requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
@@ -19,7 +19,7 @@ export default async function PublicationDetail({ params }: PageProps) {
   const headerList = await headers();
   const payload = await getPayload({ config });
   // Gate-only: group front door surfaces all publications addressable by slug
-  await requireGroupTenant(headerList, payload);
+  await requireKnownTenant(headerList, payload);
 
   const pubQuery = await payload.find({
     collection: 'publications',

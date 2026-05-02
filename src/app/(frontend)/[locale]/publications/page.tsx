@@ -1,7 +1,7 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import type { AppLocale } from '@/i18n/routing';
 import { buildAggregatePublicationsQuery } from '@/lib/aggregate-feed';
-import { requireGroupTenant } from '@/lib/tenant-aware';
+import { parseTenantHeaders, requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
@@ -19,10 +19,11 @@ export default async function PublicationsIndex({ params }: PageProps) {
 
   const headerList = await headers();
   const payload = await getPayload({ config });
-  const tenant = await requireGroupTenant(headerList, payload);
+  const tenant = await requireKnownTenant(headerList, payload);
+  const { kind } = parseTenantHeaders(headerList);
 
   const where = buildAggregatePublicationsQuery({
-    tenantKind: 'group',
+    tenantKind: kind,
     tenantId: tenant.id,
   });
 

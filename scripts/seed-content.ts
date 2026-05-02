@@ -126,6 +126,28 @@ const SEED_PAGES: SeedPage[] = [
   },
 ];
 
+const STUDIO_SEED_PAGES: SeedPage[] = [
+  {
+    slug: 'about',
+    title: 'About the Studio',
+    subtitle: 'Independent. Conflict-sensitive. Evidence-grade.',
+    body: 'MERLx Studio is the engineering arm of MERLx — an independent studio building the Optics Suite, a coordinated set of open analytical tools for monitoring, evaluation, research and early warning in fragile contexts. We pair senior engineering with deep domain knowledge from the MERLx Network. We work openly, document our trade-offs, and retire tools that no longer earn their footprint.',
+    status: 'published',
+  },
+  {
+    slug: 'legal/privacy',
+    title: 'Studio Privacy Policy',
+    body: 'studio.merlx.org collects only the data necessary to operate the website and respond to inquiries. We do not use tracking cookies. Form submissions are stored in our content management system. Tool-specific data handling is documented per tool — see each tool page for its data flow and retention policy. Contact privacy@merlx.org for data subject requests.',
+    status: 'published',
+  },
+  {
+    slug: 'legal/terms',
+    title: 'Studio Terms of Use',
+    body: 'By using studio.merlx.org you agree to these terms. Tool-specific licenses are linked from each tool page; the website itself is © MERLx. Optics Suite tools may be open-source, source-available, or hosted-only depending on the tool — check each tool page for licensing.',
+    status: 'published',
+  },
+];
+
 function plainTextToLexical(text: string) {
   return {
     root: {
@@ -190,16 +212,41 @@ async function seed() {
     console.log(`  + seeded: pages/${page.slug}`);
   }
 
-  // Seed OpticsTools under the studio tenant
+  // Seed studio content under the studio tenant
   const studioTenant = await payload.find({
     collection: 'tenants',
     where: { type: { equals: 'studio' } },
     limit: 1,
   });
   if (studioTenant.docs.length === 0) {
-    console.warn('Studio tenant not found — skipping optics-tools seed.');
+    console.warn('Studio tenant not found — skipping studio content seed.');
   } else {
     const studioId = studioTenant.docs[0]!.id;
+
+    for (const page of STUDIO_SEED_PAGES) {
+      const existing = await payload.find({
+        collection: 'pages',
+        where: { and: [{ slug: { equals: page.slug } }, { tenant: { equals: studioId } }] },
+        limit: 1,
+      });
+      if (existing.docs.length > 0) {
+        console.log(`  - skip: studio/pages/${page.slug} already exists`);
+        continue;
+      }
+      await payload.create({
+        collection: 'pages',
+        data: {
+          slug: page.slug,
+          title: page.title,
+          subtitle: page.subtitle,
+          body: plainTextToLexical(page.body),
+          status: page.status,
+          tenant: studioId,
+        } as Omit<Page, 'id' | 'createdAt' | 'updatedAt'>,
+      });
+      console.log(`  + seeded: studio/pages/${page.slug}`);
+    }
+
     for (const tool of SEED_TOOLS) {
       const existing = await payload.find({
         collection: 'optics-tools',
