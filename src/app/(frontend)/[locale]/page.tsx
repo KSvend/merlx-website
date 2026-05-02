@@ -1,8 +1,15 @@
 import { ChooserHero } from '@/components/chooser/ChooserHero';
 import { PageShell } from '@/components/chrome/PageShell';
 import { NetworkHome } from '@/components/network/NetworkHome';
+import { NilexHome } from '@/components/nilex/NilexHome';
 import { StudioHome } from '@/components/studio/StudioHome';
-import { isGroupTenant, isNetworkTenant, isStudioTenant } from '@/lib/tenant-aware';
+import {
+  isGroupTenant,
+  isNetworkTenant,
+  isNodeTenant,
+  isStudioTenant,
+  parseTenantHeaders,
+} from '@/lib/tenant-aware';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -29,6 +36,17 @@ export default async function Page({ params }: PageProps) {
         <NetworkHome locale={locale} />
       </PageShell>
     );
+  }
+  if (isNodeTenant(headerList)) {
+    const { subdomain } = parseTenantHeaders(headerList);
+    if (subdomain === 'nilex') {
+      return (
+        <PageShell locale={locale}>
+          <NilexHome locale={locale} />
+        </PageShell>
+      );
+    }
+    notFound();
   }
   if (!isGroupTenant(headerList)) notFound();
 

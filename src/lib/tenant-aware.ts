@@ -27,6 +27,10 @@ export function isNetworkTenant(headers: Headers): boolean {
   return parseTenantHeaders(headers).kind === 'network';
 }
 
+export function isNodeTenant(headers: Headers): boolean {
+  return parseTenantHeaders(headers).kind === 'node';
+}
+
 /**
  * Gate-and-resolve helper for group-tenant-only CMS routes.
  *
@@ -53,6 +57,37 @@ export async function requireNetworkTenant(headers: Headers, payload: Payload): 
 }
 
 /**
+ * Resolve the node tenant matching the request's subdomain. Each node
+ * has its own tenant doc keyed by domain (e.g. nilex.merlx.org).
+ */
+export async function requireNodeTenant(headers: Headers, payload: Payload): Promise<Tenant> {
+  if (!isNodeTenant(headers)) notFound();
+
+  const subdomain = headers.get('x-tenant-subdomain') ?? '';
+  const tenantDomain = headers.get('x-tenant-domain') ?? '';
+  if (!subdomain) notFound();
+
+  const byDomain = await payload.find({
+    collection: 'tenants',
+    where: { domain: { equals: tenantDomain } },
+    limit: 1,
+  });
+  let tenant: Tenant | undefined = byDomain.docs[0];
+
+  if (!tenant) {
+    const byProdDomain = await payload.find({
+      collection: 'tenants',
+      where: { domain: { equals: `${subdomain}.merlx.org` } },
+      limit: 1,
+    });
+    tenant = byProdDomain.docs[0];
+  }
+
+  if (!tenant) notFound();
+  return tenant;
+}
+
+/**
  * Resolves the request's own tenant if it's the group, studio, or
  * network tenant. 404s otherwise. Used by routes that exist on
  * multiple sub-sites (Insights, Publications, About, Contact).
@@ -62,6 +97,7 @@ export async function requireKnownTenant(headers: Headers, payload: Payload): Pr
   if (kind === 'group') return requireGroupTenant(headers, payload);
   if (kind === 'studio') return requireStudioTenant(headers, payload);
   if (kind === 'network') return requireNetworkTenant(headers, payload);
+  if (kind === 'node') return requireNodeTenant(headers, payload);
   notFound();
 }
 

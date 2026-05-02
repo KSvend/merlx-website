@@ -42,6 +42,16 @@ export async function SiteNav({ locale }: SiteNavProps) {
         { href: `/${locale}/contact`, label: t('navContact') },
       ];
     }
+    if (kind === 'node') {
+      return [
+        { href: `/${locale}/deployments`, label: 'Deployments' },
+        { href: `/${locale}/news`, label: 'News' },
+        { href: `/${locale}/about`, label: 'About' },
+        { href: `/${locale}/insights`, label: t('navInsights') },
+        { href: `/${locale}/publications`, label: t('navPublications') },
+        { href: `/${locale}/contact`, label: t('navContact') },
+      ];
+    }
     return [
       { href: `/${locale}/insights`, label: t('navInsights') },
       { href: `/${locale}/publications`, label: t('navPublications') },
@@ -52,10 +62,17 @@ export async function SiteNav({ locale }: SiteNavProps) {
   const accentColor =
     kind === 'studio'
       ? 'var(--color-orange)'
-      : kind === 'network'
+      : kind === 'network' || kind === 'node'
         ? 'var(--color-teal)'
         : 'var(--color-purple)';
-  const projectSubtitle = kind === 'studio' ? 'Studio' : kind === 'network' ? 'Network' : null;
+  const projectSubtitle =
+    kind === 'studio'
+      ? 'Studio'
+      : kind === 'network'
+        ? 'Network'
+        : kind === 'node'
+          ? 'NileX'
+          : null;
 
   return (
     <header>

@@ -148,6 +148,16 @@ const STUDIO_SEED_PAGES: SeedPage[] = [
   },
 ];
 
+const NILEX_SEED_PAGES: SeedPage[] = [
+  {
+    slug: 'about',
+    title: 'About NileX',
+    subtitle: 'Sudan-rooted MERL, evidence for the Nile basin.',
+    body: 'NileX is a Sudan-based cooperative of researchers, evaluators and conflict analysts. Founded in 2024, we operate under local governance with field teams across Sudan, South Sudan, and the wider Nile basin. NileX is the first MERLx Network node — we share methodology, conflict-sensitivity standards, and tooling with other federated cooperatives, but operate independently. We work in Arabic, English, and Sudanese local languages, with bilingual reporting standard on all engagements.',
+    status: 'published',
+  },
+];
+
 const NETWORK_SEED_PAGES: SeedPage[] = [
   {
     slug: 'about',
@@ -330,6 +340,41 @@ async function seed() {
         } as Omit<Page, 'id' | 'createdAt' | 'updatedAt'>,
       });
       console.log(`  + seeded: network/pages/${page.slug}`);
+    }
+  }
+
+  // Seed nilex content under the nilex node tenant
+  const nilexTenant = await payload.find({
+    collection: 'tenants',
+    where: { domain: { equals: 'nilex.merlx.org' } },
+    limit: 1,
+  });
+  if (nilexTenant.docs.length === 0) {
+    console.warn('NileX tenant not found — skipping nilex content seed.');
+  } else {
+    const nilexId = nilexTenant.docs[0]!.id;
+    for (const page of NILEX_SEED_PAGES) {
+      const existing = await payload.find({
+        collection: 'pages',
+        where: { and: [{ slug: { equals: page.slug } }, { tenant: { equals: nilexId } }] },
+        limit: 1,
+      });
+      if (existing.docs.length > 0) {
+        console.log(`  - skip: nilex/pages/${page.slug} already exists`);
+        continue;
+      }
+      await payload.create({
+        collection: 'pages',
+        data: {
+          slug: page.slug,
+          title: page.title,
+          subtitle: page.subtitle,
+          body: plainTextToLexical(page.body),
+          status: page.status,
+          tenant: nilexId,
+        } as Omit<Page, 'id' | 'createdAt' | 'updatedAt'>,
+      });
+      console.log(`  + seeded: nilex/pages/${page.slug}`);
     }
   }
 
