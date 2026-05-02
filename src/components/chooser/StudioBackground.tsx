@@ -35,13 +35,13 @@ const CODE_LINES: Array<{ text: string; tone?: 'cmd' | 'log' | 'score' | 'done' 
 ];
 
 // Hex grid: pointy-top hexes laid out in a tight grid, right column
-const HEX_R = 11;
-const HEX_DX = HEX_R * Math.sqrt(3); // ~19
-const HEX_DY = HEX_R * 1.5; // ~16.5
-const GRID_X0 = 360;
-const GRID_Y0 = 70;
-const GRID_W = 220;
-const GRID_H = 460;
+const HEX_R = 3;
+const HEX_DX = HEX_R * Math.sqrt(3);
+const HEX_DY = HEX_R * 1.5;
+const GRID_X0 = 300;
+const GRID_Y0 = 44;
+const GRID_W = 280;
+const GRID_H = 510;
 
 function hexPoints(cx: number, cy: number, r: number): string {
   const pts: string[] = [];
@@ -110,9 +110,9 @@ const TONE_COLOR: Record<NonNullable<(typeof CODE_LINES)[number]['tone']>, strin
   done: DEEP_TEAL,
 };
 
-const LINE_HEIGHT = 18;
-const CODE_X = 28;
-const CODE_Y0 = 56;
+const LINE_HEIGHT = 12;
+const CODE_X = 22;
+const CODE_Y0 = 44;
 
 export function StudioBackground() {
   return (
@@ -122,15 +122,15 @@ export function StudioBackground() {
       {/* Top header bar — minimalist, sharp corners */}
       <text
         x={CODE_X}
-        y={32}
+        y={24}
         fontFamily="var(--font-mono)"
-        fontSize="9"
+        fontSize="7"
         letterSpacing="0.16em"
         fill={INK_MUTED}
       >
         PRISM · INFERENCE
       </text>
-      <line x1={CODE_X} y1={42} x2={VW - 28} y2={42} stroke={BORDER_LIGHT} strokeWidth="0.6" />
+      <line x1={CODE_X} y1={32} x2={VW - 22} y2={32} stroke={BORDER_LIGHT} strokeWidth="0.5" />
 
       {/* Code lines — staggered fade-in */}
       <g>
@@ -138,9 +138,9 @@ export function StudioBackground() {
           <text
             key={`line-${i}-${line.text.length}`}
             x={CODE_X}
-            y={CODE_Y0 + i * LINE_HEIGHT + 14}
+            y={CODE_Y0 + i * LINE_HEIGHT + 8}
             fontFamily="var(--font-mono)"
-            fontSize="11"
+            fontSize="8"
             fill={TONE_COLOR[line.tone ?? 'log']}
             className={`studio-code-line studio-code-line--${i}`}
           >
@@ -150,9 +150,9 @@ export function StudioBackground() {
         {/* Blinking cursor */}
         <rect
           x={CODE_X}
-          y={CODE_Y0 + CODE_LINES.length * LINE_HEIGHT + 4}
-          width="7"
-          height="12"
+          y={CODE_Y0 + CODE_LINES.length * LINE_HEIGHT + 2}
+          width="4"
+          height="8"
           fill={INK}
           className="studio-code-cursor"
         />
@@ -161,13 +161,13 @@ export function StudioBackground() {
       {/* Hex grid — column header */}
       <text
         x={GRID_X0}
-        y={CODE_Y0 - 4}
+        y={24}
         fontFamily="var(--font-mono)"
-        fontSize="9"
+        fontSize="7"
         letterSpacing="0.16em"
         fill={INK_MUTED}
       >
-        CELLS
+        CELLS · 5,089
       </text>
 
       {/* Hex grid — sharp vertices, color flips with delay */}
@@ -177,10 +177,9 @@ export function StudioBackground() {
           return (
             <polygon
               key={c.key}
-              points={hexPoints(c.cx, c.cy, HEX_R - 1.5)}
+              points={hexPoints(c.cx, c.cy, HEX_R - 0.4)}
               fill={SHELL_WARM}
-              stroke={BORDER_LIGHT}
-              strokeWidth="0.6"
+              stroke="none"
               className={isFlipping ? `studio-hex studio-hex--${c.variant}` : undefined}
               style={isFlipping ? { animationDelay: `${c.delay}s` } : undefined}
             />
@@ -191,27 +190,27 @@ export function StudioBackground() {
       {/* Footer line — total cell count */}
       <line
         x1={CODE_X}
-        y1={VH - 38}
-        x2={VW - 28}
-        y2={VH - 38}
+        y1={VH - 28}
+        x2={VW - 22}
+        y2={VH - 28}
         stroke={BORDER_LIGHT}
-        strokeWidth="0.6"
+        strokeWidth="0.5"
       />
       <text
         x={CODE_X}
-        y={VH - 22}
+        y={VH - 14}
         fontFamily="var(--font-mono)"
-        fontSize="9"
-        letterSpacing="0.12em"
+        fontSize="7"
+        letterSpacing="0.1em"
         fill={INK_FAINT}
       >
-        tensor[5089, 52] · model 9a7f3b2 · iris-purple = active
+        tensor[5089, 52] · model 9a7f3b2
       </text>
       <text
-        x={VW - 28}
-        y={VH - 22}
+        x={VW - 22}
+        y={VH - 14}
         fontFamily="var(--font-mono)"
-        fontSize="9"
+        fontSize="7"
         textAnchor="end"
         fill={IRIS}
         fontWeight="500"
