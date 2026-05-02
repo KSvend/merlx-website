@@ -681,12 +681,14 @@ export function StudioBackground() {
             />
           </g>
 
-          {/* Hex cells — bipolar Delta carpet */}
+          {/* Hex cells — bipolar Delta carpet. Visual radius slightly
+           * smaller than HEX_R to leave a thin gap between cells (like
+           * PRISM_01's distinct H3 tile boundaries). */}
           <g>
             {CELLS.map((c) => (
               <polygon
                 key={c.key}
-                points={hexPoints(c.cx, c.cy, HEX_R)}
+                points={hexPoints(c.cx, c.cy, HEX_R - 0.3)}
                 fill={c.fill}
                 opacity={c.opacity}
               />
