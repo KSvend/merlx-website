@@ -559,6 +559,52 @@ export function StudioBackground() {
             opacity="0.55"
           />
 
+          {/* Nile river — faint blue-grey polyline. Lake Victoria →
+           * White Nile through S. Sudan → joins Blue Nile at Khartoum →
+           * northwards through Sudan. Plus Blue Nile from Lake Tana. */}
+          <g opacity="0.45">
+            <path
+              d={(() => {
+                const pts = [
+                  [-0.3, 33], // Lake Victoria source
+                  [2.5, 32.4],
+                  [4.85, 31.6], // Juba
+                  [7, 31.5],
+                  [9.5, 31.6], // Malakal
+                  [12, 32],
+                  [13.5, 32.5],
+                  [15.6, 32.5], // Khartoum (confluence)
+                  [17.7, 33.97], // Atbara
+                  [20, 32.5],
+                  [22, 31.5],
+                  [24, 31],
+                ].map(([lat, lng]) => proj(lat, lng));
+                return pts
+                  .map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
+                  .join(' ');
+              })()}
+              fill="none"
+              stroke="#a8c0c8"
+              strokeWidth="0.9"
+            />
+            <path
+              d={(() => {
+                const pts = [
+                  [12, 37.3], // Lake Tana
+                  [13, 35.5],
+                  [14, 34],
+                  [15.6, 32.5], // Khartoum confluence
+                ].map(([lat, lng]) => proj(lat, lng));
+                return pts
+                  .map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
+                  .join(' ');
+              })()}
+              fill="none"
+              stroke="#a8c0c8"
+              strokeWidth="0.9"
+            />
+          </g>
+
           {/* Hex cells — bipolar Delta carpet */}
           <g>
             {CELLS.map((c) => (
