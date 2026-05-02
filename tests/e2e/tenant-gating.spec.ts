@@ -18,9 +18,18 @@ test('network host now renders NetworkHome on / (200)', async ({ request }) => {
   expect(html).toContain('A federation of locally owned MERL cooperatives');
 });
 
-test('node host gets 404 on /', async ({ request }) => {
+test('nilex node host now renders NilexHome on / (200)', async ({ request }) => {
   const res = await request.get('/en', {
     headers: { host: 'nilex.localhost.test' },
+  });
+  expect(res.status()).toBe(200);
+  const html = await res.text();
+  expect(html).toContain('Sudan-rooted MERL');
+});
+
+test('unknown node host 404s on /', async ({ request }) => {
+  const res = await request.get('/en', {
+    headers: { host: 'unknownnode.localhost.test' },
   });
   expect(res.status()).toBe(404);
 });

@@ -35,6 +35,17 @@ const SEED_TENANTS = [
     hasInsights: true,
     blobBucketPrefix: 'merlx-blob/network',
   },
+  {
+    domain: 'nilex.merlx.org',
+    displayName: 'NileX',
+    type: 'node' as const,
+    status: 'pre-launch' as const,
+    primaryLocale: 'ar' as const,
+    supportedLocales: ['ar', 'en'] as Array<'en' | 'ar' | 'fr'>,
+    accentColor: 'teal' as const,
+    hasInsights: true,
+    blobBucketPrefix: 'merlx-blob/nilex',
+  },
 ];
 
 async function seed() {
