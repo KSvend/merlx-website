@@ -1,18 +1,28 @@
 /**
- * Network side background: federated MERL ops map — same chrome
- * discipline as the Studio PRISM cutout (no controls, no panels,
- * no attribution). CARTO-style basemap, faint graticule, continent
- * dots, nine federated nodes with NileX active, dashed link mesh.
+ * Network side background: federated MERL ops map.
  *
- * The wrapping <g class="chooser-bg-drift"> drifts on hover (CSS
- * keyframes in chooser.css) for the same "live map feel" as Studio.
- *
- * Static. Animation deferred.
+ * Same construction as the Studio PRISM cutout but in the teal register:
+ * - World-scale equirectangular projection of Natural Earth admin0 borders
+ *   (countries-110m for performance — all continents, lower detail than
+ *   Studio's 50m since we're zoomed way out).
+ * - Land fills + coastlines + internal borders all real geometry.
+ * - Federated network nodes overlaid (NileX active in Sudan, plus 8
+ *   regional partner sites). Dashed mesh of TLS-secured links.
+ * - Right-side ops console — node count, last-sync, tail of the
+ *   federation log. MERLx-token discipline: surface card · border-light
+ *   edge · deep-teal active · iris for emphasis · Plex Mono for data.
+ * - Wrapping <g class="chooser-bg-drift"> drifts on hover.
  */
+
+import { geoPath, geoTransform } from 'd3-geo';
+import { feature, mesh } from 'topojson-client';
+// biome-ignore lint/suspicious/noExplicitAny: TopoJSON shape varies by source
+import worldAtlas from 'world-atlas/countries-110m.json' with { type: 'json' };
 
 const VW = 600;
 const VH = 360;
 
+// Equirectangular world frame with the inhabited band visible.
 const LNG_MIN = -120;
 const LNG_W = 300;
 const LAT_MAX = 65;
@@ -22,107 +32,26 @@ function proj(lat: number, lng: number): [number, number] {
   return [((lng - LNG_MIN) / LNG_W) * VW, ((LAT_MAX - lat) / LAT_H) * VH];
 }
 
-const LAND_DOTS: Array<[number, number]> = [];
-const STEP_LNG = 3;
+const transform = geoTransform({
+  point(lng: number, lat: number) {
+    this.stream.point(((lng - LNG_MIN) / LNG_W) * VW, ((LAT_MAX - lat) / LAT_H) * VH);
+  },
+});
 
-const LAND_BANDS: Array<[number, Array<[number, number]>]> = [
-  // North America
-  [62, [[-150, -65]]],
-  [60, [[-150, -60]]],
-  [55, [[-130, -55]]],
-  [50, [[-125, -55]]],
-  [45, [[-122, -60]]],
-  [40, [[-120, -72]]],
-  [35, [[-118, -77]]],
-  [30, [[-110, -80]]],
-  [25, [[-110, -80]]],
-  [
-    20,
-    [
-      [-105, -85],
-      [-78, -72],
-    ],
-  ],
-  [
-    15,
-    [
-      [-95, -85],
-      [-77, -72],
-    ],
-  ],
-  [10, [[-87, -78]]],
-  // South America
-  [5, [[-78, -50]]],
-  [0, [[-78, -50]]],
-  [-5, [[-78, -38]]],
-  [-10, [[-77, -36]]],
-  [-15, [[-72, -38]]],
-  [-20, [[-70, -42]]],
-  [-25, [[-70, -45]]],
-  [-30, [[-72, -55]]],
-  [-35, [[-72, -58]]],
-  // Europe
-  [60, [[-7, 30]]],
-  [55, [[-8, 38]]],
-  [50, [[-5, 40]]],
-  [45, [[-5, 45]]],
-  [40, [[-9, 28]]],
-  [37, [[-9, 28]]],
-  // North Africa
-  [30, [[-8, 32]]],
-  [25, [[-15, 36]]],
-  [20, [[-15, 38]]],
-  [15, [[-15, 40]]],
-  [10, [[-12, 42]]],
-  [5, [[-8, 45]]],
-  // Sub-Saharan Africa
-  [0, [[8, 45]]],
-  [-5, [[12, 40]]],
-  [-10, [[12, 40]]],
-  [-15, [[12, 40]]],
-  [-20, [[14, 36]]],
-  [-25, [[14, 33]]],
-  [-30, [[16, 32]]],
-  // Middle East
-  [35, [[28, 60]]],
-  [30, [[34, 60]]],
-  [25, [[36, 58]]],
-  // Russia / Central Asia
-  [60, [[33, 175]]],
-  [55, [[35, 175]]],
-  [50, [[28, 140]]],
-  [45, [[35, 140]]],
-  [40, [[40, 135]]],
-  // South Asia
-  [35, [[68, 95]]],
-  [30, [[68, 95]]],
-  [25, [[68, 96]]],
-  [20, [[70, 95]]],
-  [15, [[72, 92]]],
-  [10, [[75, 88]]],
-  // SE Asia / Indonesia
-  [20, [[98, 122]]],
-  [15, [[98, 122]]],
-  [10, [[98, 124]]],
-  [5, [[95, 130]]],
-  [0, [[100, 132]]],
-  [-5, [[105, 140]]],
-  [-10, [[110, 145]]],
-  // Australia
-  [-15, [[122, 144]]],
-  [-20, [[115, 148]]],
-  [-25, [[115, 152]]],
-  [-30, [[115, 152]]],
-  [-35, [[118, 148]]],
-];
+const pathFn = geoPath(transform);
 
-for (const [lat, ranges] of LAND_BANDS) {
-  for (const [lngStart, lngEnd] of ranges) {
-    for (let lng = lngStart; lng <= lngEnd; lng += STEP_LNG) {
-      LAND_DOTS.push(proj(lat, lng));
-    }
-  }
-}
+// biome-ignore lint/suspicious/noExplicitAny: world-atlas TopoJSON is loose
+const world = worldAtlas as unknown as any;
+const countriesObj = world.objects.countries;
+
+// Render every country at the world scale — at 110m resolution and a
+// world equirectangular projection the path string compresses well.
+const ALL_LAND_PATH = pathFn(feature(world, countriesObj)) ?? '';
+
+// biome-ignore lint/suspicious/noExplicitAny: same loose TopoJSON typings
+const INTERIOR_PATH = pathFn(mesh(world, countriesObj, (a: any, b: any) => a !== b)) ?? '';
+// biome-ignore lint/suspicious/noExplicitAny: same loose TopoJSON typings
+const COASTLINE_PATH = pathFn(mesh(world, countriesObj, (a: any, b: any) => a === b)) ?? '';
 
 interface NodeDef {
   id: string;
@@ -186,24 +115,28 @@ const LINK_PAIRS: Array<[string, string]> = [
   ['sahel', 'maghreb'],
 ];
 
-const BASEMAP = '#f0eee6';
-const COUNTRY_DOT = '#bdb7a6';
-const TEXT_INK = '#1a1a1a';
+const LOG_LINES = [
+  '14:18:42 nilex   · sync ok',
+  '14:18:43 horn    · sync ok',
+  '14:18:44 mena    · sync ok',
+  '14:18:46 sa      · sync ok',
+];
+
+// MERLx tokens
+const BASEMAP = '#F5F3EE'; // shell
+const LAND_FILL = '#EDE9E1'; // shell-warm
+const COUNTRY_BORDER = '#D5D0C7'; // border
+const COASTLINE = '#9E9E9E'; // ink-faint
+const PANEL_FILL = '#FFFFFF'; // surface
+const PANEL_BORDER = '#E5E1DA'; // border-light
+const INK = '#111111';
+const INK_LIGHT = '#2A2A2A';
+const INK_MUTED = '#6B6B6B';
+const INK_FAINT = '#9E9E9E';
+const IRIS = '#8071BC';
 const DEEP_TEAL = '#1A3A34';
-const TEAL = '#3d7a72';
-const GRATICULE_TICK = '#a89f8e';
-
-const LAT_LABELS = [-30, 0, 30, 60];
-const LNG_LABELS = [-90, -60, -30, 0, 30, 60, 90, 120, 150];
-
-function fmtLat(lat: number): string {
-  if (lat === 0) return '0°';
-  return `${Math.abs(lat)}°${lat > 0 ? 'N' : 'S'}`;
-}
-function fmtLng(lng: number): string {
-  if (lng === 0) return '0°';
-  return `${Math.abs(lng)}°${lng > 0 ? 'E' : 'W'}`;
-}
+const DEEP_TEAL_DIM = 'rgba(26, 58, 52, 0.10)';
+const SUCCESS = '#3BAA7F';
 
 export function NetworkBackground() {
   return (
@@ -211,163 +144,73 @@ export function NetworkBackground() {
       <rect x="0" y="0" width={VW} height={VH} fill={BASEMAP} />
 
       <g className="chooser-bg-drift">
-        {/* Faint graticule every 30° */}
-        <g opacity="0.55">
-          {[-90, -60, -30, 0, 30, 60, 90, 120, 150].map((lng) => {
-            const x = ((lng - LNG_MIN) / LNG_W) * VW;
-            return (
-              <line
-                key={`mer-${lng}`}
-                x1={x}
-                y1="0"
-                x2={x}
-                y2={VH}
-                stroke="#e2dfd2"
-                strokeWidth="0.4"
-              />
-            );
-          })}
-          {[-30, 0, 30, 60].map((lat) => {
-            const y = ((LAT_MAX - lat) / LAT_H) * VH;
-            return (
-              <line
-                key={`par-${lat}`}
-                x1="0"
-                y1={y}
-                x2={VW}
-                y2={y}
-                stroke="#e2dfd2"
-                strokeWidth="0.4"
-              />
-            );
-          })}
+        {/* Blueprint grid — same engineering-drawing rhythm as Studio. */}
+        <g opacity="0.45">
+          {Array.from({ length: Math.floor(VW / 30) + 1 }, (_, i) => i * 30).map((x) => (
+            <line
+              key={`bp-mv-${x}`}
+              x1={x}
+              y1={0}
+              x2={x}
+              y2={VH}
+              stroke="#dcd8ca"
+              strokeWidth="0.3"
+            />
+          ))}
+          {Array.from({ length: Math.floor(VH / 30) + 1 }, (_, i) => i * 30).map((y) => (
+            <line
+              key={`bp-mh-${y}`}
+              x1={0}
+              y1={y}
+              x2={VW}
+              y2={y}
+              stroke="#dcd8ca"
+              strokeWidth="0.3"
+            />
+          ))}
         </g>
-        <line
-          x1="0"
-          y1={((LAT_MAX - 0) / LAT_H) * VH}
-          x2={VW}
-          y2={((LAT_MAX - 0) / LAT_H) * VH}
-          stroke="#d8d4c4"
-          strokeWidth="0.6"
-        />
-
-        {/* Degree labels along edges */}
-        <g>
-          {LAT_LABELS.map((lat) => {
-            const y = ((LAT_MAX - lat) / LAT_H) * VH;
-            if (y < 12 || y > VH - 6) return null;
-            return (
-              <g key={`lat-lbl-${lat}`}>
-                <text
-                  x={6}
-                  y={y - 2}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLat(lat)}
-                </text>
-                <text
-                  x={VW - 6}
-                  y={y - 2}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  textAnchor="end"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLat(lat)}
-                </text>
-                <line
-                  x1={0}
-                  y1={y}
-                  x2={4}
-                  y2={y}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-                <line
-                  x1={VW - 4}
-                  y1={y}
-                  x2={VW}
-                  y2={y}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-              </g>
-            );
-          })}
-          {LNG_LABELS.map((lng) => {
-            const x = ((lng - LNG_MIN) / LNG_W) * VW;
-            if (x < 18 || x > VW - 18) return null;
-            return (
-              <g key={`lng-lbl-${lng}`}>
-                <text
-                  x={x}
-                  y={9}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  textAnchor="middle"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLng(lng)}
-                </text>
-                <text
-                  x={x}
-                  y={VH - 4}
-                  fontFamily="var(--font-mono)"
-                  fontSize="7"
-                  textAnchor="middle"
-                  fill={GRATICULE_TICK}
-                  letterSpacing="0.04em"
-                  opacity="0.7"
-                >
-                  {fmtLng(lng)}
-                </text>
-                <line
-                  x1={x}
-                  y1={0}
-                  x2={x}
-                  y2={4}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-                <line
-                  x1={x}
-                  y1={VH - 4}
-                  x2={x}
-                  y2={VH}
-                  stroke={GRATICULE_TICK}
-                  strokeWidth="0.5"
-                  opacity="0.55"
-                />
-              </g>
-            );
-          })}
-        </g>
-
-        {/* Continent dots */}
-        <g>
-          {LAND_DOTS.map(([cx, cy]) => (
-            <circle
-              key={`d-${cx.toFixed(1)}-${cy.toFixed(1)}`}
-              cx={cx}
-              cy={cy}
-              r="1.2"
-              fill={COUNTRY_DOT}
+        <g opacity="0.7">
+          {[0, 150, 300, 450, 600].map((x) => (
+            <line
+              key={`bp-Mv-${x}`}
+              x1={x}
+              y1={0}
+              x2={x}
+              y2={VH}
+              stroke="#bdb7a6"
+              strokeWidth="0.45"
+            />
+          ))}
+          {[0, 150, 300].map((y) => (
+            <line
+              key={`bp-Mh-${y}`}
+              x1={0}
+              y1={y}
+              x2={VW}
+              y2={y}
+              stroke="#bdb7a6"
+              strokeWidth="0.45"
             />
           ))}
         </g>
 
-        {/* Network links */}
+        {/* Land fills */}
+        <path d={ALL_LAND_PATH} fill={LAND_FILL} stroke="none" />
+
+        {/* Coastlines */}
+        <path d={COASTLINE_PATH} fill="none" stroke={COASTLINE} strokeWidth="0.5" opacity="0.7" />
+
+        {/* Internal borders */}
+        <path
+          d={INTERIOR_PATH}
+          fill="none"
+          stroke={COUNTRY_BORDER}
+          strokeWidth="0.4"
+          strokeDasharray="2 2"
+          opacity="0.7"
+        />
+
+        {/* Network mesh */}
         <g>
           {LINK_PAIRS.map(([a, b]) => {
             const na = NODE_BY_ID[a];
@@ -380,9 +223,9 @@ export function NetworkBackground() {
                 y1={na.p[1]}
                 x2={nb.p[0]}
                 y2={nb.p[1]}
-                stroke={TEAL}
-                strokeWidth="0.7"
-                opacity="0.5"
+                stroke={DEEP_TEAL}
+                strokeWidth="0.6"
+                opacity="0.45"
                 strokeDasharray="2 3"
               />
             );
@@ -400,7 +243,7 @@ export function NetworkBackground() {
                     cy={n.p[1]}
                     r="13"
                     fill="none"
-                    stroke={TEAL}
+                    stroke={DEEP_TEAL}
                     strokeWidth="0.5"
                     opacity="0.3"
                   />
@@ -409,7 +252,7 @@ export function NetworkBackground() {
                     cy={n.p[1]}
                     r="9"
                     fill="none"
-                    stroke={TEAL}
+                    stroke={DEEP_TEAL}
                     strokeWidth="0.7"
                     opacity="0.5"
                   />
@@ -419,7 +262,7 @@ export function NetworkBackground() {
                 cx={n.p[0]}
                 cy={n.p[1]}
                 r={n.active ? 5.5 : 4}
-                fill="#ffffff"
+                fill={PANEL_FILL}
                 stroke={DEEP_TEAL}
                 strokeWidth="1.2"
               />
@@ -431,12 +274,145 @@ export function NetworkBackground() {
                 fontSize="8.5"
                 letterSpacing="0.06em"
                 textAnchor={n.anchor ?? 'start'}
-                fill={TEXT_INK}
+                fill={INK_LIGHT}
                 opacity="0.85"
               >
                 {n.label}
               </text>
             </g>
+          ))}
+        </g>
+
+        {/* Compact federated-ops sidebar — mirrors Studio's prediction
+         * sidebar but in the teal register: federated nodes are stable,
+         * Studio's are predictive. */}
+        <g transform={`translate(${VW - 138}, 22)`}>
+          <rect
+            x="0"
+            y="0"
+            width="124"
+            height="218"
+            rx="4"
+            fill={PANEL_FILL}
+            stroke={PANEL_BORDER}
+            strokeWidth="0.6"
+          />
+
+          <text
+            x="10"
+            y="18"
+            fontFamily="var(--font-sans)"
+            fontSize="11"
+            fontWeight="600"
+            fill={INK}
+          >
+            <tspan>MERLx</tspan>
+            <tspan dx="2" fill={IRIS} fontStyle="italic">
+              Network
+            </tspan>
+          </text>
+          <text
+            x="10"
+            y="30"
+            fontFamily="var(--font-mono)"
+            fontSize="8"
+            fill={INK_MUTED}
+            letterSpacing="0.04em"
+          >
+            federation · v0.4
+          </text>
+
+          {/* View toggle — deep-teal active per PRISM convention */}
+          <g transform="translate(10, 42)">
+            {[
+              { k: 'Nodes', active: true },
+              { k: 'Mesh', active: false },
+              { k: 'Sync', active: false },
+            ].map((t, i) => (
+              <g key={t.k} transform={`translate(${i * 36}, 0)`}>
+                <rect
+                  x="0"
+                  y="0"
+                  width="33"
+                  height="16"
+                  rx="3"
+                  fill={t.active ? DEEP_TEAL : 'transparent'}
+                  stroke={t.active ? DEEP_TEAL : PANEL_BORDER}
+                  strokeWidth="0.5"
+                />
+                <text
+                  x="16.5"
+                  y="11.5"
+                  fontFamily="var(--font-sans)"
+                  fontSize="8.5"
+                  fontWeight="500"
+                  textAnchor="middle"
+                  fill={t.active ? '#FFFFFF' : INK_MUTED}
+                >
+                  {t.k}
+                </text>
+              </g>
+            ))}
+          </g>
+
+          {/* Status counts */}
+          <g transform="translate(10, 76)">
+            <text
+              x="0"
+              y="0"
+              fontFamily="var(--font-sans)"
+              fontSize="8"
+              fontWeight="600"
+              letterSpacing="0.16em"
+              fill={INK_MUTED}
+            >
+              FEDERATION
+            </text>
+            <g transform="translate(0, 12)">
+              <circle cx="3" cy="6" r="2.5" fill={SUCCESS} />
+              <text x="12" y="9" fontFamily="var(--font-sans)" fontSize="9" fill={INK_LIGHT}>
+                9 / 9 online
+              </text>
+            </g>
+            <g transform="translate(0, 26)">
+              <circle cx="3" cy="6" r="2.5" fill={DEEP_TEAL} />
+              <text x="12" y="9" fontFamily="var(--font-sans)" fontSize="9" fill={INK_LIGHT}>
+                11 links · TLS
+              </text>
+            </g>
+            <g transform="translate(0, 40)">
+              <circle cx="3" cy="6" r="2.5" fill={IRIS} />
+              <text x="12" y="9" fontFamily="var(--font-sans)" fontSize="9" fill={INK_LIGHT}>
+                2 active sites
+              </text>
+            </g>
+          </g>
+
+          {/* Sync log tail */}
+          <line x1="10" y1="142" x2="114" y2="142" stroke={PANEL_BORDER} strokeWidth="0.5" />
+          <text
+            x="10"
+            y="156"
+            fontFamily="var(--font-sans)"
+            fontSize="8"
+            fontWeight="600"
+            letterSpacing="0.16em"
+            fill={INK_MUTED}
+          >
+            SYNC LOG
+          </text>
+          {LOG_LINES.map((line, i) => (
+            <text
+              key={`log-${line.length}-${i}`}
+              x="10"
+              y={170 + i * 11}
+              fontFamily="var(--font-mono)"
+              fontSize="7.5"
+              fill={INK_FAINT}
+              letterSpacing="0.04em"
+            >
+              {line}
+            </text>
           ))}
         </g>
       </g>
