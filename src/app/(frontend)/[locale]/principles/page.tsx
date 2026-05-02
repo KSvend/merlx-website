@@ -1,6 +1,7 @@
 import { PageShell } from '@/components/chrome/PageShell';
+import { NETWORK_BELIEFS, NETWORK_COMMITMENTS } from '@/content/network-principles';
 import { BELIEFS, COMMITMENTS } from '@/content/principles';
-import { isStudioTenant } from '@/lib/tenant-aware';
+import { isNetworkTenant, isStudioTenant } from '@/lib/tenant-aware';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -14,7 +15,14 @@ export default async function PrinciplesPage({ params }: PageProps) {
   setRequestLocale(locale);
 
   const headerList = await headers();
-  if (!isStudioTenant(headerList)) notFound();
+  const isStudio = isStudioTenant(headerList);
+  const isNetwork = isNetworkTenant(headerList);
+  if (!isStudio && !isNetwork) notFound();
+
+  const commitments = isNetwork ? NETWORK_COMMITMENTS : COMMITMENTS;
+  const beliefs = isNetwork ? NETWORK_BELIEFS : BELIEFS;
+  const accent = isNetwork ? 'var(--color-teal)' : 'var(--color-orange)';
+  const eyebrow = isNetwork ? 'Network principles' : 'Studio principles';
 
   return (
     <PageShell locale={locale}>
@@ -25,11 +33,11 @@ export default async function PrinciplesPage({ params }: PageProps) {
             fontSize: 11,
             letterSpacing: '0.16em',
             textTransform: 'uppercase',
-            color: 'var(--color-orange)',
+            color: accent,
             margin: '0 0 18px',
           }}
         >
-          Principles
+          {eyebrow}
         </p>
         <h1
           style={{
@@ -89,7 +97,7 @@ export default async function PrinciplesPage({ params }: PageProps) {
                 gap: 28,
               }}
             >
-              {COMMITMENTS.map((p) => (
+              {commitments.map((p) => (
                 <li key={p.number}>
                   <h3
                     style={{
@@ -101,7 +109,7 @@ export default async function PrinciplesPage({ params }: PageProps) {
                       margin: '0 0 6px',
                     }}
                   >
-                    <span style={{ color: 'var(--color-orange)', marginRight: 10 }}>
+                    <span style={{ color: accent, marginRight: 10 }}>
                       {String(p.number).padStart(2, '0')}
                     </span>
                     {p.title}
@@ -145,7 +153,7 @@ export default async function PrinciplesPage({ params }: PageProps) {
                 gap: 28,
               }}
             >
-              {BELIEFS.map((p) => (
+              {beliefs.map((p) => (
                 <li key={p.number}>
                   <h3
                     style={{

@@ -9,11 +9,13 @@ test('studio host now renders StudioHome on / (200)', async ({ request }) => {
   expect(html).toContain('Optics Suite');
 });
 
-test('network host gets 404 on /', async ({ request }) => {
+test('network host now renders NetworkHome on / (200)', async ({ request }) => {
   const res = await request.get('/en', {
     headers: { host: 'network.localhost.test' },
   });
-  expect(res.status()).toBe(404);
+  expect(res.status()).toBe(200);
+  const html = await res.text();
+  expect(html).toContain('A federation of locally owned MERL cooperatives');
 });
 
 test('node host gets 404 on /', async ({ request }) => {

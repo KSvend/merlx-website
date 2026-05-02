@@ -148,6 +148,28 @@ const STUDIO_SEED_PAGES: SeedPage[] = [
   },
 ];
 
+const NETWORK_SEED_PAGES: SeedPage[] = [
+  {
+    slug: 'about',
+    title: 'About the Network',
+    subtitle: 'Federated. Locally owned. Slowly built.',
+    body: 'The MERLx Network is a federation of locally owned MERL cooperatives. Each node operates under its own governance, hires locally, and decides locally — sharing methodology, conflict-sensitivity standards, and tooling with the rest of the federation. The Network coordinates; it does not direct. Studio builds the tools; Network nodes do the field work.',
+    status: 'published',
+  },
+  {
+    slug: 'legal/privacy',
+    title: 'Network Privacy Policy',
+    body: 'network.merlx.org collects only the data necessary to operate the website and respond to inquiries. Each individual node operates under its own privacy policy at its own subdomain — those policies govern data collected during fieldwork. Contact privacy@merlx.org for data subject requests at the network coordination level.',
+    status: 'published',
+  },
+  {
+    slug: 'legal/terms',
+    title: 'Network Terms of Use',
+    body: 'By using network.merlx.org you agree to these terms. Network methodology + open methods documents are © MERLx Network with attribution required for redistribution. Per-node terms govern individual engagements.',
+    status: 'published',
+  },
+];
+
 function plainTextToLexical(text: string) {
   return {
     root: {
@@ -273,6 +295,41 @@ async function seed() {
         } as Omit<OpticsTool, 'id' | 'createdAt' | 'updatedAt'>,
       });
       console.log(`  + seeded: optics-tools/${tool.slug}`);
+    }
+  }
+
+  // Seed network content under the network tenant
+  const networkTenant = await payload.find({
+    collection: 'tenants',
+    where: { type: { equals: 'network' } },
+    limit: 1,
+  });
+  if (networkTenant.docs.length === 0) {
+    console.warn('Network tenant not found — skipping network content seed.');
+  } else {
+    const networkId = networkTenant.docs[0]!.id;
+    for (const page of NETWORK_SEED_PAGES) {
+      const existing = await payload.find({
+        collection: 'pages',
+        where: { and: [{ slug: { equals: page.slug } }, { tenant: { equals: networkId } }] },
+        limit: 1,
+      });
+      if (existing.docs.length > 0) {
+        console.log(`  - skip: network/pages/${page.slug} already exists`);
+        continue;
+      }
+      await payload.create({
+        collection: 'pages',
+        data: {
+          slug: page.slug,
+          title: page.title,
+          subtitle: page.subtitle,
+          body: plainTextToLexical(page.body),
+          status: page.status,
+          tenant: networkId,
+        } as Omit<Page, 'id' | 'createdAt' | 'updatedAt'>,
+      });
+      console.log(`  + seeded: network/pages/${page.slug}`);
     }
   }
 
