@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { isGroupTenant, parseTenantHeaders } from '../../src/lib/tenant-aware';
+import {
+  isGroupTenant,
+  isNetworkTenant,
+  isStudioTenant,
+  parseTenantHeaders,
+} from '../../src/lib/tenant-aware';
 
 describe('parseTenantHeaders', () => {
   it('reads x-tenant-* headers and returns a record', () => {
@@ -32,5 +37,25 @@ describe('isGroupTenant', () => {
   it('returns false for non-group', () => {
     const headers = new Headers({ 'x-tenant-kind': 'studio' });
     expect(isGroupTenant(headers)).toBe(false);
+  });
+});
+
+describe('isStudioTenant', () => {
+  it('returns true for kind=studio', () => {
+    expect(isStudioTenant(new Headers({ 'x-tenant-kind': 'studio' }))).toBe(true);
+  });
+  it('returns false for non-studio', () => {
+    expect(isStudioTenant(new Headers({ 'x-tenant-kind': 'group' }))).toBe(false);
+    expect(isStudioTenant(new Headers({ 'x-tenant-kind': 'network' }))).toBe(false);
+    expect(isStudioTenant(new Headers())).toBe(false);
+  });
+});
+
+describe('isNetworkTenant', () => {
+  it('returns true for kind=network', () => {
+    expect(isNetworkTenant(new Headers({ 'x-tenant-kind': 'network' }))).toBe(true);
+  });
+  it('returns false for non-network', () => {
+    expect(isNetworkTenant(new Headers({ 'x-tenant-kind': 'studio' }))).toBe(false);
   });
 });
