@@ -31,27 +31,17 @@
     box-shadow 0.55s ease;
 }
 
-/* Two-layer brand/map composition inside .chooser-bg:
- *   .brand-mark — bold geometric brand composition (orange circle,
- *                 deep-teal rectangle, iris teardrop) on a near-white
- *                 field. Visible by default. Mirrors the company
- *                 profile cover aesthetic.
- *   .brand-map  — the analytical map composition. Hidden by default,
- *                 fades in on hover.
- * No tint overlay anymore — color lives in the brand mark, not as a
- * field fill. */
+/* Default state: clean near-white panel, no full-panel color overlay.
+ * Brand presence comes from the existing chooser-content (eyebrow dot,
+ * rule, CTA button — all in the panel's accent colour). The analytical
+ * map composition lives in .brand-map and only reveals on hover. */
 .brand-mark {
-  opacity: 1;
-  transition: opacity 0.55s ease;
+  display: none;
 }
 
 .brand-map {
   opacity: 0;
   transition: opacity 0.55s ease;
-}
-
-.chooser-half:hover .brand-mark {
-  opacity: 0;
 }
 
 .chooser-half:hover .brand-map {
