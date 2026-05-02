@@ -493,9 +493,10 @@ export function StudioBackground() {
         </g>
       </g>
 
-      {/* Top-right PRISM controls panel — moved from top-left so it
-       * doesn't sit under the chooser text panel. Does NOT drift. */}
-      <g transform={`translate(${VW - 264}, 20)`}>
+      {/* PRISM controls panel — top-right, with safe y offset so the
+       * top doesn't crop when the chooser panel is taller than wide
+       * (which slices the top/bottom of a 1:1 viewBox). Does NOT drift. */}
+      <g transform={`translate(${VW - 264}, 80)`}>
         {/* CONTROLS pill */}
         <g>
           <rect
