@@ -276,23 +276,24 @@ function clusterValue(cx: number, cy: number): { red: number; teal: number } {
 function cellColor(cx: number, cy: number): { fill: string; opacity: number } {
   const { red, teal } = clusterValue(cx, cy);
   const v = Math.max(red, teal);
-  // Stable carpet — almost invisible against cream land, matches the
-  // very faint H3 dot density in PRISM_01.
+  // Stable carpet — clearly visible grey hex tiling like PRISM_01.
+  // Most of the H3 coverage area shows these stable cells with red/
+  // teal clusters punching through.
   if (v < 0.06) {
-    return { fill: '#cfc8b6', opacity: 0.12 };
+    return { fill: '#c5beb0', opacity: 0.5 };
   }
   if (red > teal) {
     if (v > 0.7) return { fill: '#a83227', opacity: 0.95 };
     if (v > 0.5) return { fill: '#c44a3b', opacity: 0.88 };
     if (v > 0.3) return { fill: '#dc7864', opacity: 0.78 };
-    if (v > 0.15) return { fill: '#e8a896', opacity: 0.55 };
-    return { fill: '#cfc8b6', opacity: 0.22 };
+    if (v > 0.15) return { fill: '#e8a896', opacity: 0.6 };
+    return { fill: '#c5beb0', opacity: 0.55 };
   }
   if (v > 0.7) return { fill: '#1f4a42', opacity: 0.95 };
   if (v > 0.5) return { fill: '#2c6359', opacity: 0.85 };
   if (v > 0.3) return { fill: '#5c8480', opacity: 0.72 };
-  if (v > 0.15) return { fill: '#9ab8b3', opacity: 0.5 };
-  return { fill: '#cfc8b6', opacity: 0.22 };
+  if (v > 0.15) return { fill: '#9ab8b3', opacity: 0.55 };
+  return { fill: '#c5beb0', opacity: 0.55 };
 }
 
 interface Cell {
