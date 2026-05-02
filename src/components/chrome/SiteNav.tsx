@@ -31,6 +31,17 @@ export async function SiteNav({ locale }: SiteNavProps) {
         { href: `/${locale}/contact`, label: t('navContact') },
       ];
     }
+    if (kind === 'network') {
+      return [
+        { href: `/${locale}/nodes`, label: 'Nodes' },
+        { href: `/${locale}/services`, label: 'Services' },
+        { href: `/${locale}/become-a-node`, label: 'Become a node' },
+        { href: `/${locale}/principles`, label: 'Principles' },
+        { href: `/${locale}/about`, label: 'About' },
+        { href: `/${locale}/insights`, label: t('navInsights') },
+        { href: `/${locale}/contact`, label: t('navContact') },
+      ];
+    }
     return [
       { href: `/${locale}/insights`, label: t('navInsights') },
       { href: `/${locale}/publications`, label: t('navPublications') },
@@ -38,8 +49,13 @@ export async function SiteNav({ locale }: SiteNavProps) {
     ];
   })();
 
-  const accentColor = kind === 'studio' ? 'var(--color-orange)' : 'var(--color-purple)';
-  const projectSubtitle = kind === 'studio' ? 'Studio' : null;
+  const accentColor =
+    kind === 'studio'
+      ? 'var(--color-orange)'
+      : kind === 'network'
+        ? 'var(--color-teal)'
+        : 'var(--color-purple)';
+  const projectSubtitle = kind === 'studio' ? 'Studio' : kind === 'network' ? 'Network' : null;
 
   return (
     <header>

@@ -1,6 +1,6 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import { ContactForm } from '@/components/forms/ContactForm';
-import { isGroupTenant, isStudioTenant } from '@/lib/tenant-aware';
+import { isGroupTenant, isNetworkTenant, isStudioTenant } from '@/lib/tenant-aware';
 import { getTurnstileConfig } from '@/lib/turnstile';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
@@ -16,7 +16,9 @@ export default async function ContactPage({ params }: PageProps) {
   setRequestLocale(locale);
 
   const headerList = await headers();
-  if (!isGroupTenant(headerList) && !isStudioTenant(headerList)) notFound();
+  if (!isGroupTenant(headerList) && !isStudioTenant(headerList) && !isNetworkTenant(headerList)) {
+    notFound();
+  }
 
   // Both keys must be set together — see getTurnstileConfig() rationale.
   const turnstile = getTurnstileConfig();
