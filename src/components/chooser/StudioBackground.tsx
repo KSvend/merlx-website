@@ -192,7 +192,7 @@ function pointInH3Coverage(x: number, y: number): boolean {
 }
 
 // Hex grid (pointy-top, dense H3-res-ish)
-const HEX_R = 3.2;
+const HEX_R = 2.4;
 const HEX_DX = HEX_R * Math.sqrt(3);
 const HEX_DY = HEX_R * 1.5;
 
@@ -273,22 +273,23 @@ function clusterValue(cx: number, cy: number): { red: number; teal: number } {
 function cellColor(cx: number, cy: number): { fill: string; opacity: number } {
   const { red, teal } = clusterValue(cx, cy);
   const v = Math.max(red, teal);
-  // Stable carpet — barely visible against cream land, like PRISM_01
+  // Stable carpet — almost invisible against cream land, matches the
+  // very faint H3 dot density in PRISM_01.
   if (v < 0.06) {
-    return { fill: '#dcd6c8', opacity: 0.18 };
+    return { fill: '#cfc8b6', opacity: 0.12 };
   }
   if (red > teal) {
     if (v > 0.7) return { fill: '#a83227', opacity: 0.95 };
     if (v > 0.5) return { fill: '#c44a3b', opacity: 0.88 };
-    if (v > 0.3) return { fill: '#dc7864', opacity: 0.75 };
+    if (v > 0.3) return { fill: '#dc7864', opacity: 0.78 };
     if (v > 0.15) return { fill: '#e8a896', opacity: 0.55 };
-    return { fill: '#dcd6c8', opacity: 0.28 };
+    return { fill: '#cfc8b6', opacity: 0.22 };
   }
   if (v > 0.7) return { fill: '#1f4a42', opacity: 0.95 };
   if (v > 0.5) return { fill: '#2c6359', opacity: 0.85 };
-  if (v > 0.3) return { fill: '#5c8480', opacity: 0.7 };
+  if (v > 0.3) return { fill: '#5c8480', opacity: 0.72 };
   if (v > 0.15) return { fill: '#9ab8b3', opacity: 0.5 };
-  return { fill: '#dcd6c8', opacity: 0.28 };
+  return { fill: '#cfc8b6', opacity: 0.22 };
 }
 
 interface Cell {
@@ -321,10 +322,22 @@ function buildCells(): Cell[] {
 const CELLS = buildCells();
 
 // City labels (small dot + name)
-const CITIES: Array<{ name: string; lat: number; lng: number; dx?: number; dy?: number }> = [
+const CITIES: Array<{
+  name: string;
+  lat: number;
+  lng: number;
+  dx?: number;
+  dy?: number;
+  anchor?: 'start' | 'end';
+}> = [
   { name: 'Riyadh', lat: 24.7, lng: 46.7, dx: 6, dy: -3 },
+  { name: 'Khartoum', lat: 15.5, lng: 32.5, dx: 6, dy: 3 },
+  { name: 'Asmara', lat: 15.3, lng: 38.9, dx: 6, dy: 3 },
   { name: 'Addis Ababa', lat: 9, lng: 38.7, dx: 6, dy: 2 },
+  { name: 'Mogadishu', lat: 2, lng: 45.3, dx: 6, dy: 3 },
   { name: 'Nairobi', lat: -1.3, lng: 36.8, dx: 6, dy: 3 },
+  { name: 'Kampala', lat: 0.3, lng: 32.6, dx: -6, dy: 3, anchor: 'end' },
+  { name: 'Juba', lat: 4.85, lng: 31.6, dx: 6, dy: 2 },
 ];
 
 const COUNTRY_LABELS: Array<{
@@ -566,9 +579,10 @@ export function StudioBackground() {
                     x={cx + (city.dx ?? 5)}
                     y={cy + (city.dy ?? 2)}
                     fontFamily="var(--font-sans)"
-                    fontSize="9"
+                    fontSize="8.5"
                     fill={INK_MUTED}
                     letterSpacing="0.02em"
+                    textAnchor={city.anchor ?? 'start'}
                   >
                     {city.name}
                   </text>
@@ -624,11 +638,39 @@ export function StudioBackground() {
           </g>
         </g>
 
+        {/* Top-right metadata strip — PRISM date + frame counter +
+         * mode dropdown, rendered as flat mono text without panel chrome.
+         * Mirrors PRISM_01's '23 Mar 2026 · 51/57 · Crisis Risk Score'. */}
+        <g>
+          <text
+            x={VW - 22}
+            y={62}
+            fontFamily="var(--font-mono)"
+            fontSize="8.5"
+            fill="#1a1a1a"
+            textAnchor="end"
+            letterSpacing="0.02em"
+          >
+            23 Mar 2026
+          </text>
+          <text
+            x={VW - 22}
+            y={76}
+            fontFamily="var(--font-mono)"
+            fontSize="7.5"
+            fill="#9E9E9E"
+            textAnchor="end"
+            letterSpacing="0.04em"
+          >
+            51 / 57 · Crisis Risk Score
+          </text>
+        </g>
+
         {/* PRISM controls panel — top-right, with safe y offset so the
          * top doesn't crop when the chooser panel is taller than wide
          * (which slices the top/bottom of a 1:1 viewBox). Does NOT drift.
          * Sits inside .brand-map so it fades in with the rest of the map. */}
-        <g transform={`translate(${VW - 264}, 80)`}>
+        <g transform={`translate(${VW - 264}, 96)`}>
           {/* CONTROLS pill */}
           <g>
             <rect
