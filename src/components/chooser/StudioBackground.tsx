@@ -389,69 +389,127 @@ const RAMP_RED_DARK = '#a83227';
 export function StudioBackground() {
   return (
     <svg viewBox={`0 0 ${VW} ${VH}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      {/* Water */}
-      <rect x="0" y="0" width={VW} height={VH} fill={WATER} />
+      {/* Near-white field — replaces the cream tint that previously
+       * filled the chooser panel. Brand mark and map sit on top. */}
+      <rect x="0" y="0" width={VW} height={VH} fill="#FAFAF7" />
 
-      <g className="chooser-bg-drift">
-        {/* Land fills */}
-        <g>
-          {visiblePaths.map((p) => (
-            <path key={`land-${p.name}`} d={p.d} fill={LAND_FILL} stroke="none" />
-          ))}
-        </g>
-
-        {/* Internal country borders — solid faint pink, CARTO style */}
+      {/* DEFAULT-STATE BRAND MARK — visible until hover.
+       * Mirrors the company profile cover: deep-teal rectangle, orange
+       * circle, iris teardrop. Studio panel emphasizes the orange. */}
+      <g className="brand-mark">
+        {/* Tall deep-teal rectangle (right) */}
+        <rect x={VW - 220} y={VH * 0.32} width="60" height="160" fill="#1A3A34" />
+        {/* Iris teardrop (centre) — drawn as a pin shape */}
         <path
-          d={INTERIOR_PATH}
-          fill="none"
-          stroke={COUNTRY_BORDER}
-          strokeWidth="0.55"
-          opacity="0.85"
+          d={`M ${VW - 280} ${VH * 0.36} q -28 0 -28 28 q 0 28 28 56 q 28 -28 28 -56 q 0 -28 -28 -28 z`}
+          fill="#4A3F6B"
         />
+        {/* Orange filled circle (left) — the dominant Studio mark */}
+        <circle cx={VW - 360} cy={VH * 0.46} r="42" fill="#CA5D0F" />
+        {/* Tiny mono caption */}
+        <text
+          x={VW - 22}
+          y={VH - 20}
+          fontFamily="var(--font-mono)"
+          fontSize="9"
+          letterSpacing="0.16em"
+          fill="#6B6B6B"
+          textAnchor="end"
+        >
+          MERLx · STUDIO
+        </text>
+      </g>
 
-        {/* Coastlines — slightly darker grey */}
-        <path d={COASTLINE_PATH} fill="none" stroke={COASTLINE} strokeWidth="0.5" opacity="0.55" />
+      {/* HOVER-STATE MAP COMPOSITION — fades in on hover */}
+      <g className="brand-map">
+        <rect x="0" y="0" width={VW} height={VH} fill={WATER} />
+        <g className="chooser-bg-drift">
+          {/* Land fills */}
+          <g>
+            {visiblePaths.map((p) => (
+              <path key={`land-${p.name}`} d={p.d} fill={LAND_FILL} stroke="none" />
+            ))}
+          </g>
 
-        {/* Hex cells — bipolar Delta carpet */}
-        <g>
-          {CELLS.map((c) => (
-            <polygon
-              key={c.key}
-              points={hexPoints(c.cx, c.cy, HEX_R)}
-              fill={c.fill}
-              opacity={c.opacity}
-            />
-          ))}
-        </g>
+          {/* Internal country borders — solid faint pink, CARTO style */}
+          <path
+            d={INTERIOR_PATH}
+            fill="none"
+            stroke={COUNTRY_BORDER}
+            strokeWidth="0.55"
+            opacity="0.85"
+          />
 
-        {/* City dots */}
-        <g>
-          {CITIES.map((city) => {
-            const [cx, cy] = proj(city.lat, city.lng);
-            return (
-              <g key={`city-${city.name}`}>
-                <circle cx={cx} cy={cy} r="2" fill={INK} opacity="0.7" />
-                <text
-                  x={cx + (city.dx ?? 5)}
-                  y={cy + (city.dy ?? 2)}
-                  fontFamily="var(--font-sans)"
-                  fontSize="9"
-                  fill={INK_MUTED}
-                  letterSpacing="0.02em"
-                >
-                  {city.name}
-                </text>
-              </g>
-            );
-          })}
-        </g>
+          {/* Coastlines — slightly darker grey */}
+          <path
+            d={COASTLINE_PATH}
+            fill="none"
+            stroke={COASTLINE}
+            strokeWidth="0.5"
+            opacity="0.55"
+          />
 
-        {/* Country labels — faint grey ALL CAPS sans, multi-line where needed */}
-        <g>
-          {COUNTRY_LABELS.map((l) => {
-            const [x, y] = proj(l.lat, l.lng);
-            const size = l.size ?? 10;
-            if (l.lines) {
+          {/* Hex cells — bipolar Delta carpet */}
+          <g>
+            {CELLS.map((c) => (
+              <polygon
+                key={c.key}
+                points={hexPoints(c.cx, c.cy, HEX_R)}
+                fill={c.fill}
+                opacity={c.opacity}
+              />
+            ))}
+          </g>
+
+          {/* City dots */}
+          <g>
+            {CITIES.map((city) => {
+              const [cx, cy] = proj(city.lat, city.lng);
+              return (
+                <g key={`city-${city.name}`}>
+                  <circle cx={cx} cy={cy} r="2" fill={INK} opacity="0.7" />
+                  <text
+                    x={cx + (city.dx ?? 5)}
+                    y={cy + (city.dy ?? 2)}
+                    fontFamily="var(--font-sans)"
+                    fontSize="9"
+                    fill={INK_MUTED}
+                    letterSpacing="0.02em"
+                  >
+                    {city.name}
+                  </text>
+                </g>
+              );
+            })}
+          </g>
+
+          {/* Country labels — faint grey ALL CAPS sans, multi-line where needed */}
+          <g>
+            {COUNTRY_LABELS.map((l) => {
+              const [x, y] = proj(l.lat, l.lng);
+              const size = l.size ?? 10;
+              if (l.lines) {
+                return (
+                  <text
+                    key={`lbl-${l.text}`}
+                    x={x}
+                    y={y}
+                    fontFamily="var(--font-sans)"
+                    fontSize={size}
+                    textAnchor="middle"
+                    fill={LABEL_INK}
+                    letterSpacing="0.08em"
+                    fontWeight="500"
+                    opacity="0.75"
+                  >
+                    {l.lines.map((line, i) => (
+                      <tspan key={`${l.text}-${i}-${line}`} x={x} dy={i === 0 ? 0 : size + 2}>
+                        {line}
+                      </tspan>
+                    ))}
+                  </text>
+                );
+              }
               return (
                 <text
                   key={`lbl-${l.text}`}
@@ -465,280 +523,261 @@ export function StudioBackground() {
                   fontWeight="500"
                   opacity="0.75"
                 >
-                  {l.lines.map((line, i) => (
-                    <tspan key={`${l.text}-${i}-${line}`} x={x} dy={i === 0 ? 0 : size + 2}>
-                      {line}
-                    </tspan>
-                  ))}
+                  {l.text}
                 </text>
               );
-            }
-            return (
-              <text
-                key={`lbl-${l.text}`}
-                x={x}
-                y={y}
-                fontFamily="var(--font-sans)"
-                fontSize={size}
-                textAnchor="middle"
-                fill={LABEL_INK}
-                letterSpacing="0.08em"
-                fontWeight="500"
-                opacity="0.75"
-              >
-                {l.text}
-              </text>
-            );
-          })}
-        </g>
-      </g>
-
-      {/* PRISM controls panel — top-right, with safe y offset so the
-       * top doesn't crop when the chooser panel is taller than wide
-       * (which slices the top/bottom of a 1:1 viewBox). Does NOT drift. */}
-      <g transform={`translate(${VW - 264}, 80)`}>
-        {/* CONTROLS pill */}
-        <g>
-          <rect
-            x="0"
-            y="0"
-            width="78"
-            height="20"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          <text
-            x="10"
-            y="13.5"
-            fontFamily="var(--font-mono)"
-            fontSize="8.5"
-            letterSpacing="0.16em"
-            fill={INK}
-            fontWeight="500"
-          >
-            CONTROLS
-          </text>
-          <text
-            x="68"
-            y="13.5"
-            fontFamily="var(--font-mono)"
-            fontSize="8.5"
-            fill={INK_MUTED}
-            textAnchor="middle"
-          >
-            ‹
-          </text>
+            })}
+          </g>
         </g>
 
-        {/* View toggle (Conflict Systems / Hex / Admin Areas) */}
-        <g transform="translate(0, 28)">
-          <rect
-            x="0"
-            y="0"
-            width="244"
-            height="22"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          <text
-            x="48"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Conflict Systems
-          </text>
-          <line x1="96" y1="4" x2="96" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          {/* Hex active in deep-teal */}
-          <rect x="96" y="0" width="48" height="22" rx="3" fill={DEEP_TEAL} />
-          <text
-            x="120"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontWeight="500"
-          >
-            Hex
-          </text>
-          <line x1="144" y1="4" x2="144" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="194"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Admin Areas
-          </text>
-        </g>
+        {/* PRISM controls panel — top-right, with safe y offset so the
+         * top doesn't crop when the chooser panel is taller than wide
+         * (which slices the top/bottom of a 1:1 viewBox). Does NOT drift.
+         * Sits inside .brand-map so it fades in with the rest of the map. */}
+        <g transform={`translate(${VW - 264}, 80)`}>
+          {/* CONTROLS pill */}
+          <g>
+            <rect
+              x="0"
+              y="0"
+              width="78"
+              height="20"
+              rx="3"
+              fill={PANEL_FILL}
+              stroke={PANEL_BORDER}
+              strokeWidth="0.5"
+            />
+            <text
+              x="10"
+              y="13.5"
+              fontFamily="var(--font-mono)"
+              fontSize="8.5"
+              letterSpacing="0.16em"
+              fill={INK}
+              fontWeight="500"
+            >
+              CONTROLS
+            </text>
+            <text
+              x="68"
+              y="13.5"
+              fontFamily="var(--font-mono)"
+              fontSize="8.5"
+              fill={INK_MUTED}
+              textAnchor="middle"
+            >
+              ‹
+            </text>
+          </g>
 
-        {/* Mode toggle (Now / Trend / Delta / Predicted / i) */}
-        <g transform="translate(0, 58)">
-          <rect
-            x="0"
-            y="0"
-            width="244"
-            height="22"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          <text
-            x="22"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Now
-          </text>
-          <line x1="44" y1="4" x2="44" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="74"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Trend
-          </text>
-          <line x1="104" y1="4" x2="104" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          {/* Delta active in iris */}
-          <rect x="104" y="0" width="46" height="22" rx="3" fill={IRIS} />
-          <text
-            x="127"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontWeight="500"
-          >
-            Delta
-          </text>
-          <line x1="150" y1="4" x2="150" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="182"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-          >
-            Predicted
-          </text>
-          <line x1="214" y1="4" x2="214" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
-          <text
-            x="229"
-            y="14.5"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            textAnchor="middle"
-            fill={INK_MUTED}
-            fontStyle="italic"
-          >
-            i
-          </text>
-        </g>
+          {/* View toggle (Conflict Systems / Hex / Admin Areas) */}
+          <g transform="translate(0, 28)">
+            <rect
+              x="0"
+              y="0"
+              width="244"
+              height="22"
+              rx="3"
+              fill={PANEL_FILL}
+              stroke={PANEL_BORDER}
+              strokeWidth="0.5"
+            />
+            <text
+              x="48"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill={INK_MUTED}
+            >
+              Conflict Systems
+            </text>
+            <line x1="96" y1="4" x2="96" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
+            {/* Hex active in deep-teal */}
+            <rect x="96" y="0" width="48" height="22" rx="3" fill={DEEP_TEAL} />
+            <text
+              x="120"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill="#FFFFFF"
+              fontWeight="500"
+            >
+              Hex
+            </text>
+            <line x1="144" y1="4" x2="144" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
+            <text
+              x="194"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill={INK_MUTED}
+            >
+              Admin Areas
+            </text>
+          </g>
 
-        {/* Legend — bipolar ramp + delta count + threshold */}
-        <g transform="translate(0, 88)">
-          <rect
-            x="0"
-            y="0"
-            width="244"
-            height="64"
-            rx="3"
-            fill={PANEL_FILL}
-            stroke={PANEL_BORDER}
-            strokeWidth="0.5"
-          />
-          {/* Bipolar gradient ramp */}
-          <defs>
-            <linearGradient id="delta-ramp" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={RAMP_TEAL_DARK} />
-              <stop offset="25%" stopColor={RAMP_TEAL_MID} />
-              <stop offset="50%" stopColor={RAMP_GREY} />
-              <stop offset="75%" stopColor={RAMP_RED_MID} />
-              <stop offset="100%" stopColor={RAMP_RED_DARK} />
-            </linearGradient>
-          </defs>
-          <rect x="10" y="10" width="224" height="6" fill="url(#delta-ramp)" />
-          <text
-            x="10"
-            y="26"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_MUTED}
-            letterSpacing="0.04em"
-          >
-            de-escalating
-          </text>
-          <text
-            x="122"
-            y="26"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_MUTED}
-            textAnchor="middle"
-            letterSpacing="0.04em"
-          >
-            stable
-          </text>
-          <text
-            x="234"
-            y="26"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_MUTED}
-            textAnchor="end"
-            letterSpacing="0.04em"
-          >
-            escalating
-          </text>
-          <text
-            x="10"
-            y="44"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            fill={INK}
-            fontWeight="500"
-          >
-            Week-over-week change
-          </text>
-          <text
-            x="234"
-            y="44"
-            fontFamily="var(--font-mono)"
-            fontSize="9"
-            fill={INK}
-            textAnchor="end"
-            fontWeight="500"
-          >
-            5,089
-          </text>
-          <text
-            x="10"
-            y="56"
-            fontFamily="var(--font-mono)"
-            fontSize="7.5"
-            fill={INK_FAINT}
-            letterSpacing="0.04em"
-          >
-            threshold ≥ 0.25
-          </text>
+          {/* Mode toggle (Now / Trend / Delta / Predicted / i) */}
+          <g transform="translate(0, 58)">
+            <rect
+              x="0"
+              y="0"
+              width="244"
+              height="22"
+              rx="3"
+              fill={PANEL_FILL}
+              stroke={PANEL_BORDER}
+              strokeWidth="0.5"
+            />
+            <text
+              x="22"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill={INK_MUTED}
+            >
+              Now
+            </text>
+            <line x1="44" y1="4" x2="44" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
+            <text
+              x="74"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill={INK_MUTED}
+            >
+              Trend
+            </text>
+            <line x1="104" y1="4" x2="104" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
+            {/* Delta active in iris */}
+            <rect x="104" y="0" width="46" height="22" rx="3" fill={IRIS} />
+            <text
+              x="127"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill="#FFFFFF"
+              fontWeight="500"
+            >
+              Delta
+            </text>
+            <line x1="150" y1="4" x2="150" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
+            <text
+              x="182"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill={INK_MUTED}
+            >
+              Predicted
+            </text>
+            <line x1="214" y1="4" x2="214" y2="18" stroke={PANEL_BORDER} strokeWidth="0.5" />
+            <text
+              x="229"
+              y="14.5"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              textAnchor="middle"
+              fill={INK_MUTED}
+              fontStyle="italic"
+            >
+              i
+            </text>
+          </g>
+
+          {/* Legend — bipolar ramp + delta count + threshold */}
+          <g transform="translate(0, 88)">
+            <rect
+              x="0"
+              y="0"
+              width="244"
+              height="64"
+              rx="3"
+              fill={PANEL_FILL}
+              stroke={PANEL_BORDER}
+              strokeWidth="0.5"
+            />
+            {/* Bipolar gradient ramp */}
+            <defs>
+              <linearGradient id="delta-ramp" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor={RAMP_TEAL_DARK} />
+                <stop offset="25%" stopColor={RAMP_TEAL_MID} />
+                <stop offset="50%" stopColor={RAMP_GREY} />
+                <stop offset="75%" stopColor={RAMP_RED_MID} />
+                <stop offset="100%" stopColor={RAMP_RED_DARK} />
+              </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="224" height="6" fill="url(#delta-ramp)" />
+            <text
+              x="10"
+              y="26"
+              fontFamily="var(--font-mono)"
+              fontSize="7.5"
+              fill={INK_MUTED}
+              letterSpacing="0.04em"
+            >
+              de-escalating
+            </text>
+            <text
+              x="122"
+              y="26"
+              fontFamily="var(--font-mono)"
+              fontSize="7.5"
+              fill={INK_MUTED}
+              textAnchor="middle"
+              letterSpacing="0.04em"
+            >
+              stable
+            </text>
+            <text
+              x="234"
+              y="26"
+              fontFamily="var(--font-mono)"
+              fontSize="7.5"
+              fill={INK_MUTED}
+              textAnchor="end"
+              letterSpacing="0.04em"
+            >
+              escalating
+            </text>
+            <text
+              x="10"
+              y="44"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              fill={INK}
+              fontWeight="500"
+            >
+              Week-over-week change
+            </text>
+            <text
+              x="234"
+              y="44"
+              fontFamily="var(--font-mono)"
+              fontSize="9"
+              fill={INK}
+              textAnchor="end"
+              fontWeight="500"
+            >
+              5,089
+            </text>
+            <text
+              x="10"
+              y="56"
+              fontFamily="var(--font-mono)"
+              fontSize="7.5"
+              fill={INK_FAINT}
+              letterSpacing="0.04em"
+            >
+              threshold ≥ 0.25
+            </text>
+          </g>
         </g>
       </g>
     </svg>
