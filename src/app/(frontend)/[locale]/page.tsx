@@ -1,6 +1,7 @@
 import { ChooserHero } from '@/components/chooser/ChooserHero';
 import { PageShell } from '@/components/chrome/PageShell';
-import { isGroupTenant } from '@/lib/tenant-aware';
+import { StudioHome } from '@/components/studio/StudioHome';
+import { isGroupTenant, isStudioTenant } from '@/lib/tenant-aware';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -14,6 +15,13 @@ export default async function Page({ params }: PageProps) {
   setRequestLocale(locale);
 
   const headerList = await headers();
+  if (isStudioTenant(headerList)) {
+    return (
+      <PageShell locale={locale}>
+        <StudioHome locale={locale} />
+      </PageShell>
+    );
+  }
   if (!isGroupTenant(headerList)) notFound();
 
   return (

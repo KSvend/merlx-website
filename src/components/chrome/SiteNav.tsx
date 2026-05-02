@@ -1,14 +1,45 @@
 import { BrandMark } from '@/components/BrandMark';
 import { LocaleSwitch } from '@/components/LocaleSwitch';
+import { parseTenantHeaders } from '@/lib/tenant-aware';
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 
 interface SiteNavProps {
   locale: string;
 }
 
+interface NavLink {
+  href: string;
+  label: string;
+}
+
 export async function SiteNav({ locale }: SiteNavProps) {
   const t = await getTranslations('chrome');
+  const headerList = await headers();
+  const { kind } = parseTenantHeaders(headerList);
+
+  const links: NavLink[] = (() => {
+    if (kind === 'studio') {
+      return [
+        { href: `/${locale}/optics`, label: 'Optics Suite' },
+        { href: `/${locale}/engage`, label: 'Engage' },
+        { href: `/${locale}/principles`, label: 'Principles' },
+        { href: `/${locale}/about`, label: 'About' },
+        { href: `/${locale}/insights`, label: t('navInsights') },
+        { href: `/${locale}/publications`, label: t('navPublications') },
+        { href: `/${locale}/contact`, label: t('navContact') },
+      ];
+    }
+    return [
+      { href: `/${locale}/insights`, label: t('navInsights') },
+      { href: `/${locale}/publications`, label: t('navPublications') },
+      { href: `/${locale}/contact`, label: t('navContact') },
+    ];
+  })();
+
+  const accentColor = kind === 'studio' ? 'var(--color-orange)' : 'var(--color-purple)';
+  const projectSubtitle = kind === 'studio' ? 'Studio' : null;
 
   return (
     <header>
@@ -26,7 +57,7 @@ export async function SiteNav({ locale }: SiteNavProps) {
           href={`/${locale}`}
           style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'baseline',
             gap: 11,
             textDecoration: 'none',
             color: 'var(--color-ink)',
@@ -41,8 +72,22 @@ export async function SiteNav({ locale }: SiteNavProps) {
               letterSpacing: '-0.005em',
             }}
           >
-            MERL<span style={{ color: 'var(--color-purple)' }}>x</span>
+            MERL<span style={{ color: accentColor }}>x</span>
           </span>
+          {projectSubtitle ? (
+            <span
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontStyle: 'italic',
+                fontWeight: 400,
+                fontSize: 16,
+                color: 'var(--color-ink-mute)',
+                marginLeft: 2,
+              }}
+            >
+              {projectSubtitle}
+            </span>
+          ) : null}
         </Link>
 
         <div
@@ -55,18 +100,15 @@ export async function SiteNav({ locale }: SiteNavProps) {
             color: 'var(--color-ink-soft)',
           }}
         >
-          <Link href={`/${locale}/insights`} style={{ color: 'inherit', textDecoration: 'none' }}>
-            {t('navInsights')}
-          </Link>
-          <Link
-            href={`/${locale}/publications`}
-            style={{ color: 'inherit', textDecoration: 'none' }}
-          >
-            {t('navPublications')}
-          </Link>
-          <Link href={`/${locale}/contact`} style={{ color: 'inherit', textDecoration: 'none' }}>
-            {t('navContact')}
-          </Link>
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+              {link.label}
+            </Link>
+          ))}
           <LocaleSwitch currentLocale={locale} />
         </div>
       </nav>
