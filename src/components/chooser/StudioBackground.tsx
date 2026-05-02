@@ -127,7 +127,6 @@ export function StudioBackground() {
         fontSize="9"
         letterSpacing="0.16em"
         fill={INK_MUTED}
-        textTransform="uppercase"
       >
         PRISM · INFERENCE
       </text>
@@ -167,7 +166,6 @@ export function StudioBackground() {
         fontSize="9"
         letterSpacing="0.16em"
         fill={INK_MUTED}
-        textTransform="uppercase"
       >
         CELLS
       </text>
