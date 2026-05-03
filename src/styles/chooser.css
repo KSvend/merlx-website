@@ -39,6 +39,51 @@
   opacity: 1;
 }
 
+/* Slow halo pulse on the Barcelona HQ pin and the active NileX node
+ * — calm, ambient, signals 'live'. */
+.city-pulse,
+.node-pulse {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: city-halo 4s ease-in-out infinite;
+}
+
+@keyframes city-halo {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.05;
+  }
+}
+
+/* Subtle scanline drift on the EO tile reveal — suggests live raster
+ * imagery being processed when Studio CTA is hovered. */
+.eo-tile {
+  animation: eo-scan 3s linear infinite;
+}
+
+@keyframes eo-scan {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.78;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .city-pulse,
+  .node-pulse,
+  .eo-tile {
+    animation: none;
+  }
+}
+
 .world-landing-hero {
   position: relative;
   z-index: 2;

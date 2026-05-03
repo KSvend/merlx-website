@@ -14,7 +14,7 @@
 import { geoPath, geoTransform } from 'd3-geo';
 import { mesh } from 'topojson-client';
 // biome-ignore lint/suspicious/noExplicitAny: TopoJSON shape varies by source
-import worldAtlas from 'world-atlas/countries-110m.json' with { type: 'json' };
+import worldAtlas from 'world-atlas/countries-50m.json' with { type: 'json' };
 
 const VW = 1200;
 const VH = 600;
