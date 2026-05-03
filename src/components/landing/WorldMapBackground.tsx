@@ -395,13 +395,13 @@ export function WorldMapBackground() {
             <g key={tile.label} className={`eo-tile eo-tile--${idx}`}>
               <rect x={x0} y={y0} width={w} height={h} fill={IRIS} opacity="0.08" />
               <g opacity="0.25">
-                {Array.from({ length: scanLines }, (_, i) => (
+                {Array.from({ length: scanLines }, (_, i) => i * 2.5 + 1.25).map((dy) => (
                   <line
-                    key={`scan-${i}`}
+                    key={`scan-${tile.label}-${dy}`}
                     x1={x0}
-                    y1={y0 + i * 2.5 + 1.25}
+                    y1={y0 + dy}
                     x2={x1}
-                    y2={y0 + i * 2.5 + 1.25}
+                    y2={y0 + dy}
                     stroke={IRIS}
                     strokeWidth="0.4"
                   />
