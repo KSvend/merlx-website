@@ -383,23 +383,44 @@ export function WorldMapBackground() {
           ))}
         </g>
         {/* EO satellite tile rectangles — represent satellite imagery
-         * tile coverage. Iris dashed outline + small label. */}
-        {EO_TILES.map((tile) => {
+         * tile coverage. Iris dashed outline + scanline raster + corner
+         * crosshair ticks + Sentinel-2 / 10m resolution annotation. */}
+        {EO_TILES.map((tile, idx) => {
           const [x0, y1] = proj(tile.pos[0], tile.pos[1]);
           const [x1, y0] = proj(tile.pos[0] + tile.height, tile.pos[1] + tile.width);
+          const w = x1 - x0;
+          const h = y1 - y0;
+          const scanLines = Math.floor(h / 2.5);
           return (
-            <g key={tile.label}>
+            <g key={tile.label} className={`eo-tile eo-tile--${idx}`}>
+              <rect x={x0} y={y0} width={w} height={h} fill={IRIS} opacity="0.08" />
+              <g opacity="0.25">
+                {Array.from({ length: scanLines }, (_, i) => (
+                  <line
+                    key={`scan-${i}`}
+                    x1={x0}
+                    y1={y0 + i * 2.5 + 1.25}
+                    x2={x1}
+                    y2={y0 + i * 2.5 + 1.25}
+                    stroke={IRIS}
+                    strokeWidth="0.4"
+                  />
+                ))}
+              </g>
               <rect
                 x={x0}
                 y={y0}
-                width={x1 - x0}
-                height={y1 - y0}
+                width={w}
+                height={h}
                 fill="none"
                 stroke={IRIS}
                 strokeWidth="1"
                 strokeDasharray="3 2"
               />
-              <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill={IRIS} opacity="0.08" />
+              <line x1={x0} y1={y0} x2={x0 + 4} y2={y0} stroke={IRIS} strokeWidth="0.8" />
+              <line x1={x0} y1={y0} x2={x0} y2={y0 + 4} stroke={IRIS} strokeWidth="0.8" />
+              <line x1={x1 - 4} y1={y1} x2={x1} y2={y1} stroke={IRIS} strokeWidth="0.8" />
+              <line x1={x1} y1={y1 - 4} x2={x1} y2={y1} stroke={IRIS} strokeWidth="0.8" />
               <text
                 x={x0 + 4}
                 y={y0 - 4}
@@ -410,6 +431,18 @@ export function WorldMapBackground() {
                 fontWeight="500"
               >
                 EO · {tile.label}
+              </text>
+              <text
+                x={x1 - 4}
+                y={y1 + 11}
+                fontFamily="var(--font-mono)"
+                fontSize="7"
+                letterSpacing="0.06em"
+                fill={IRIS}
+                textAnchor="end"
+                opacity="0.85"
+              >
+                Sentinel-2 · 10m
               </text>
             </g>
           );
@@ -448,15 +481,27 @@ export function WorldMapBackground() {
             return (
               <g key={n.id}>
                 {n.active && (
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r="14"
-                    fill="none"
-                    stroke={DEEP_TEAL}
-                    strokeWidth="0.5"
-                    opacity="0.4"
-                  />
+                  <>
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r="20"
+                      fill="none"
+                      stroke={DEEP_TEAL}
+                      strokeWidth="0.4"
+                      opacity="0.25"
+                    />
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r="14"
+                      fill="none"
+                      stroke={DEEP_TEAL}
+                      strokeWidth="0.5"
+                      opacity="0.45"
+                      className="node-pulse"
+                    />
+                  </>
                 )}
                 <circle
                   cx={cx}
@@ -474,7 +519,7 @@ export function WorldMapBackground() {
                   fontSize="9"
                   letterSpacing="0.08em"
                   fill={INK}
-                  fontWeight="500"
+                  fontWeight={n.active ? 600 : 500}
                 >
                   {n.label}
                 </text>
