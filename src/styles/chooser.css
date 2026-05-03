@@ -60,6 +60,29 @@
   }
 }
 
+/* Ambient scan sweep — thin iris vertical line drifts L→R across the
+ * world map, gently looping. Signals 'data being processed'. */
+.scan-sweep {
+  animation: scan-sweep 18s linear infinite;
+}
+
+@keyframes scan-sweep {
+  0% {
+    transform: translateX(-2%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.18;
+  }
+  90% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translateX(102%);
+    opacity: 0;
+  }
+}
+
 /* Subtle scanline drift on the EO tile reveal — suggests live raster
  * imagery being processed when Studio CTA is hovered. */
 .eo-tile {
@@ -79,8 +102,12 @@
 @media (prefers-reduced-motion: reduce) {
   .city-pulse,
   .node-pulse,
-  .eo-tile {
+  .eo-tile,
+  .scan-sweep {
     animation: none;
+  }
+  .scan-sweep {
+    opacity: 0;
   }
 }
 

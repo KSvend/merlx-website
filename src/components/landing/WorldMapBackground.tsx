@@ -265,6 +265,69 @@ export function WorldMapBackground() {
       {/* Nile river — fine blue-grey */}
       <path d={nilePath} fill="none" stroke={NILE_BLUE} strokeWidth="0.8" opacity="0.7" />
 
+      {/* Ambient scan sweep — thin vertical iris line drifts L→R
+       * across the map. Signals 'data being processed' without
+       * hover. Animated via .scan-sweep keyframe in chooser.css. */}
+      <line
+        x1="0"
+        y1="0"
+        x2="0"
+        y2={VH}
+        stroke={IRIS}
+        strokeWidth="1"
+        opacity="0.18"
+        className="scan-sweep"
+      />
+
+      {/* Corner annotation strips — top-right + bottom-right.
+       * Faint mono captions giving the map a 'data console' feel. */}
+      <text
+        x={VW - 12}
+        y={16}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        letterSpacing="0.12em"
+        fill={INK_MUTED}
+        textAnchor="end"
+        opacity="0.7"
+      >
+        WORLD · EQR · 30°/30°
+      </text>
+      <text
+        x={VW - 12}
+        y={VH - 12}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        letterSpacing="0.12em"
+        fill={INK_MUTED}
+        textAnchor="end"
+        opacity="0.7"
+      >
+        MERLx · GROUP · v2026
+      </text>
+      <text
+        x={12}
+        y={16}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        letterSpacing="0.12em"
+        fill={INK_MUTED}
+        opacity="0.7"
+      >
+        OFFICES · 3
+      </text>
+      <text
+        x={12}
+        y={VH - 12}
+        fontFamily="var(--font-mono)"
+        fontSize="9"
+        letterSpacing="0.12em"
+        fill={INK_MUTED}
+        opacity="0.7"
+      >
+        © NATURAL EARTH · OPENSTREETMAP
+      </text>
+
       {/* MERLx city pins (always visible) */}
       <g>
         {CITIES.map((city) => {
