@@ -1,4 +1,198 @@
-/* v16 hover-split landing chooser
+/* v17 — single MERLx landing.
+ * World-map outline backdrop, hero text, two CTAs (Studio / Network),
+ * Contact link. Hover on either CTA reveals a layer in the background
+ * SVG (PRISM hex + EO squares for Studio, federated nodes for Network).
+ */
+.world-landing {
+  position: relative;
+  flex: 1;
+  min-height: 700px;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.world-landing-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.world-landing-bg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.studio-reveal,
+.network-reveal {
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.world-landing:has(.world-landing-cta--studio:hover) .studio-reveal {
+  opacity: 1;
+}
+.world-landing:has(.world-landing-cta--network:hover) .network-reveal {
+  opacity: 1;
+}
+
+.world-landing-hero {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  padding: 80px 32px;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.world-landing-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+  margin: 0 0 24px;
+}
+
+.world-landing-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 144px;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin: 0 0 28px;
+}
+
+.world-landing-title-x {
+  color: var(--color-purple);
+}
+
+.world-landing-tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--color-ink-soft);
+  margin: 0 0 24px;
+}
+
+.world-landing-rule {
+  width: 56px;
+  height: 2px;
+  background: var(--color-purple);
+  margin: 0 auto 56px;
+}
+
+.world-landing-ctas {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.world-landing-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 22px 28px;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  text-decoration: none;
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  min-width: 240px;
+  position: relative;
+  transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+}
+
+.world-landing-cta:hover {
+  transform: translateY(-2px);
+}
+
+.world-landing-cta--studio:hover {
+  border-color: var(--color-orange);
+  background: #fdf7f2;
+}
+
+.world-landing-cta--network:hover {
+  border-color: var(--color-teal);
+  background: #f4f7f4;
+}
+
+.world-landing-cta-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+  font-weight: 400;
+}
+
+.world-landing-cta-arrow {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  color: var(--color-ink-mute);
+}
+
+.world-landing-cta--studio:hover .world-landing-cta-arrow {
+  color: var(--color-orange);
+}
+
+.world-landing-cta--network:hover .world-landing-cta-arrow {
+  color: var(--color-teal);
+}
+
+.world-landing-contact {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-rule);
+  padding-bottom: 2px;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.world-landing-contact:hover {
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-landing-cta,
+  .studio-reveal,
+  .network-reveal {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .world-landing-title {
+    font-size: 96px;
+  }
+  .world-landing-tagline {
+    font-size: 17px;
+  }
+  .world-landing-cta {
+    min-width: 100%;
+  }
+}
+
+/* v16 hover-split landing chooser (DEPRECATED — kept for reference).
  * Studio = orange register · Network = teal register
  * Asymmetric push: hovering Studio shoves Network rightward (20cqw).
  * Hovering Network overlays Studio without disturbing it.

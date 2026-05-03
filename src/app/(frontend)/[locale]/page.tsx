@@ -1,5 +1,5 @@
-import { ChooserHero } from '@/components/chooser/ChooserHero';
 import { PageShell } from '@/components/chrome/PageShell';
+import { WorldLanding } from '@/components/landing/WorldLanding';
 import { NetworkHome } from '@/components/network/NetworkHome';
 import { NilexHome } from '@/components/nilex/NilexHome';
 import { StudioHome } from '@/components/studio/StudioHome';
@@ -52,7 +52,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <PageShell locale={locale}>
-      <ChooserHero />
+      <WorldLanding locale={locale} />
     </PageShell>
   );
 }

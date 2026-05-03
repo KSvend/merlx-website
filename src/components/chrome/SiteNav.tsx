@@ -52,9 +52,10 @@ export async function SiteNav({ locale }: SiteNavProps) {
         { href: `/${locale}/contact`, label: t('navContact') },
       ];
     }
+    // Group tenant: simplified nav — just Studio / Network / Contact.
     return [
-      { href: `/${locale}/insights`, label: t('navInsights') },
-      { href: `/${locale}/publications`, label: t('navPublications') },
+      { href: 'https://studio.merlx.org', label: 'Studio' },
+      { href: 'https://network.merlx.org', label: 'Network' },
       { href: `/${locale}/contact`, label: t('navContact') },
     ];
   })();
