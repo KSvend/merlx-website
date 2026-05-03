@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import '@/styles/chooser.css';
 import { WorldMapBackground } from './WorldMapBackground';
 
 interface WorldLandingProps {
