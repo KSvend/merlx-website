@@ -273,16 +273,64 @@ export function WorldMapBackground() {
           return (
             <g key={city.name}>
               {city.primary && (
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r="11"
-                  fill="none"
-                  stroke={DEEP_TEAL}
-                  strokeWidth="0.6"
-                  opacity="0.4"
-                />
+                <>
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r="22"
+                    fill="none"
+                    stroke={DEEP_TEAL}
+                    strokeWidth="0.4"
+                    opacity="0.18"
+                  />
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r="13"
+                    fill="none"
+                    stroke={DEEP_TEAL}
+                    strokeWidth="0.5"
+                    opacity="0.35"
+                    className="city-pulse"
+                  />
+                </>
               )}
+              <line
+                x1={cx - 7}
+                y1={cy}
+                x2={cx - 3}
+                y2={cy}
+                stroke={DEEP_TEAL}
+                strokeWidth="0.5"
+                opacity="0.55"
+              />
+              <line
+                x1={cx + 3}
+                y1={cy}
+                x2={cx + 7}
+                y2={cy}
+                stroke={DEEP_TEAL}
+                strokeWidth="0.5"
+                opacity="0.55"
+              />
+              <line
+                x1={cx}
+                y1={cy - 7}
+                x2={cx}
+                y2={cy - 3}
+                stroke={DEEP_TEAL}
+                strokeWidth="0.5"
+                opacity="0.55"
+              />
+              <line
+                x1={cx}
+                y1={cy + 3}
+                x2={cx}
+                y2={cy + 7}
+                stroke={DEEP_TEAL}
+                strokeWidth="0.5"
+                opacity="0.55"
+              />
               <circle
                 cx={cx}
                 cy={cy}
@@ -293,16 +341,28 @@ export function WorldMapBackground() {
               />
               <circle cx={cx} cy={cy} r={r - 0.5} fill={DEEP_TEAL} />
               <text
-                x={cx + 8}
+                x={cx + 12}
                 y={cy + 3}
                 fontFamily="var(--font-mono)"
-                fontSize="11"
-                letterSpacing="0.06em"
+                fontSize="10.5"
+                letterSpacing="0.08em"
                 fill={INK}
                 fontWeight={city.primary ? 600 : 500}
               >
                 {city.name.toUpperCase()}
                 {city.primary ? '  · HQ' : ''}
+              </text>
+              <text
+                x={cx + 12}
+                y={cy + 14}
+                fontFamily="var(--font-mono)"
+                fontSize="7.5"
+                letterSpacing="0.08em"
+                fill={INK_MUTED}
+                opacity="0.7"
+              >
+                {city.lat.toFixed(2)}°{city.lat >= 0 ? 'N' : 'S'} {Math.abs(city.lng).toFixed(2)}°
+                {city.lng >= 0 ? 'E' : 'W'}
               </text>
             </g>
           );
