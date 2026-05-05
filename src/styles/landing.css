@@ -1,0 +1,259 @@
+/* MERLx group landing — built against the merlx-design-system.
+ * Shell-warm background, Inter wordmark with iris 'x', DM Serif Display
+ * italic tagline, deep-teal primary buttons in sentence case. */
+
+.merlx-landing {
+  position: relative;
+  flex: 1;
+  min-height: 720px;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.merlx-landing-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Map backdrop is faint by default; the hero text reads cleanly on
+   * top. Reveal layers stay hidden until a CTA is hovered. */
+  opacity: 0.62;
+}
+
+.merlx-landing-bg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Reveal-layer rules — hidden by default, fade in on CTA hover via
+ * CSS :has(). studio-reveal + network-reveal class names are emitted
+ * by WorldMapBackground. */
+.studio-reveal,
+.network-reveal {
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.merlx-landing:has(.merlx-landing-cta--studio:hover) .studio-reveal {
+  opacity: 1;
+}
+
+.merlx-landing:has(.merlx-landing-cta--network:hover) .network-reveal {
+  opacity: 1;
+}
+
+/* Hero — anchored centre, transparent over the map. */
+.merlx-landing-hero {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+  padding: 64px 24px;
+  text-align: center;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.merlx-landing-mark {
+  display: block;
+  margin-bottom: 24px;
+  line-height: 0;
+}
+
+.merlx-landing-mark img {
+  display: block;
+}
+
+.merlx-landing-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+  margin: 0 0 16px;
+}
+
+/* Wordmark — Inter Bold per identity.md, x in iris. */
+.merlx-landing-wordmark {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 96px;
+  line-height: 1;
+  letter-spacing: -0.024em;
+  color: var(--color-ink);
+  margin: 0 0 16px;
+}
+
+.merlx-landing-wordmark-x {
+  color: var(--color-purple);
+  font-weight: 800;
+}
+
+/* Tagline — DM Serif Display italic. The single editorial moment. */
+.merlx-landing-tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.45;
+  color: var(--color-ink-soft);
+  margin: 0 0 20px;
+  max-width: 480px;
+}
+
+.merlx-landing-rule {
+  width: 56px;
+  height: 2px;
+  background: var(--color-purple);
+  margin: 0 0 40px;
+}
+
+/* CTAs — sentence case per design system, Inter 500 text-sm.
+ * Studio + Network are deep-teal primary; Contact is secondary
+ * transparent + border. */
+.merlx-landing-ctas {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.merlx-landing-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s
+    cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.merlx-landing-cta--studio,
+.merlx-landing-cta--network {
+  background: var(--color-teal);
+  color: var(--color-bg);
+  border: 1px solid var(--color-teal);
+}
+
+.merlx-landing-cta--studio:hover,
+.merlx-landing-cta--network:hover {
+  background: #2a5249; /* deep-teal-light */
+  border-color: #2a5249;
+}
+
+.merlx-landing-cta--contact {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-rule);
+}
+
+.merlx-landing-cta--contact:hover {
+  background: var(--color-bg-soft);
+}
+
+.merlx-landing-foot {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+  margin: 0;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+
+/* SVG layer ambience — slow halos on the Barcelona HQ pin and the
+ * active NileX node, plus a subtle opacity drift on EO tile reveals.
+ * All respect prefers-reduced-motion. */
+.city-pulse,
+.node-pulse {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: merlx-halo 4s ease-in-out infinite;
+}
+
+@keyframes merlx-halo {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.05;
+  }
+}
+
+.eo-tile {
+  animation: merlx-eo-drift 3s linear infinite;
+}
+
+@keyframes merlx-eo-drift {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.78;
+  }
+}
+
+.scan-sweep {
+  animation: merlx-scan-sweep 18s linear infinite;
+}
+
+@keyframes merlx-scan-sweep {
+  0% {
+    transform: translateX(-2%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.18;
+  }
+  90% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translateX(102%);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .merlx-landing-cta,
+  .studio-reveal,
+  .network-reveal,
+  .city-pulse,
+  .node-pulse,
+  .eo-tile,
+  .scan-sweep {
+    transition: none;
+    animation: none;
+  }
+  .scan-sweep {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .merlx-landing-wordmark {
+    font-size: 64px;
+  }
+  .merlx-landing-tagline {
+    font-size: 16px;
+  }
+  .merlx-landing-cta {
+    flex: 1 0 auto;
+  }
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.87 18.28">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #1a3a34;
+      }
+
+      .cls-2 {
+        fill: #ca5d0f;
+      }
+
+      .cls-3 {
+        fill: #4a3f6b;
+      }
+    </style>
+  </defs>
+  <g id="AUCRQn.tif">
+    <rect class="cls-1" x="17.69" width="6.18" height="17.58"/>
+    <rect class="cls-2" x="0" y="10.63" width="6.95" height="6.95" rx="3.48" ry="3.48"/>
+    <path class="cls-3" d="M11.71,18.28h0l-3.29-7.94c-.75-1.9.83-4.35,3.16-4.42.04,0,.08,0,.12,0h0s.08,0,.12,0c2.34.07,3.91,2.52,3.16,4.42l-3.29,7.94Z"/>
+  </g>
+</svg>
