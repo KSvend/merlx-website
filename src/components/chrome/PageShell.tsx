@@ -30,17 +30,9 @@ export async function PageShell({ locale, children, pathname = '/', nodeName }: 
     (tenant.kind === 'node' ? (NODE_NAMES[tenant.subdomain] ?? tenant.subdomain) : undefined);
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        background: 'var(--shell)',
-        color: 'var(--ink)',
-      }}
-    >
+    <div className="mx-page" data-tenant={tenant.kind}>
       <SiteNav tenant={tenant} locale={locale} pathname={pathname} nodeName={resolvedNodeName} />
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>{children}</main>
+      <main className="mx-main">{children}</main>
       <SiteFooter tenant={tenant} locale={locale} nodeName={resolvedNodeName} />
     </div>
   );

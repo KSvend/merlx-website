@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import type { CSSProperties } from 'react';
 
 interface BrandMarkProps {
-  /** Tenant context — drives the wordmark suffix. */
+  /** Tenant context drives the wordmark suffix. */
   tenant?: 'group' | 'studio' | 'network' | 'node';
   /** For node tenants, the node display name (e.g. "NileX"). */
   nodeName?: string;
@@ -12,22 +11,25 @@ interface BrandMarkProps {
   iconOnly?: boolean;
   /** Pixel height of the icon — wordmark scales relative. */
   size?: number;
-  /** Locale for the link href. */
+  /** Locale used for the home link. */
   locale?: string;
+  /** Footer mark — collapses the icon's tricolour to a single shell tone. */
+  variant?: 'default' | 'inverse';
 }
 
 /**
- * BrandMark — inline SVG icon (the canonical MERLx mark) plus the
- * "MERLx" wordmark in Inter, with the trailing x in iris. Optional
- * tenant suffix on the right separated by a thin rule.
+ * BrandMark — inline SVG icon (sand drop / iris teardrop / teal pillar)
+ * + "MERL" in Inter Bold + italic serif "x" in iris (or shell on
+ * dark backgrounds). Optional tenant suffix to the right.
  */
 export function BrandMark({
   tenant = 'group',
   nodeName,
   asLink = true,
   iconOnly = false,
-  size = 26,
+  size = 22,
   locale = 'en',
+  variant = 'default',
 }: BrandMarkProps) {
   const suffix =
     tenant === 'studio'
@@ -38,74 +40,44 @@ export function BrandMark({
           ? nodeName
           : null;
 
-  const containerStyle: CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 'var(--space-4)',
-    color: 'var(--ink)',
-    textDecoration: 'none',
-  };
-
-  const wordmarkStyle: CSSProperties = {
-    fontFamily: 'var(--font-sans)',
-    fontWeight: 700,
-    fontSize: 'var(--text-xl)',
-    letterSpacing: '-0.4px',
-    lineHeight: 1,
-    color: 'var(--ink)',
-  };
-
-  const xStyle: CSSProperties = { color: 'var(--iris)' };
-
-  const suffixStyle: CSSProperties = {
-    fontFamily: 'var(--font-sans)',
-    fontWeight: 500,
-    fontSize: 'var(--text-sm)',
-    color: 'var(--ink-muted)',
-    paddingInlineStart: 'var(--space-4)',
-    borderInlineStart: '1px solid var(--border)',
-    lineHeight: 1.2,
-  };
-
   const inner = (
     <>
       <BrandIcon size={size} />
       {!iconOnly ? (
-        <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 'var(--space-3)' }}>
-          <span style={wordmarkStyle}>
-            MERL<span style={xStyle}>x</span>
+        <span className="mx-brand-name">
+          <span
+            style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, letterSpacing: '-0.3px' }}
+          >
+            MERL
           </span>
-          {suffix ? <span style={suffixStyle}>{suffix}</span> : null}
+          <span className="mx-brand-x">x</span>
+          {suffix ? <span className="mx-tenant-suffix">{suffix}</span> : null}
         </span>
       ) : null}
     </>
   );
 
+  const className = variant === 'inverse' ? 'mx-brand mx-footer-brand' : 'mx-brand';
+
   if (asLink) {
     return (
-      <Link href={`/${locale}`} aria-label="MERLx home" style={containerStyle}>
+      <Link href={`/${locale}`} aria-label="MERLx home" className={className}>
         {inner}
       </Link>
     );
   }
-
   return (
-    <span aria-label="MERLx" style={containerStyle}>
+    <span aria-label="MERLx" className={className}>
       {inner}
     </span>
   );
 }
 
-/**
- * Inline SVG mark — sand drop (round), light-teal pillar (right),
- * iris teardrop (centre). Colours match the canonical MERLx palette
- * via design-system tokens.
- */
 function BrandIcon({ size }: { size: number }) {
-  // 270.24 × 236.75 — preserve aspect ratio
   const ratio = 270.24 / 236.75;
   return (
     <svg
+      className="mx-mark"
       role="img"
       aria-hidden="true"
       focusable="false"
@@ -114,11 +86,11 @@ function BrandIcon({ size }: { size: number }) {
       viewBox="0 0 270.24 236.75"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect x="190.24" y="0" width="80" height="227.61" fill="#b8d9d3" />
-      <rect x="0" y="137.61" width="90" height="90" rx="45" ry="45" fill="var(--sand)" />
+      <rect className="mx-mark-spike" x="190.24" y="0" width="80" height="227.61" />
+      <rect className="mx-mark-square" x="0" y="137.61" width="90" height="90" rx="45" ry="45" />
       <path
+        className="mx-mark-rect"
         d="M131.19,236.75h0l-42.58-102.77c-9.65-24.57,10.73-56.34,40.97-57.21.54-.02,1.08-.02,1.62-.02h0c.54,0,1.08,0,1.62.02,30.24.88,50.62,32.64,40.97,57.21l-42.58,102.77Z"
-        fill="var(--iris)"
       />
     </svg>
   );
