@@ -1,7 +1,5 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { PageHero } from '@/components/pages/PageHero';
 import { RichTextRenderer } from '@/components/pages/RichTextRenderer';
-import { Container, Prose } from '@/components/ui';
 import { findPageBySlug } from '@/lib/cms';
 import { requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
@@ -26,28 +24,31 @@ export default async function LegalSlugPage({ params }: PageProps) {
   const payload = await getPayload({ config });
   const tenant = await requireKnownTenant(headerList, payload);
   const page = await findPageBySlug({ tenant, slug: `legal/${slug}`, locale });
-
   if (!page) notFound();
 
   return (
     <PageShell locale={locale} pathname={`/legal/${slug}`}>
-      <PageHero
-        eyebrow="Legal"
-        title={page.title}
-        flourish={page.subtitle ?? undefined}
-        width="standard"
-      />
-      <section style={{ paddingBlock: 'var(--space-16)' }}>
-        <Container width="reading">
+      <section className="mx-page-header">
+        <div className="mx-container">
+          <p className="mx-eyebrow">Legal</p>
+          <h1>{page.title}</h1>
+          {page.subtitle ? (
+            <p className="mx-lead" style={{ maxWidth: '56ch' }}>
+              {page.subtitle}
+            </p>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="mx-section">
+        <div className="mx-container-narrow">
           {page.body ? (
             // biome-ignore lint/suspicious/noExplicitAny: Lexical body shape
             <RichTextRenderer data={page.body as any} />
           ) : (
-            <Prose>
-              <p>This document is in preparation.</p>
-            </Prose>
+            <p className="mx-lead">This document is in preparation.</p>
           )}
-        </Container>
+        </div>
       </section>
     </PageShell>
   );

@@ -1,15 +1,4 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { PageHero } from '@/components/pages/PageHero';
-import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Container,
-  Eyebrow,
-  Prose,
-} from '@/components/ui';
 import { findPublicationBySlug } from '@/lib/cms';
 import { parseTenantHeaders, requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
@@ -52,89 +41,85 @@ export default async function PublicationSlugPage({ params }: PageProps) {
 
   return (
     <PageShell locale={locale} pathname={`/publications/${slug}`}>
-      <PageHero
-        eyebrow={
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-            <Badge tone="primary">{TYPE_LABEL[doc.type] ?? doc.type}</Badge>
-            <span style={monoMetaStyle}>{doc.year}</span>
-          </span>
-        }
-        title={doc.title}
-        subtitle={doc.abstract ?? undefined}
-      />
+      <section className="mx-page-header">
+        <div className="mx-container">
+          <p className="mx-eyebrow">
+            {TYPE_LABEL[doc.type] ?? doc.type} · {doc.year}
+          </p>
+          <h1>{doc.title}</h1>
+          {doc.abstract ? (
+            <p className="mx-lead" style={{ maxWidth: '64ch' }}>
+              {doc.abstract}
+            </p>
+          ) : null}
+        </div>
+      </section>
 
-      <section style={{ paddingBlock: 'var(--space-16)' }}>
-        <Container width="reading">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-12)' }}>
-            <Card density="comfortable">
-              <CardHeader eyebrow={<Eyebrow>Metadata</Eyebrow>} title="Citation" />
-              <CardBody>
-                <dl style={dlStyle}>
-                  <dt style={dtStyle}>Authors</dt>
-                  <dd style={ddStyle}>
-                    {(doc.authors ?? []).length > 0
-                      ? (doc.authors ?? [])
-                          .map((a) => (a.affiliation ? `${a.name} (${a.affiliation})` : a.name))
-                          .join(', ')
-                      : '—'}
-                  </dd>
-                  <dt style={dtStyle}>Year</dt>
-                  <dd style={ddStyle}>{doc.year}</dd>
-                  <dt style={dtStyle}>Type</dt>
-                  <dd style={ddStyle}>{TYPE_LABEL[doc.type] ?? doc.type}</dd>
-                  {doc.language ? (
-                    <>
-                      <dt style={dtStyle}>Language</dt>
-                      <dd style={ddStyle}>{LANG_LABEL[doc.language] ?? doc.language}</dd>
-                    </>
-                  ) : null}
-                  {doc.doi ? (
-                    <>
-                      <dt style={dtStyle}>DOI</dt>
-                      <dd style={ddStyle}>
-                        <a
-                          href={`https://doi.org/${doc.doi}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={inlineLinkStyle}
-                        >
-                          {doc.doi}
-                        </a>
-                      </dd>
-                    </>
-                  ) : null}
-                </dl>
-              </CardBody>
-            </Card>
-
-            {doc.abstract ? (
-              <div>
-                <Eyebrow>Abstract</Eyebrow>
-                <div style={{ marginTop: 'var(--space-5)' }}>
-                  <Prose>
-                    <p>{doc.abstract}</p>
-                  </Prose>
-                </div>
-              </div>
-            ) : null}
-
-            <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-              {doc.fileUrl ? (
-                <Button
-                  variant="primary"
-                  href={doc.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Download PDF →
-                </Button>
+      <section className="mx-section">
+        <div className="mx-container-narrow">
+          <div
+            className="mx-card"
+            style={{ padding: 32, marginBottom: 32, background: 'var(--surface)' }}
+          >
+            <p
+              className="mx-mono-caption"
+              style={{ margin: '0 0 16px', textTransform: 'uppercase' }}
+            >
+              Citation metadata
+            </p>
+            <dl style={dlStyle}>
+              <dt style={dtStyle}>Authors</dt>
+              <dd style={ddStyle}>
+                {(doc.authors ?? []).length > 0
+                  ? (doc.authors ?? [])
+                      .map((a) => (a.affiliation ? `${a.name} (${a.affiliation})` : a.name))
+                      .join(', ')
+                  : '—'}
+              </dd>
+              <dt style={dtStyle}>Year</dt>
+              <dd style={ddStyle}>{doc.year}</dd>
+              <dt style={dtStyle}>Type</dt>
+              <dd style={ddStyle}>{TYPE_LABEL[doc.type] ?? doc.type}</dd>
+              {doc.language ? (
+                <>
+                  <dt style={dtStyle}>Language</dt>
+                  <dd style={ddStyle}>{LANG_LABEL[doc.language] ?? doc.language}</dd>
+                </>
               ) : null}
-              <Link href={`/${locale}/publications`} style={backLinkStyle}>
-                ← All publications
-              </Link>
-            </div>
+              {doc.doi ? (
+                <>
+                  <dt style={dtStyle}>DOI</dt>
+                  <dd style={ddStyle}>
+                    <a
+                      href={`https://doi.org/${doc.doi}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={inlineLinkStyle}
+                    >
+                      {doc.doi}
+                    </a>
+                  </dd>
+                </>
+              ) : null}
+            </dl>
           </div>
-        </Container>
+
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            {doc.fileUrl ? (
+              <a
+                href={doc.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mx-btn mx-btn--primary"
+              >
+                Download PDF →
+              </a>
+            ) : null}
+            <Link href={`/${locale}/publications`} className="mx-btn mx-btn--ghost">
+              ← All publications
+            </Link>
+          </div>
+        </div>
       </section>
     </PageShell>
   );
@@ -143,52 +128,32 @@ export default async function PublicationSlugPage({ params }: PageProps) {
 const dlStyle: CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'minmax(120px, max-content) minmax(0, 1fr)',
-  rowGap: 'var(--space-4)',
-  columnGap: 'var(--space-8)',
+  rowGap: 14,
+  columnGap: 32,
   margin: 0,
 };
 
 const dtStyle: CSSProperties = {
   fontFamily: 'var(--font-mono)',
   fontWeight: 500,
-  fontSize: 'var(--text-xxs)',
-  letterSpacing: '0.5px',
+  fontSize: 10,
+  letterSpacing: '1.5px',
   textTransform: 'uppercase',
-  color: 'var(--ink-muted)',
-  paddingTop: 'var(--space-1)',
+  color: 'var(--ink-faint)',
+  paddingTop: 2,
 };
 
 const ddStyle: CSSProperties = {
   margin: 0,
   fontFamily: 'var(--font-sans)',
-  fontSize: 'var(--text-base)',
+  fontSize: 13,
   color: 'var(--ink)',
   lineHeight: 1.55,
-};
-
-const monoMetaStyle: CSSProperties = {
-  fontFamily: 'var(--font-mono)',
-  fontWeight: 500,
-  fontSize: 'var(--text-xxs)',
-  color: 'var(--ink-muted)',
-  letterSpacing: '0.5px',
 };
 
 const inlineLinkStyle: CSSProperties = {
   color: 'var(--deep-teal)',
   textDecoration: 'underline',
   textDecorationColor: 'var(--deep-teal-dim)',
-  textUnderlineOffset: '3px',
-};
-
-const backLinkStyle: CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  fontFamily: 'var(--font-sans)',
-  fontSize: 'var(--text-sm)',
-  color: 'var(--deep-teal)',
-  textDecoration: 'underline',
-  textDecorationColor: 'var(--deep-teal-dim)',
-  textUnderlineOffset: '3px',
-  alignSelf: 'center',
+  textUnderlineOffset: 3,
 };

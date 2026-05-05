@@ -1,7 +1,4 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { EmptyState } from '@/components/pages/EmptyState';
-import { PageHero } from '@/components/pages/PageHero';
-import { Badge, Container } from '@/components/ui';
 import { listInsights } from '@/lib/cms';
 import { formatLongDate } from '@/lib/format-date';
 import { parseTenantHeaders, requireKnownTenant } from '@/lib/tenant-aware';
@@ -10,7 +7,6 @@ import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getPayload } from 'payload';
-import type { CSSProperties } from 'react';
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -23,6 +19,13 @@ const CATEGORY_LABEL: Record<string, string> = {
   methods: 'Methods',
 };
 
+const CATEGORY_ACCENT: Record<string, string> = {
+  news: 'var(--iris)',
+  analysis: 'var(--deep-teal)',
+  'field-note': 'var(--ember)',
+  methods: 'var(--ember)',
+};
+
 export default async function InsightsIndexPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -31,66 +34,102 @@ export default async function InsightsIndexPage({ params }: PageProps) {
   const { kind } = parseTenantHeaders(headerList);
   const payload = await getPayload({ config });
   const tenant = await requireKnownTenant(headerList, payload);
-
   const posts = await listInsights({ tenant, tenantKind: kind, locale });
 
   return (
     <PageShell locale={locale} pathname="/insights">
-      <PageHero
-        eyebrow="Insights"
-        title="Notes from the studio and the network."
-        flourish="analysis · methods · field"
-      />
+      <section className="mx-page-header">
+        <div className="mx-container">
+          <p className="mx-eyebrow">Insights</p>
+          <h1>
+            Writing from the <em>field</em>.
+          </h1>
+          <p className="mx-lead" style={{ maxWidth: '56ch' }}>
+            Methods notes, field reflections, and the occasional essay — from the Studio and the
+            Network. No company updates.
+          </p>
+        </div>
+      </section>
 
-      <section style={{ paddingBlock: 'var(--space-16)' }}>
-        <Container width="standard">
+      <section className="mx-section mx-section--shell-warm">
+        <div className="mx-container">
           {posts.length === 0 ? (
-            <EmptyState
-              title="No insights yet."
-              body="Drafts are in flight. New posts will appear here when published."
-            />
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontStyle: 'italic',
+                fontSize: 24,
+                color: 'var(--ink-muted)',
+                margin: 0,
+              }}
+            >
+              No insights yet. Drafts are in flight.
+            </p>
           ) : (
-            <ul style={listStyle}>
-              {posts.map((post) => (
-                <li key={post.id} style={itemStyle}>
-                  <Link href={`/${locale}/insights/${post.slug}`} style={linkStyle}>
-                    <div
-                      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}
+            <div
+              className="mx-card"
+              style={{ padding: 0, overflow: 'hidden', background: 'var(--surface)' }}
+            >
+              {posts.map((post, i) => {
+                const accent = CATEGORY_ACCENT[post.category] ?? 'var(--ink-muted)';
+                return (
+                  <Link
+                    key={post.id}
+                    href={`/${locale}/insights/${post.slug}`}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '120px 1fr 60px',
+                      gap: 24,
+                      padding: '28px 32px',
+                      alignItems: 'center',
+                      borderBottom: i < posts.length - 1 ? '1px solid var(--border-light)' : 'none',
+                      transition: 'background var(--motion-default) var(--easing)',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--ink-faint)',
+                        letterSpacing: '0.5px',
+                        textTransform: 'uppercase',
+                      }}
                     >
-                      <div
+                      {formatLongDate(post.publishedAt, locale)}
+                    </span>
+                    <div>
+                      <span
+                        className="mx-tag"
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 'var(--space-4)',
-                          flexWrap: 'wrap',
+                          background: 'transparent',
+                          color: accent,
+                          borderColor: accent,
+                          marginBottom: 8,
                         }}
                       >
-                        <Badge tone={badgeToneFor(post.category)}>
-                          {CATEGORY_LABEL[post.category] ?? post.category}
-                        </Badge>
-                        <span style={metaStyle}>{formatLongDate(post.publishedAt, locale)}</span>
-                      </div>
-                      <h2
+                        {CATEGORY_LABEL[post.category] ?? post.category}
+                      </span>
+                      <h3
                         style={{
-                          fontFamily: 'var(--font-sans)',
-                          fontWeight: 600,
-                          fontSize: 'clamp(18px, 1.6vw, 22px)',
-                          letterSpacing: '-0.2px',
+                          fontFamily: 'var(--font-display)',
+                          fontStyle: 'italic',
+                          fontWeight: 400,
+                          fontSize: 24,
+                          lineHeight: 1.25,
+                          margin: '8px 0 6px',
                           color: 'var(--ink)',
-                          margin: 0,
-                          lineHeight: 1.3,
+                          letterSpacing: '-0.3px',
                         }}
                       >
                         {post.title}
-                      </h2>
+                      </h3>
                       {post.excerpt ? (
                         <p
                           style={{
-                            fontFamily: 'var(--font-sans)',
-                            fontSize: 'var(--text-base)',
-                            color: 'var(--ink-light)',
-                            lineHeight: 1.55,
+                            fontSize: 12,
+                            color: 'var(--ink-muted)',
                             margin: 0,
+                            lineHeight: 1.5,
                             maxWidth: '64ch',
                           }}
                         >
@@ -98,56 +137,19 @@ export default async function InsightsIndexPage({ params }: PageProps) {
                         </p>
                       ) : null}
                     </div>
+                    <span
+                      aria-hidden="true"
+                      style={{ color: 'var(--ink-muted)', fontSize: 18, justifySelf: 'end' }}
+                    >
+                      →
+                    </span>
                   </Link>
-                </li>
-              ))}
-            </ul>
+                );
+              })}
+            </div>
           )}
-        </Container>
+        </div>
       </section>
     </PageShell>
   );
-}
-
-const listStyle: CSSProperties = {
-  listStyle: 'none',
-  padding: 0,
-  margin: 0,
-  display: 'flex',
-  flexDirection: 'column',
-};
-
-const itemStyle: CSSProperties = {
-  padding: 'var(--space-12) 0',
-  borderBottom: '1px solid var(--border-light)',
-};
-
-const linkStyle: CSSProperties = {
-  display: 'block',
-  textDecoration: 'none',
-  color: 'inherit',
-};
-
-const metaStyle: CSSProperties = {
-  fontFamily: 'var(--font-mono)',
-  fontWeight: 500,
-  fontSize: 'var(--text-xxs)',
-  color: 'var(--ink-muted)',
-  letterSpacing: '0.5px',
-  textTransform: 'uppercase',
-};
-
-function badgeToneFor(category: string): 'brand' | 'sand' | 'primary' | 'secondary' | 'neutral' {
-  switch (category) {
-    case 'analysis':
-      return 'primary';
-    case 'methods':
-      return 'brand';
-    case 'field-note':
-      return 'sand';
-    case 'news':
-      return 'secondary';
-    default:
-      return 'neutral';
-  }
 }

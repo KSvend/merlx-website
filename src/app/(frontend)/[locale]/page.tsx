@@ -1,13 +1,6 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Container,
-  Eyebrow,
-  SectionHeading,
-} from '@/components/ui';
+import { NetworkPreview } from '@/components/dashboards/NetworkPreview';
+import { StudioPreview } from '@/components/dashboards/StudioPreview';
 import {
   isGroupTenant,
   isNetworkTenant,
@@ -17,6 +10,7 @@ import {
 } from '@/lib/tenant-aware';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { CSSProperties } from 'react';
 
@@ -31,338 +25,486 @@ export default async function Page({ params }: PageProps) {
   const headerList = await headers();
   const { kind, subdomain } = parseTenantHeaders(headerList);
 
-  // Each tenant kind has its own dedicated home page in later phases.
-  // For Phase B we only ship the group home; studio / network / node
-  // homes follow in Phases C / D / E. Until then, render the group
-  // home for any known tenant so route smoke-tests don't 404.
-  const known =
-    isGroupTenant(headerList) ||
-    isStudioTenant(headerList) ||
-    isNetworkTenant(headerList) ||
-    (isNodeTenant(headerList) && subdomain === 'nilex');
-  if (!known) notFound();
+  // Studio / Network / Node have their own dedicated home pages in
+  // later phases. Until those land, redirect non-group hosts to the
+  // group home so visitors don't see a placeholder.
+  if (isStudioTenant(headerList) || isNetworkTenant(headerList)) {
+    // For now, render the group home for any known tenant — Phase
+    // C/D/E will replace this with tenant-specific homes.
+  } else if (isNodeTenant(headerList) && subdomain !== 'nilex') {
+    notFound();
+  }
+
+  if (
+    !(
+      isGroupTenant(headerList) ||
+      isStudioTenant(headerList) ||
+      isNetworkTenant(headerList) ||
+      isNodeTenant(headerList)
+    )
+  ) {
+    notFound();
+  }
 
   return (
     <PageShell locale={locale} pathname="/">
       <Hero locale={locale} />
-      <PrinciplesStrip />
-      <ThreeLayersSection locale={locale} />
-      <CTABand locale={locale} kind={kind} />
+      <TwoFrontDoorsSection locale={locale} />
+      <PrinciplesSection />
+      <PartnersStrip />
+      <FinalCTA locale={locale} kind={kind} />
     </PageShell>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-
-function Hero({ locale }: { locale: string }) {
-  const wrapperStyle: CSSProperties = {
-    background: 'var(--shell)',
-    paddingBlock: 'clamp(var(--space-32), 10vw, var(--space-64))',
-  };
-
-  const inner: CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 'var(--space-16)',
-    alignItems: 'flex-start',
-  };
-
-  const ctaRow: CSSProperties = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 'var(--space-5)',
-  };
-
+/* ──────────────────────── Hero ──────────────────────── */
+function Hero({ locale: _locale }: { locale: string }) {
   return (
-    <section style={wrapperStyle}>
-      <Container width="wide">
-        <div style={inner}>
-          <Eyebrow>MERLx · independent · open-by-default</Eyebrow>
-          <SectionHeading
-            level={1}
-            flourish={<span>global development and humanitarian aid programs</span>}
-          >
-            Advanced data science and tech-enabled MERL for
-          </SectionHeading>
-          <div style={ctaRow}>
-            <Button variant="primary" href="https://studio.merlx.org">
-              Enter MERLx Studio →
-            </Button>
-            <Button variant="secondary" href="https://network.merlx.org">
-              Enter the Network →
-            </Button>
-            <Button variant="ghost" href={`/${locale}/contact`}>
-              Talk to us
-            </Button>
-          </div>
-        </div>
-      </Container>
+    <section style={{ padding: '80px 0 48px' }}>
+      <div className="mx-container">
+        <p className="mx-eyebrow">A studio · a network · one MERLx</p>
+        <h1 className="mx-h1-display" style={{ maxWidth: '20ch' }}>
+          Advanced data science and tech-enabled MERL{' '}
+          <em>for global development and humanitarian aid programs.</em>
+        </h1>
+        <p className="mx-lead" style={{ marginTop: 32, maxWidth: '52ch' }}>
+          MERLx operates as two distinct entities under one roof. The Studio builds open AI tooling
+          for monitoring, evaluation, research and early warning. The Network is a federation of
+          locally owned MERL cooperatives running that tooling — and traditional MERL — in country.
+        </p>
+      </div>
     </section>
   );
 }
 
-/* -------------------------------------------------------------------------- */
+/* ──────────────── Two front doors (the split) ──────────────── */
+function TwoFrontDoorsSection({ locale }: { locale: string }) {
+  return (
+    <section style={{ padding: '32px 0 96px' }}>
+      <div className="mx-container">
+        <div style={gridTwoCol}>
+          {/* Studio side */}
+          <article style={frontDoorCardStyle}>
+            <div style={frontDoorHeaderStyle}>
+              <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
+                01 · THE TECH STUDIO
+              </span>
+              <h2
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontWeight: 600,
+                  fontSize: 'clamp(28px, 3vw, 36px)',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.6px',
+                  margin: '12px 0 16px',
+                  color: 'var(--ink)',
+                  textWrap: 'balance',
+                  maxWidth: '18ch',
+                }}
+              >
+                MERLx <em style={emItalicStyle('var(--deep-teal)')}>Studio</em>
+                <br />
+                <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
+                  We build the tools.
+                </span>
+              </h2>
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  color: 'var(--ink-muted)',
+                  margin: '0 0 20px',
+                  maxWidth: '46ch',
+                }}
+              >
+                An independent studio building the Optics Suite — six AI-native tools for conflict,
+                food-insecurity and humanitarian-context analysis. Open methods, evidence-grade
+                outputs, conflict-sensitive engineering.
+              </p>
+              <BulletList
+                items={[
+                  'Six tools — IRIS · Aperture · PRISM · ToC Tester · OASIS · ECHO',
+                  'Earth observation · NLP · compound-risk forecasting',
+                  'Engagements: hosted · pilot · build-with · advisory',
+                ]}
+              />
+              <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+                <a
+                  href="https://studio.merlx.org"
+                  className="mx-btn mx-btn--primary"
+                  rel="noopener noreferrer"
+                >
+                  Enter MERLx Studio →
+                </a>
+                <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
+                  Talk to the studio
+                </Link>
+              </div>
+            </div>
+            <div style={frontDoorPreviewStyle}>
+              <StudioPreview />
+            </div>
+          </article>
 
-function PrinciplesStrip() {
-  const items: { mono: string; title: string; body: string }[] = [
+          {/* Network side */}
+          <article style={frontDoorCardStyle}>
+            <div style={frontDoorHeaderStyle}>
+              <span className="mx-mono-caption" style={accentLabel('var(--deep-teal)')}>
+                02 · THE MERL NETWORK
+              </span>
+              <h2
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontWeight: 600,
+                  fontSize: 'clamp(28px, 3vw, 36px)',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.6px',
+                  margin: '12px 0 16px',
+                  color: 'var(--ink)',
+                  textWrap: 'balance',
+                  maxWidth: '18ch',
+                }}
+              >
+                MERLx <em style={emItalicStyle('var(--iris)')}>Network</em>
+                <br />
+                <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
+                  Locally owned MERL, in-country.
+                </span>
+              </h2>
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  color: 'var(--ink-muted)',
+                  margin: '0 0 20px',
+                  maxWidth: '46ch',
+                }}
+              >
+                A federation of locally owned MERL cooperatives. Each node is autonomous and
+                accountable in country, working under shared methodology and conflict-sensitivity
+                standards. Traditional MERL with the Optics Suite as infrastructure.
+              </p>
+              <BulletList
+                items={[
+                  'Active node — NileX (Sudan + the Nile basin)',
+                  'Onboarding — Andes Cooperativa, Sahel Reseau',
+                  'Services: research · evaluation · TPM · KII · partner support',
+                ]}
+              />
+              <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+                <a
+                  href="https://network.merlx.org"
+                  className="mx-btn mx-btn--primary"
+                  rel="noopener noreferrer"
+                >
+                  Enter the Network →
+                </a>
+                <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
+                  Talk to the network
+                </Link>
+              </div>
+            </div>
+            <div style={frontDoorPreviewStyle}>
+              <NetworkPreview />
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────── Principles ──────────── */
+function PrinciplesSection() {
+  const items = [
     {
-      mono: '01',
-      title: 'Open by default.',
-      body: 'Tools, methods, and data schemas are open-source unless a partner constraint forces otherwise.',
+      n: '01',
+      t: 'Open by default.',
+      d: 'Tools, methods, and data schemas are open-source unless a partner constraint forces otherwise.',
     },
     {
-      mono: '02',
-      title: 'Conflict-sensitive engineering.',
-      body: 'Every tool is reviewed for harm pathways before launch — surveillance risk, dual-use, exclusion.',
+      n: '02',
+      t: 'Conflict-sensitive engineering.',
+      d: 'Every tool reviewed for harm pathways before launch — surveillance, dual-use, exclusion.',
     },
     {
-      mono: '03',
-      title: 'Evidence-grade outputs.',
-      body: 'Numbers ship with their uncertainty. Models ship with their evaluation.',
+      n: '03',
+      t: 'Evidence-grade outputs.',
+      d: 'Numbers ship with their uncertainty. Models ship with their evaluation.',
     },
     {
-      mono: '04',
-      title: 'Local epistemics.',
-      body: 'Federated nodes hold local knowledge. The Studio builds; the Network deploys.',
+      n: '04',
+      t: 'Local epistemics.',
+      d: 'Federated nodes hold local knowledge. The Studio builds; the Network deploys.',
     },
   ];
 
-  const wrap: CSSProperties = {
-    background: 'var(--shell-warm)',
-    paddingBlock: 'clamp(var(--space-24), 6vw, var(--space-40))',
-    borderTop: '1px solid var(--border-light)',
-    borderBottom: '1px solid var(--border-light)',
-  };
-
-  const grid: CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: 'var(--space-12)',
-  };
-
   return (
-    <section style={wrap}>
-      <Container width="wide">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-12)' }}>
-          <Eyebrow>How we work</Eyebrow>
-          <div style={grid}>
-            {items.map((item) => (
-              <article
-                key={item.mono}
-                style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}
-              >
-                <span
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: 500,
-                    fontSize: 'var(--text-xxs)',
-                    color: 'var(--ink-faint)',
-                    letterSpacing: '0.5px',
-                  }}
-                >
-                  {item.mono}
-                </span>
-                <h3
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontWeight: 600,
-                    fontSize: 'var(--text-lg)',
-                    color: 'var(--ink)',
-                    letterSpacing: '-0.2px',
-                    margin: 0,
-                  }}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontWeight: 400,
-                    fontSize: 'var(--text-base)',
-                    lineHeight: 1.55,
-                    color: 'var(--ink-light)',
-                    margin: 0,
-                  }}
-                >
-                  {item.body}
-                </p>
-              </article>
-            ))}
+    <section className="mx-section mx-section--shell-warm">
+      <div className="mx-container">
+        <div className="mx-intro">
+          <div>
+            <p className="mx-eyebrow">How we work</p>
+            <h2 className="mx-h2-section">
+              A <em>quieter</em>, more careful kind of analytical practice.
+            </h2>
           </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function ThreeLayersSection({ locale }: { locale: string }) {
-  const wrap: CSSProperties = {
-    paddingBlock: 'clamp(var(--space-32), 8vw, var(--space-48))',
-  };
-
-  const grid: CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: 'var(--space-10)',
-  };
-
-  return (
-    <section style={wrap}>
-      <Container width="wide">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-16)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
-            <Eyebrow>The two front doors</Eyebrow>
-            <SectionHeading level={2}>
-              One studio building open tools.{' '}
-              <span style={{ color: 'var(--ink-muted)' }}>
-                One federation of cooperatives running them on the ground.
-              </span>
-            </SectionHeading>
-          </div>
-
-          <div style={grid}>
-            <Card href="https://studio.merlx.org">
-              <CardHeader
-                eyebrow={<Eyebrow color="iris">MERLx Studio</Eyebrow>}
-                title="The Optics Suite"
-                trailing={<ArrowGlyph />}
-              />
-              <CardBody>
-                Six AI-native tools for monitoring, evaluation, research, and early warning. Earth
-                observation, NLP, compound-risk forecasting, theory-of-change testing, KII
-                assistance, and damage-and-recovery mapping. Open methods, evidence-grade outputs.
-              </CardBody>
-            </Card>
-
-            <Card href="https://network.merlx.org">
-              <CardHeader
-                eyebrow={<Eyebrow color="iris">MERLx Network</Eyebrow>}
-                title="Locally owned MERL, in country"
-                trailing={<ArrowGlyph />}
-              />
-              <CardBody>
-                A federation of locally owned cooperatives — research, evaluation, third-party
-                monitoring, and field analysis under shared methodology. Active node: NileX (Sudan
-                and the Nile basin). Onboarding: Andes, Sahel.
-              </CardBody>
-            </Card>
-          </div>
-
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 'var(--text-sm)',
-              color: 'var(--ink-muted)',
-              maxWidth: '64ch',
-              margin: 0,
-            }}
-          >
-            MERLx also operates a long-term ownership transition (the MERLx Cooperative). It is{' '}
-            <a
-              href={`/${locale}/about`}
-              style={{
-                color: 'var(--deep-teal)',
-                textDecoration: 'underline',
-                textDecorationColor: 'var(--deep-teal-dim)',
-                textUnderlineOffset: '3px',
-              }}
-            >
-              described in the about page
-            </a>
-            .
+          <p className="mx-lead">
+            Both entities — Studio and Network — operate under a shared set of commitments. They
+            describe the floor we won't drop below, not the ceiling we aspire to.
           </p>
         </div>
-      </Container>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 0,
+            border: '1px solid var(--border-light)',
+            borderRadius: 'var(--radius-md)',
+            overflow: 'hidden',
+            background: 'var(--surface)',
+          }}
+        >
+          {items.map((item, i) => (
+            <div
+              key={item.n}
+              style={{
+                padding: 32,
+                borderRight: i < items.length - 1 ? '1px solid var(--border-light)' : 'none',
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--ink-faint)',
+                  letterSpacing: '1.5px',
+                  margin: '0 0 24px',
+                }}
+              >
+                {item.n}
+              </p>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  fontSize: 24,
+                  margin: '0 0 12px',
+                  letterSpacing: '-0.4px',
+                  color: 'var(--ink)',
+                }}
+              >
+                {item.t}
+              </h3>
+              <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-muted)', margin: 0 }}>
+                {item.d}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
 
-function ArrowGlyph() {
+/* ──────────── Partners strip ──────────── */
+function PartnersStrip() {
+  const partners = ['UNDP', 'UNICEF', 'WFP', 'UN OCHA', 'GIZ', 'FCDO', 'USAID', 'World Bank'];
   return (
-    <span
-      aria-hidden="true"
-      style={{
-        fontFamily: 'var(--font-sans)',
-        fontSize: 'var(--text-xl)',
-        color: 'var(--ink-muted)',
-        lineHeight: 1,
-      }}
-    >
-      →
-    </span>
+    <section style={{ padding: '64px 0', borderTop: '1px solid var(--border-light)' }}>
+      <div className="mx-container">
+        <p
+          style={{
+            textAlign: 'center',
+            fontSize: 11,
+            color: 'var(--ink-faint)',
+            fontFamily: 'var(--font-mono)',
+            letterSpacing: '1.5px',
+            textTransform: 'uppercase',
+            margin: '0 0 32px',
+          }}
+        >
+          Partnered with leading development organisations
+        </p>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '32px 56px',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {partners.map((p) => (
+            <span
+              key={p}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontStyle: 'italic',
+                fontSize: 22,
+                color: 'var(--ink-muted)',
+                opacity: 0.55,
+              }}
+            >
+              {p}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-
-function CTABand({ locale, kind }: { locale: string; kind: string }) {
-  const wrap: CSSProperties = {
-    background: 'var(--shell-warm)',
-    paddingBlock: 'clamp(var(--space-24), 6vw, var(--space-40))',
-    borderTop: '1px solid var(--border-light)',
-  };
-
-  const inner: CSSProperties = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 'var(--space-12)',
-  };
-
+/* ──────────── Final CTA ──────────── */
+function FinalCTA({ locale, kind }: { locale: string; kind: string }) {
   return (
-    <section style={wrap}>
-      <Container width="wide">
-        <div style={inner}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-3)',
-              maxWidth: '46ch',
-            }}
+    <section className="mx-section mx-section--teal">
+      <div className="mx-container" style={{ textAlign: 'center' }}>
+        <p className="mx-eyebrow" style={{ justifyContent: 'center', display: 'inline-flex' }}>
+          Working with MERLx
+        </p>
+        <h2
+          style={{
+            fontFamily: 'var(--font-sans)',
+            fontWeight: 600,
+            fontSize: 'clamp(36px, 4.5vw, 56px)',
+            lineHeight: 1.05,
+            letterSpacing: '-1px',
+            color: 'var(--shell)',
+            margin: '12px auto 24px',
+            maxWidth: '20ch',
+            textWrap: 'balance',
+          }}
+        >
+          Bring us in <em style={emItalicStyle('var(--teal-light)')}>early</em>.
+        </h2>
+        <p
+          style={{
+            fontSize: 16,
+            lineHeight: 1.55,
+            color: 'rgba(245,243,238,0.78)',
+            maxWidth: '52ch',
+            margin: '0 auto 32px',
+          }}
+        >
+          Considering a pilot, a hosted Optics Suite deployment, an evaluation, or a long-form
+          advisory engagement? Send us a brief. We will route it to the right entity within two
+          working days.
+        </p>
+        <div
+          style={{ display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}
+        >
+          <Link href={`/${locale}/contact`} className="mx-btn mx-btn--inverse mx-btn--lg">
+            Start a conversation →
+          </Link>
+          <Link
+            href={`/${locale}/publications`}
+            className="mx-btn mx-btn--outline-light mx-btn--lg"
           >
-            <Eyebrow>Working with MERLx</Eyebrow>
-            <p
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 500,
-                fontSize: 'var(--text-lg)',
-                color: 'var(--ink)',
-                lineHeight: 1.4,
-                margin: 0,
-              }}
-            >
-              Considering a pilot, an evaluation, or a hosted Optics Suite deployment? Send a brief
-              and we will route it to the right entity.
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-            <Button variant="primary" href={`/${locale}/contact`}>
-              Contact us
-            </Button>
-            <Button variant="secondary" href={`/${locale}/publications`}>
-              Browse publications
-            </Button>
-          </div>
+            Browse publications
+          </Link>
         </div>
         {kind !== 'group' ? (
           <p
             style={{
-              marginTop: 'var(--space-10)',
+              marginTop: 32,
               fontFamily: 'var(--font-mono)',
-              fontSize: 'var(--text-xxs)',
-              color: 'var(--ink-faint)',
-              letterSpacing: '0.5px',
+              fontSize: 10,
+              color: 'rgba(245,243,238,0.55)',
+              letterSpacing: '1.5px',
               textTransform: 'uppercase',
             }}
           >
             Tenant: {kind} — dedicated home in a later phase
           </p>
         ) : null}
-      </Container>
+      </div>
     </section>
   );
 }
+
+/* ──────────── Bullet list ──────────── */
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <ul
+      style={{
+        listStyle: 'none',
+        padding: 0,
+        margin: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+      }}
+    >
+      {items.map((item) => (
+        <li
+          key={item}
+          style={{
+            fontSize: 12,
+            color: 'var(--ink)',
+            display: 'flex',
+            gap: 10,
+            lineHeight: 1.55,
+          }}
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--ink-faint)',
+              fontSize: 10,
+              paddingTop: 2,
+            }}
+          >
+            ·
+          </span>
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/* ──────────── Inline styles ──────────── */
+const gridTwoCol: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
+  gap: 24,
+  alignItems: 'stretch',
+};
+
+const frontDoorCardStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateRows: 'auto 1fr',
+  gap: 32,
+  background: 'var(--surface)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-md)',
+  padding: 40,
+};
+
+const frontDoorHeaderStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+};
+
+const frontDoorPreviewStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'flex-start',
+};
+
+const accentLabel = (color: string): CSSProperties => ({
+  fontFamily: 'var(--font-mono)',
+  fontSize: 10,
+  letterSpacing: '1.5px',
+  color,
+  textTransform: 'uppercase',
+});
+
+const emItalicStyle = (color: string): CSSProperties => ({
+  fontFamily: 'var(--font-display)',
+  fontStyle: 'italic',
+  fontWeight: 400,
+  color,
+});

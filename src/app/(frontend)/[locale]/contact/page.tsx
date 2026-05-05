@@ -1,7 +1,5 @@
 import { PageShell } from '@/components/chrome/PageShell';
 import { ContactForm } from '@/components/forms/ContactForm';
-import { PageHero } from '@/components/pages/PageHero';
-import { Container, Eyebrow } from '@/components/ui';
 import { parseTenantHeaders } from '@/lib/tenant-aware';
 import { getTurnstileConfig } from '@/lib/turnstile';
 import { setRequestLocale } from 'next-intl/server';
@@ -24,126 +22,116 @@ export default async function ContactPage({ params }: PageProps) {
 
   return (
     <PageShell locale={locale} pathname="/contact">
-      <PageHero
-        eyebrow={`Contact · ${kind === 'group' ? 'MERLx' : kind}`}
-        title="Tell us about your work."
-        flourish="we will route the conversation"
-        subtitle="Considering a pilot, a hosted Optics Suite deployment, an evaluation, or an advisory engagement? Send a brief and we will reply within two working days."
-      />
+      <section className="mx-page-header">
+        <div className="mx-container">
+          <p className="mx-eyebrow">Contact · {kind === 'group' ? 'MERLx' : capitalise(kind)}</p>
+          <h1>
+            Tell us about the <em>programme</em>.
+          </h1>
+          <p className="mx-lead" style={{ maxWidth: '56ch' }}>
+            We read every enquiry. A senior analyst replies within two working days, usually with
+            two or three questions before a call.
+          </p>
+        </div>
+      </section>
 
-      <section style={{ paddingBlock: 'var(--space-16)' }}>
-        <Container width="reading">
+      <section className="mx-section">
+        <div className="mx-container">
           <div style={layoutStyle}>
-            <aside style={asideStyle}>
-              <Eyebrow>Direct contacts</Eyebrow>
-              <ul style={contactListStyle}>
-                <ContactRow label="General" value="hello@merlx.org" href="mailto:hello@merlx.org" />
-                <ContactRow
-                  label="Studio"
-                  value="studio@merlx.org"
-                  href="mailto:studio@merlx.org"
-                />
-                <ContactRow
-                  label="Network"
-                  value="network@merlx.org"
-                  href="mailto:network@merlx.org"
-                />
-              </ul>
-              <p style={consortiumNoteStyle}>
-                We deliver many engagements as part of consortia with partner INGOs and academic
-                institutions. Mention any preferred consortium structure in your message.
-              </p>
+            <aside style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <ContactBlock
+                eyebrow="Direct"
+                items={[
+                  { l: 'General', v: 'hello@merlx.org', href: 'mailto:hello@merlx.org' },
+                  { l: 'Studio', v: 'studio@merlx.org', href: 'mailto:studio@merlx.org' },
+                  { l: 'Network', v: 'network@merlx.org', href: 'mailto:network@merlx.org' },
+                  { l: 'Press', v: 'press@merlx.org', href: 'mailto:press@merlx.org' },
+                ]}
+              />
+              <ContactBlock
+                eyebrow="What to include"
+                items={[
+                  { l: 'Programme', v: 'A short description and where it operates.' },
+                  { l: 'Question', v: "What you're trying to learn or decide." },
+                  { l: 'Timeline', v: 'When you need findings, and when work could start.' },
+                  { l: 'Budget', v: 'A rough order of magnitude is helpful, not required.' },
+                ]}
+              />
+              <ContactBlock
+                eyebrow="Consortium delivery"
+                items={[
+                  {
+                    l: 'Note',
+                    v: 'We deliver many engagements as part of consortia with partner INGOs and academic institutions. Mention any preferred consortium structure in your message.',
+                  },
+                ]}
+              />
             </aside>
 
-            <div style={formColStyle}>
+            <div className="mx-card" style={{ padding: 40, background: 'var(--surface)' }}>
               <ContactForm turnstileSiteKey={siteKey} />
             </div>
           </div>
-        </Container>
+        </div>
       </section>
     </PageShell>
   );
 }
 
-interface ContactRowProps {
-  label: string;
-  value: string;
-  href: string;
+function ContactBlock({
+  eyebrow,
+  items,
+}: {
+  eyebrow: string;
+  items: { l: string; v: string; href?: string }[];
+}) {
+  return (
+    <div>
+      <p className="mx-eyebrow">{eyebrow}</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0, marginTop: 8 }}>
+        {items.map((it, i) => (
+          <div
+            key={`${eyebrow}-${it.l}`}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '120px 1fr',
+              gap: 24,
+              padding: '14px 0',
+              borderBottom: i < items.length - 1 ? '1px solid var(--border-light)' : 'none',
+            }}
+          >
+            <span
+              style={{
+                fontSize: 11,
+                color: 'var(--ink-faint)',
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
+              {it.l}
+            </span>
+            {it.href ? (
+              <a href={it.href} style={{ color: 'var(--iris)', fontSize: 14 }}>
+                {it.v}
+              </a>
+            ) : (
+              <span style={{ color: 'var(--ink)', fontSize: 14, lineHeight: 1.55 }}>{it.v}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-function ContactRow({ label, value, href }: ContactRowProps) {
-  return (
-    <li
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--space-2)',
-        paddingBlock: 'var(--space-4)',
-        borderBottom: '1px solid var(--border-light)',
-      }}
-    >
-      <span
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontWeight: 500,
-          fontSize: 'var(--text-xxs)',
-          letterSpacing: '0.5px',
-          color: 'var(--ink-muted)',
-          textTransform: 'uppercase',
-        }}
-      >
-        {label}
-      </span>
-      <a
-        href={href}
-        style={{
-          fontFamily: 'var(--font-sans)',
-          fontSize: 'var(--text-base)',
-          color: 'var(--deep-teal)',
-          textDecoration: 'underline',
-          textDecorationColor: 'var(--deep-teal-dim)',
-          textUnderlineOffset: '3px',
-        }}
-      >
-        {value}
-      </a>
-    </li>
-  );
+function capitalise(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 const layoutStyle: CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'minmax(220px, 280px) minmax(0, 1fr)',
-  gap: 'var(--space-16)',
-  alignItems: 'flex-start',
-};
-
-const asideStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 'var(--space-5)',
-};
-
-const contactListStyle: CSSProperties = {
-  listStyle: 'none',
-  padding: 0,
-  margin: 0,
-  display: 'flex',
-  flexDirection: 'column',
-};
-
-const consortiumNoteStyle: CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontSize: 'var(--text-xs)',
-  color: 'var(--ink-muted)',
-  lineHeight: 1.55,
-  margin: 0,
-  paddingTop: 'var(--space-4)',
-};
-
-const formColStyle: CSSProperties = {
-  background: 'var(--surface)',
-  border: '1px solid var(--border-light)',
-  borderRadius: 'var(--radius-md)',
-  padding: 'clamp(var(--space-12), 3vw, var(--space-16))',
+  gridTemplateColumns: 'minmax(260px, 320px) minmax(0, 1fr)',
+  gap: 64,
+  alignItems: 'start',
 };
