@@ -1,43 +1,250 @@
 @import "tailwindcss";
 
+/*
+ * MERLx Design System tokens.
+ * Source of truth: ~/github/merlx-design-system/foundations/*.md.
+ * Identity: Nordic Product Studio — calm, minimal, warm.
+ * No shadows. No gradients. Cool grays forbidden — Shell scale only.
+ *
+ * Tailwind v4 @theme block exposes tokens as both CSS variables
+ * (var(--shell)) and Tailwind utilities (bg-shell, text-ink, etc).
+ * Inline style={{...}} with var(--…) is the established pattern;
+ * utilities are a convenience, not a requirement.
+ */
+
 @theme {
-  --color-bg: #fbfaf5;
-  --color-bg-soft: #f6f4ec;
-  --color-ink: #1a1a1a;
-  --color-ink-soft: #555555;
-  --color-ink-mute: #8c8779;
-  --color-teal: #1a3a34;
-  --color-teal-deep: #122a26;
-  --color-purple: #4a3f6b;
-  --color-orange: #ca5d0f;
-  --color-orange-hot: #8a2f0a;
-  --color-rule: #e8e3d4;
-  --color-orange-tint-hover: #f9eee0;
-  --color-teal-tint-hover: #f3f5ee;
+  /* Core palette */
+  --color-shell: #f5f3ee;
+  --color-shell-warm: #ede9e1;
+  --color-shell-cool: #f9f8f5;
+  --color-ink: #111111;
+  --color-ink-light: #2a2a2a;
+  --color-ink-muted: #6b6b6b;
+  --color-ink-faint: #9e9e9e;
+  --color-surface: #ffffff;
+  --color-border: #d5d0c7;
+  --color-border-light: #e5e1da;
 
-  --font-serif: "Tiempos Headline", "GT Sectra Display", Georgia, serif;
-  --font-sans: Inter, system-ui, -apple-system, sans-serif;
-  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  /* Accent palette */
+  --color-sand: #e8d4c0;
+  --color-sand-light: #f0e2d4;
+  --color-sand-dark: #c4a98a;
+  --color-iris: #8071bc;
+  --color-iris-light: #a498d0;
+  --color-iris-dark: #635499;
+  --color-deep-teal: #1a3a34;
+  --color-deep-teal-light: #2a5249;
+  --color-deep-iris: #4a3f6b;
+  --color-deep-iris-light: #5e5280;
+  --color-ember: #ca5d0f;
+  --color-ember-light: #e07b33;
+  --color-ember-dark: #a84b0c;
 
-  --radius-sm: 2px;
-  --radius-md: 4px;
+  /* Dim variants */
+  --color-sand-dim: rgba(232, 212, 192, 0.25);
+  --color-iris-dim: rgba(128, 113, 188, 0.12);
+  --color-deep-teal-dim: rgba(26, 58, 52, 0.1);
+  --color-deep-iris-dim: rgba(74, 63, 107, 0.1);
+  --color-ember-dim: rgba(202, 93, 15, 0.1);
+
+  /* Status */
+  --color-success: #3baa7f;
+  --color-error: #b83a2a;
+  --color-error-light: #d05454;
+
+  /* Typography */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-dm-serif-display), Georgia, serif;
+  --font-mono: var(--font-ibm-plex-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  --text-xl: 16px;
+  --text-lg: 15px;
+  --text-base: 13px;
+  --text-sm: 12px;
+  --text-xs: 11px;
+  --text-xxs: 10px;
+  --text-micro: 9px;
+
+  /* Spacing */
+  --spacing-1: 2px;
+  --spacing-2: 4px;
+  --spacing-3: 6px;
+  --spacing-4: 8px;
+  --spacing-5: 10px;
+  --spacing-6: 12px;
+  --spacing-7: 14px;
+  --spacing-8: 16px;
+  --spacing-10: 20px;
+  --spacing-12: 24px;
+  --spacing-16: 32px;
+  --spacing-20: 40px;
+  --spacing-24: 48px;
+  --spacing-32: 64px;
+  --spacing-40: 80px;
+  --spacing-48: 96px;
+  --spacing-64: 128px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 100px;
+
+  /* Motion */
+  --motion-fast: 100ms;
+  --motion-default: 200ms;
+  --motion-slow: 300ms;
+  --motion-easing: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Breakpoints (semantic names; Tailwind v4 reads these as `mobile:`, `tablet:`, `desktop:`) */
+  --breakpoint-mobile: 0px;
+  --breakpoint-tablet: 640px;
+  --breakpoint-desktop: 1024px;
 }
 
-html {
-  box-sizing: border-box;
-  background: var(--color-bg);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
+/* Aliases used in raw CSS — Tailwind v4 prefixes the `@theme`
+   variables with their kind (`--color-…`, `--spacing-…`). Aliases
+   match the design-system token names for use in component CSS. */
+:root {
+  --shell: var(--color-shell);
+  --shell-warm: var(--color-shell-warm);
+  --shell-cool: var(--color-shell-cool);
+  --ink: var(--color-ink);
+  --ink-light: var(--color-ink-light);
+  --ink-muted: var(--color-ink-muted);
+  --ink-faint: var(--color-ink-faint);
+  --surface: var(--color-surface);
+  --border: var(--color-border);
+  --border-light: var(--color-border-light);
+
+  --sand: var(--color-sand);
+  --sand-light: var(--color-sand-light);
+  --sand-dark: var(--color-sand-dark);
+  --iris: var(--color-iris);
+  --iris-light: var(--color-iris-light);
+  --iris-dark: var(--color-iris-dark);
+  --deep-teal: var(--color-deep-teal);
+  --deep-teal-light: var(--color-deep-teal-light);
+  --deep-iris: var(--color-deep-iris);
+  --deep-iris-light: var(--color-deep-iris-light);
+  --ember: var(--color-ember);
+  --ember-light: var(--color-ember-light);
+  --ember-dark: var(--color-ember-dark);
+
+  --sand-dim: var(--color-sand-dim);
+  --iris-dim: var(--color-iris-dim);
+  --deep-teal-dim: var(--color-deep-teal-dim);
+  --deep-iris-dim: var(--color-deep-iris-dim);
+  --ember-dim: var(--color-ember-dim);
+
+  --success: var(--color-success);
+  --error: var(--color-error);
+  --error-light: var(--color-error-light);
+
+  --space-1: var(--spacing-1);
+  --space-2: var(--spacing-2);
+  --space-3: var(--spacing-3);
+  --space-4: var(--spacing-4);
+  --space-5: var(--spacing-5);
+  --space-6: var(--spacing-6);
+  --space-7: var(--spacing-7);
+  --space-8: var(--spacing-8);
+  --space-10: var(--spacing-10);
+  --space-12: var(--spacing-12);
+  --space-16: var(--spacing-16);
+  --space-20: var(--spacing-20);
+  --space-24: var(--spacing-24);
+  --space-32: var(--spacing-32);
+  --space-40: var(--spacing-40);
+  --space-48: var(--spacing-48);
+  --space-64: var(--spacing-64);
 }
+
+/* Base reset */
 *,
 *::before,
 *::after {
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
+
+html {
+  background: var(--shell);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   margin: 0;
+  min-height: 100vh;
+  background: inherit;
+  color: inherit;
+  font: inherit;
 }
 
 [dir="rtl"] body {
   text-align: start;
+}
+
+/* Headings reset — components opt in to specific scales via tokens. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--iris-dim);
+  color: var(--iris-dark);
+}
+
+/* Universal focus ring — design system mandate, no exceptions. */
+:where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--iris);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Reduced motion — disable transitions/animations entirely. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
 }

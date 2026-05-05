@@ -3,11 +3,34 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { DM_Serif_Display, IBM_Plex_Mono, Inter } from 'next/font/google';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import '@/app/globals.css';
 import { routing } from '@/i18n/routing';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-dm-serif-display',
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
+  variable: '--font-ibm-plex-mono',
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -64,8 +87,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const headerList = await headers();
   const tenantKind = headerList.get('x-tenant-kind') ?? 'unknown';
 
+  const fontClass = `${inter.variable} ${dmSerifDisplay.variable} ${ibmPlexMono.variable}`;
+
   return (
-    <html lang={locale} dir={dir} data-tenant={tenantKind}>
+    <html lang={locale} dir={dir} data-tenant={tenantKind} className={fontClass}>
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
         <Analytics />
