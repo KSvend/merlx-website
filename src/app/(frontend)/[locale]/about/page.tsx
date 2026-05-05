@@ -1,71 +1,17 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { RichTextRenderer } from '@/components/pages/RichTextRenderer';
-import type { AppLocale } from '@/i18n/routing';
-import { requireKnownTenant } from '@/lib/tenant-aware';
-import config from '@/payload.config';
 import { setRequestLocale } from 'next-intl/server';
-import { headers } from 'next/headers';
-import { notFound } from 'next/navigation';
-import { getPayload } from 'payload';
 
 interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
-export default async function AboutPage({ params }: PageProps) {
+export default async function UaboutPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-
-  const headerList = await headers();
-  const payload = await getPayload({ config });
-  const tenant = await requireKnownTenant(headerList, payload);
-
-  const pageQuery = await payload.find({
-    collection: 'pages',
-    where: {
-      and: [
-        { slug: { equals: 'about' } },
-        { tenant: { equals: tenant.id } },
-        { status: { equals: 'published' } },
-      ],
-    },
-    locale: locale as AppLocale,
-    limit: 1,
-  });
-
-  const page = pageQuery.docs[0];
-  if (!page) notFound();
-
   return (
     <PageShell locale={locale}>
-      <article style={{ maxWidth: 720, margin: '0 auto', padding: '64px 24px' }}>
-        <h1
-          style={{
-            fontFamily: 'var(--font-serif)',
-            fontWeight: 600,
-            fontSize: 38,
-            color: 'var(--color-ink)',
-            letterSpacing: '-0.014em',
-            margin: '0 0 12px',
-          }}
-        >
-          {page.title}
-        </h1>
-        {page.subtitle && (
-          <p
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
-              color: 'var(--color-ink-mute)',
-              fontSize: 16,
-              marginBottom: 32,
-            }}
-          >
-            {page.subtitle}
-          </p>
-        )}
-        <RichTextRenderer data={page.body} />
-      </article>
+      <h1>about</h1>
+      <p>visual rebuild pending</p>
     </PageShell>
   );
 }

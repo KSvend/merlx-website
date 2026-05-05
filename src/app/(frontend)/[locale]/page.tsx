@@ -1,8 +1,4 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { WorldLanding } from '@/components/landing/WorldLanding';
-import { NetworkHome } from '@/components/network/NetworkHome';
-import { NilexHome } from '@/components/nilex/NilexHome';
-import { StudioHome } from '@/components/studio/StudioHome';
 import {
   isGroupTenant,
   isNetworkTenant,
@@ -23,36 +19,22 @@ export default async function Page({ params }: PageProps) {
   setRequestLocale(locale);
 
   const headerList = await headers();
-  if (isStudioTenant(headerList)) {
-    return (
-      <PageShell locale={locale}>
-        <StudioHome locale={locale} />
-      </PageShell>
-    );
-  }
-  if (isNetworkTenant(headerList)) {
-    return (
-      <PageShell locale={locale}>
-        <NetworkHome locale={locale} />
-      </PageShell>
-    );
-  }
-  if (isNodeTenant(headerList)) {
-    const { subdomain } = parseTenantHeaders(headerList);
-    if (subdomain === 'nilex') {
-      return (
-        <PageShell locale={locale}>
-          <NilexHome locale={locale} />
-        </PageShell>
-      );
-    }
-    notFound();
-  }
-  if (!isGroupTenant(headerList)) notFound();
+  const { kind, subdomain } = parseTenantHeaders(headerList);
+  const known =
+    isGroupTenant(headerList) ||
+    isStudioTenant(headerList) ||
+    isNetworkTenant(headerList) ||
+    (isNodeTenant(headerList) && subdomain === 'nilex');
+  if (!known) notFound();
 
   return (
     <PageShell locale={locale}>
-      <WorldLanding locale={locale} />
+      <h1>MERLx</h1>
+      <p>
+        tenant: {kind}
+        {subdomain ? ` · ${subdomain}` : ''}
+      </p>
+      <p>visual rebuild pending</p>
     </PageShell>
   );
 }
