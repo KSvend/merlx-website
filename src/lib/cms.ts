@@ -9,7 +9,7 @@
 
 import config from '@/payload.config';
 import { getPayload } from 'payload';
-import type { InsightsPost, Page, Publication, Tenant } from '../../payload-types';
+import type { InsightsPost, OpticsTool, Page, Publication, Tenant } from '../../payload-types';
 import { buildAggregateInsightsQuery, buildAggregatePublicationsQuery } from './aggregate-feed';
 import type { TenantContext } from './tenant-aware';
 
@@ -110,6 +110,37 @@ export async function listPublications({
     limit,
   });
   return result.docs;
+}
+
+export async function listOpticsTools({ tenant, locale }: FindArgs): Promise<OpticsTool[]> {
+  const payload = await getPayload({ config });
+  const result = await payload.find({
+    collection: 'optics-tools',
+    where: { tenant: { equals: tenant.id } },
+    locale: locale as 'en' | 'ar' | 'fr',
+    fallbackLocale: 'en',
+    sort: 'order',
+    limit: 50,
+  });
+  return result.docs;
+}
+
+export async function findOpticsToolBySlug({
+  tenant,
+  slug,
+  locale,
+}: FindArgs & { slug: string }): Promise<OpticsTool | null> {
+  const payload = await getPayload({ config });
+  const result = await payload.find({
+    collection: 'optics-tools',
+    where: {
+      and: [{ slug: { equals: slug } }, { tenant: { equals: tenant.id } }],
+    },
+    locale: locale as 'en' | 'ar' | 'fr',
+    fallbackLocale: 'en',
+    limit: 1,
+  });
+  return result.docs[0] ?? null;
 }
 
 export async function findPublicationBySlug({
