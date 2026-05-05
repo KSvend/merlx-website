@@ -34,10 +34,10 @@ function Hero({ locale }: { locale: string }) {
           <div>
             <p className="mx-eyebrow">MERLx Network · the MERL guild</p>
             <h1 className="mx-h1-display">
-              Locally owned MERL. <em>Federated, not franchised.</em>
+              Locally owned MERL. <em>Cooperative, not franchised.</em>
             </h1>
             <p className="mx-lead" style={{ marginTop: 32, maxWidth: '46ch' }}>
-              The Network is a federation of locally owned MERL cooperatives — research, evaluation,
+              The Network is a cooperative of locally owned MERL practices — research, evaluation,
               third-party monitoring, KII rotations, and field analysis under shared methodology and
               conflict-sensitivity standards. The Studio builds the tools; the Network does the work
               in country.
@@ -76,7 +76,7 @@ function NodesStrip({ locale }: { locale: string }) {
       <div className="mx-container">
         <div className="mx-intro">
           <div>
-            <p className="mx-eyebrow">The federation</p>
+            <p className="mx-eyebrow">The cooperative</p>
             <h2 className="mx-h2-section">
               Four nodes, <em>one methodology</em>.
             </h2>
@@ -189,7 +189,7 @@ function ServicesStrip({ locale }: { locale: string }) {
             </h2>
           </div>
           <p className="mx-lead">
-            Five service areas across the federation. Every engagement uses locally-grounded
+            Five service areas across the cooperative. Every engagement uses locally-grounded
             methodology with cross-node peer review.
           </p>
         </div>
@@ -266,7 +266,7 @@ function BecomeANodeStrip({ locale }: { locale: string }) {
     <section className="mx-section mx-section--iris">
       <div className="mx-container" style={{ textAlign: 'center' }}>
         <p className="mx-eyebrow" style={{ justifyContent: 'center', display: 'inline-flex' }}>
-          Joining the federation
+          Joining the cooperative
         </p>
         <h2
           style={{

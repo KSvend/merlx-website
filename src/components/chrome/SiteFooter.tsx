@@ -103,7 +103,7 @@ function taglineFor(kind: TenantContext['kind'], nodeName?: string) {
       <>
         Locally owned MERL,
         <br />
-        federated under shared methodology.
+        cooperative under shared methodology.
       </>
     );
   if (kind === 'node')

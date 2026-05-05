@@ -72,9 +72,9 @@ export const NILEX_NEWS: NodeNewsItem[] = [
   {
     slug: '2026-04-network-onboarding',
     date: '2026-04-15',
-    title: 'NileX joins the MERLx Network as the first federated node',
+    title: 'NileX joins the MERLx Network as the first member node',
     excerpt:
-      'NileX is the first cooperative to fully join the MERLx Network federation. Our methodology + tooling integration is complete; cross-node peer review pilots begin in May.',
+      'NileX is the first cooperative to fully join the MERLx Network. Our methodology + tooling integration is complete; cross-node peer review pilots begin in May.',
   },
   {
     slug: '2026-03-oasis-launch',

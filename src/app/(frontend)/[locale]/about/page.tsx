@@ -64,7 +64,7 @@ function renderHeroTitle(title: string, subtitle: string | null | undefined, kin
 
 function defaultFlourish(kind: string): string {
   if (kind === 'studio') return 'a tech studio for development';
-  if (kind === 'network') return 'a federation of cooperatives';
+  if (kind === 'network') return 'a cooperative of MERL practices';
   if (kind === 'node') return 'a MERLx Network node';
   return 'one studio, one network';
 }
@@ -73,10 +73,10 @@ function leadFor(kind: string): string {
   if (kind === 'studio')
     return 'An independent studio building open AI tooling for monitoring, evaluation, research and early warning. We design tools that make analysts faster without making findings shallower.';
   if (kind === 'network')
-    return 'A federation of locally owned MERL cooperatives. Each node is autonomous and accountable in country, working under shared methodology and conflict-sensitivity standards.';
+    return 'A cooperative of locally owned MERL practices. Each node is autonomous and accountable in country, working under shared methodology and conflict-sensitivity standards.';
   if (kind === 'node')
-    return 'A MERLx Network node — locally owned MERL, federated under shared methodology and conflict-sensitivity standards.';
-  return 'MERLx is two distinct entities under one roof. The Studio builds the Optics Suite. The Network is a federation of locally owned MERL cooperatives that runs the tools — and traditional MERL — in country.';
+    return 'A MERLx Network node — locally owned MERL, working in cooperative under shared methodology and conflict-sensitivity standards.';
+  return 'MERLx is two distinct entities under one roof. The Studio builds the Optics Suite. The Network is a cooperative of locally owned MERL practices that runs the tools — and traditional MERL — in country.';
 }
 
 function capitalise(s: string): string {

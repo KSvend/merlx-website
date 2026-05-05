@@ -31,8 +31,8 @@ function Hero() {
         </h1>
         <p className="mx-lead" style={{ marginTop: 32, maxWidth: '52ch' }}>
           MERLx operates as two distinct entities under one roof. The Studio builds open AI tooling
-          for monitoring, evaluation, research and early warning. The Network is a federation of
-          locally owned MERL cooperatives running that tooling — and traditional MERL — in country.
+          for monitoring, evaluation, research and early warning. The Network is a cooperative of
+          locally owned MERL practices running that tooling — and traditional MERL — in country.
         </p>
       </div>
     </section>
@@ -99,7 +99,7 @@ function TwoFrontDoorsSection({ locale }: { locale: string }) {
                 </span>
               </h2>
               <p style={cardLeadStyle}>
-                A federation of locally owned MERL cooperatives. Each node is autonomous and
+                A cooperative of locally owned MERL practices. Each node is autonomous and
                 accountable in country, working under shared methodology and conflict-sensitivity
                 standards. Traditional MERL with the Optics Suite as infrastructure.
               </p>
@@ -153,7 +153,7 @@ function PrinciplesSection() {
     {
       n: '04',
       t: 'Local epistemics.',
-      d: 'Federated nodes hold local knowledge. The Studio builds; the Network deploys.',
+      d: 'Member nodes hold local knowledge. The Studio builds; the Network deploys.',
     },
   ];
 

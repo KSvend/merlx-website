@@ -26,7 +26,7 @@ export default async function PrinciplesPage({ params }: PageProps) {
   const heroLine = isNetwork
     ? 'How the Network operates.'
     : 'A quieter, more careful kind of analytical practice.';
-  const heroFlourish = isNetwork ? 'federated, not franchised' : 'principles, not slogans';
+  const heroFlourish = isNetwork ? 'cooperative, not franchised' : 'principles, not slogans';
 
   return (
     <PageShell locale={locale} pathname="/principles">

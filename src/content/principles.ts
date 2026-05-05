@@ -26,7 +26,7 @@ export const COMMITMENTS: Principle[] = [
   {
     number: 4,
     title: 'Local epistemics.',
-    body: 'We work with locally-grounded researchers and federated nodes. Methods that strip context for portability — without naming what was lost — do not ship.',
+    body: 'We work with locally-grounded researchers and member nodes of the cooperative. Methods that strip context for portability — without naming what was lost — do not ship.',
   },
   {
     number: 5,
@@ -51,7 +51,7 @@ export const BELIEFS: Principle[] = [
   },
   {
     number: 3,
-    title: 'Federated, not centralised.',
+    title: 'Cooperative, not centralised.',
     body: 'The tools are open and portable. The expertise is locally held by Network nodes and partner organisations. The Studio builds; the Network deploys.',
   },
   {

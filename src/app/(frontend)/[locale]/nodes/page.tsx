@@ -29,7 +29,7 @@ export default async function NodesIndexPage({ params }: PageProps) {
     <PageShell locale={locale} pathname="/nodes">
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">The federation</p>
+          <p className="mx-eyebrow">The cooperative</p>
           <h1>
             Nodes, <em>not branches</em>.
           </h1>
@@ -66,7 +66,7 @@ export default async function NodesIndexPage({ params }: PageProps) {
                 }}
               >
                 One active node, two onboarding, one planned. The Network grows by invitation —
-                cooperative MERL practices in countries where the federation has gaps and partner
+                cooperative MERL practices in countries where the Network has gaps and partner
                 demand.
               </p>
             </div>

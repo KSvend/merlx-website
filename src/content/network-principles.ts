@@ -8,7 +8,7 @@ export const NETWORK_COMMITMENTS: Principle[] = [
   },
   {
     number: 2,
-    title: 'Federation, not franchise.',
+    title: 'Cooperative, not franchise.',
     body: 'Nodes share methodology, tooling, and quality standards but operate independently. The Network coordinates; it does not direct.',
   },
   {

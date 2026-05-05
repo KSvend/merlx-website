@@ -11,7 +11,7 @@ const STAGES = [
   {
     n: '01',
     t: 'Mutual fit',
-    d: 'A short two-call window. We learn what your cooperative does, where it operates, what kind of MERL clients it serves. You learn what the federation expects: methodology, peer review, conflict-sensitivity, no-interference findings.',
+    d: 'A short two-call window. We learn what your cooperative does, where it operates, what kind of MERL clients it serves. You learn what the Network expects: methodology, peer review, conflict-sensitivity, no-interference findings.',
   },
   {
     n: '02',
@@ -26,7 +26,7 @@ const STAGES = [
   {
     n: '04',
     t: 'First joint engagement',
-    d: 'A first joint engagement with the federation — usually a co-led delivery for a multilateral or INGO partner. Both sides validate operational fit before formal admission as an active node.',
+    d: 'A first joint engagement with the cooperative — usually a co-led delivery for a multilateral or INGO partner. Both sides validate operational fit before formal admission as an active node.',
   },
 ];
 
@@ -46,13 +46,13 @@ export default async function BecomeANodePage({ params }: PageProps) {
     <PageShell locale={locale} pathname="/become-a-node">
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">Joining the federation</p>
+          <p className="mx-eyebrow">Joining the cooperative</p>
           <h1>
             Locally owned. <em>Globally connected</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
             We grow the Network by invitation, not application. If your cooperative does excellent
-            MERL in a country where the federation has gaps, we'd like to talk.
+            MERL in a country where the Network has gaps, we'd like to talk.
           </p>
         </div>
       </section>

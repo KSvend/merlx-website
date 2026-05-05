@@ -1,5 +1,5 @@
 /**
- * Federated MERL Network nodes. Static content in v1 — promote to a
+ * Cooperative MERL Network nodes. Static content in v1 — promote to a
  * Payload collection when more than 5 nodes are operational.
  */
 
