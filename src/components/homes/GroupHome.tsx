@@ -137,23 +137,23 @@ function PrinciplesSection() {
   const items = [
     {
       n: '01',
-      t: 'Open by default.',
-      d: 'Tools, methods and data schemas are open-source unless a partner constraint says otherwise. When a constraint exists, we name it.',
+      t: 'Field first, not lab first.',
+      d: 'Our tools have to work for programme teams in low-bandwidth environments with limited infrastructure, not just at a conference demo.',
     },
     {
       n: '02',
-      t: 'Conflict-sensitive engineering.',
-      d: 'Every tool is reviewed for harm pathways before launch: surveillance, dual-use, exclusion. Reviews are documented and re-run when the context shifts.',
+      t: 'Evidence over abstraction.',
+      d: 'Analytical outputs are auditable. We can show the features behind a classification, the indicators behind a narrative, the inputs behind a forecast. No black-box outputs.',
     },
     {
       n: '03',
-      t: 'Numbers ship with uncertainty.',
-      d: 'No quietly-rounded estimates. Models ship with the evaluation that produced them.',
+      t: 'Open and interoperable.',
+      d: 'Open data standards, open satellite archives, open-source models, standard APIs. Clients own their data and their instance.',
     },
     {
       n: '04',
-      t: 'Local epistemics.',
-      d: 'Local researchers know things satellites cannot. The Studio builds; the Network deploys.',
+      t: 'Responsible by default.',
+      d: 'Data-protection impact assessment per engagement. IASC data-responsibility guidance, do-no-harm and informed-consent protocols documented. On-device processing wherever viable. Data residency set by the client.',
     },
   ];
 

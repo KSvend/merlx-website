@@ -72,12 +72,14 @@ function Hero({ locale }: { locale: string }) {
           <div>
             <p className="mx-eyebrow">MERLx Studio</p>
             <h1 className="mx-h1-display">
-              Open AI tooling for <em>monitoring, evaluation, research and early warning</em>.
+              A partner for <em>tech-enabled global development</em>.
             </h1>
             <p className="mx-lead" style={{ marginTop: 32, maxWidth: '46ch' }}>
-              The Studio builds the Optics Suite: six tools for analysts working in fragile and
-              rapidly changing contexts. Earth observation, NLP, compound-risk forecasting,
-              theory-of-change simulation, recovery mapping, on-device KII assistance.
+              MERLx is an independent studio building analytical tools and infrastructure for
+              humanitarian, peacebuilding and conflict-prevention organisations. Our work helps
+              teams read context faster, adapt programming earlier, and ground decisions in real
+              evidence. AI augments the analysts, evaluators and programme staff who already do this
+              work. It does not replace their judgement.
             </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 36, flexWrap: 'wrap' }}>
               <Link href={`/${locale}/optics`} className="mx-btn mx-btn--primary mx-btn--lg">

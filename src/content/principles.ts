@@ -10,28 +10,28 @@ export interface Principle {
 export const COMMITMENTS: Principle[] = [
   {
     number: 1,
-    title: 'Open by default.',
-    body: 'Tools, methods and data schemas are open-source unless a partner constraint forces otherwise. When a constraint exists, we name it and document the trade.',
+    title: 'Field first, not lab first.',
+    body: 'Programme reality sets the architecture. Low bandwidth, limited infrastructure, non-specialist users, noisy data, power that cuts out. Every tool has to work for a programme officer on a modest laptop, or an analyst at a shared CO desk behind a captive portal. We design for sustained programme use, not conference demos.',
   },
   {
     number: 2,
-    title: 'Conflict-sensitive engineering.',
-    body: 'Every tool is reviewed for harm pathways before launch: surveillance risk, dual-use, exclusion, escalation. Reviews are documented and re-run when the context shifts.',
+    title: 'Evidence over abstraction.',
+    body: 'Every analytical output is auditable. Classifiers show which features drove the call. Narrative reports cite the indicators behind them. ToC Tester critique cites its evidence. We support human judgement; we do not replace it.',
   },
   {
     number: 3,
-    title: 'Numbers ship with uncertainty.',
-    body: 'Confidence intervals on every estimate, sensitivity analysis on every causal claim. Models ship with the evaluation that produced them. Failure modes are written down before the field discovers them.',
+    title: 'Open and interoperable.',
+    body: 'We build on open data standards, open satellite archives (Sentinel, Landsat, MODIS via Copernicus and Planetary Computer), open-source analytical libraries and standard APIs. Clients own their data and their instance. Nothing in our core stack is licence-locked.',
   },
   {
     number: 4,
-    title: 'Local epistemics.',
-    body: 'We work with locally-grounded researchers and Network nodes. Methods that strip context for portability without naming what was lost do not ship.',
+    title: 'Responsible by default.',
+    body: 'Every engagement runs a data-protection impact assessment at inception. We align to IASC operational guidance on data responsibility, OECD-DAC conflict-sensitivity, and Core Humanitarian Standard principles. PII redaction is on by default; data residency and retention are set by the client.',
   },
   {
     number: 5,
-    title: 'Honest limits.',
-    body: 'We say no to projects we cannot do well. We say when a tool does not fit a context. We retire tools that no longer earn their footprint.',
+    title: 'Plan-driven.',
+    body: 'Every change begins with a written plan, reviewed against coding and evaluation standards. We say no to projects we cannot do well. We retire tools that no longer earn their footprint.',
   },
 ];
 
@@ -46,8 +46,8 @@ export const BELIEFS: Principle[] = [
   },
   {
     number: 2,
-    title: 'AI is a tool, not a thesis.',
-    body: 'We use machine learning, LLMs and satellite analysis where they earn their place against simpler alternatives. Every "AI-powered" claim has a falsifiable test behind it.',
+    title: 'AI augments, it does not author.',
+    body: 'We use machine learning, LLMs and satellite analysis where they earn their place against simpler alternatives. AI augments the analysts, evaluators and programme staff who already do the work.',
   },
   {
     number: 3,

@@ -1,10 +1,11 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { RichTextRenderer } from '@/components/pages/RichTextRenderer';
+import { OPTICS_ACCENT_BY_SLUG, OPTICS_TOOL_PROFILES } from '@/content/optics-tool-profiles';
 import { findOpticsToolBySlug } from '@/lib/cms';
 import { requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
 import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
@@ -14,19 +15,10 @@ interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
-const ACCENT_BY_SLUG: Record<string, string> = {
-  iris: 'var(--iris)',
-  aperture: 'var(--deep-teal)',
-  prism: 'var(--ember)',
-  'toc-tester': 'var(--deep-iris)',
-  oasis: 'var(--sand-dark)',
-  echo: 'var(--deep-teal)',
-};
-
 const STATUS_LABEL: Record<string, string> = {
-  live: 'LIVE',
-  beta: 'BETA',
-  'coming-soon': 'COMING SOON',
+  live: '● LIVE',
+  beta: '◐ BETA',
+  'coming-soon': '○ COMING SOON',
 };
 
 export default async function OpticsToolPage({ params }: PageProps) {
@@ -37,34 +29,34 @@ export default async function OpticsToolPage({ params }: PageProps) {
   const payload = await getPayload({ config });
   const tenant = await requireKnownTenant(headerList, payload);
   const tool = await findOpticsToolBySlug({ tenant, slug, locale });
+  const profile = OPTICS_TOOL_PROFILES[slug];
 
-  if (!tool) notFound();
+  if (!tool && !profile) notFound();
 
-  const accent = ACCENT_BY_SLUG[tool.slug] ?? 'var(--ink-muted)';
-  const letter = tool.name.charAt(0).toUpperCase();
+  // Authoritative copy comes from the company-profile profile; the
+  // Payload doc supplies status, an editorial override of name/tagline,
+  // and any external-deployment URL.
+  const accent = OPTICS_ACCENT_BY_SLUG[slug] ?? 'var(--ink-muted)';
+  const name = tool?.name ?? slug.toUpperCase();
+  const longName = profile?.longName ?? '';
+  const tagline = profile?.tagline ?? tool?.tagline ?? '';
+  const summary = profile?.summary ?? tool?.tagline ?? '';
+  const status = tool?.status ?? 'beta';
+  const externalUrl = tool?.externalUrl ?? null;
 
   return (
     <PageShell locale={locale} pathname={`/optics/${slug}`}>
       {/* Header strip */}
       <section className="mx-section">
         <div className="mx-container">
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 16,
-              marginBottom: 32,
-              paddingBottom: 20,
-              borderBottom: '1px solid var(--border-light)',
-            }}
-          >
+          <div style={headerRowStyle}>
             <div
               style={{
                 width: 56,
                 height: 56,
                 borderRadius: 'var(--radius-sm)',
-                background: accent,
-                color: 'var(--shell)',
+                background: 'transparent',
+                color: accent,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -72,136 +64,54 @@ export default async function OpticsToolPage({ params }: PageProps) {
                 fontStyle: 'italic',
                 fontSize: 30,
                 letterSpacing: '-0.6px',
+                border: `1px solid ${accent}`,
               }}
             >
-              {letter}
+              {profile?.letter ?? name.charAt(0)}
             </div>
             <div style={{ flex: 1 }}>
-              <p
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 10,
-                  letterSpacing: '1.5px',
-                  color: 'var(--ink-faint)',
-                  textTransform: 'uppercase',
-                  margin: '0 0 4px',
-                }}
-              >
-                MERLx Optics Suite
-              </p>
-              <h2
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontWeight: 600,
-                  fontSize: 28,
-                  letterSpacing: '-0.4px',
-                  margin: 0,
-                  color: 'var(--ink)',
-                }}
-              >
-                {tool.name}
-              </h2>
+              <h2 style={toolNameStyle}>{name}</h2>
+              {longName ? <p style={longNameStyle}>{longName}</p> : null}
             </div>
-            <span
-              style={{
-                padding: '6px 12px',
-                borderRadius: 'var(--radius-pill)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: 10,
-                letterSpacing: '1px',
-                color: accent,
-                border: `1px solid ${accent}`,
-                background: 'transparent',
-              }}
-            >
-              {STATUS_LABEL[tool.status] ?? tool.status.toUpperCase()}
+            <span style={{ ...statusPillStyle, color: accent, borderColor: accent }}>
+              {STATUS_LABEL[status] ?? status.toUpperCase()}
             </span>
           </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.15fr)',
-              gap: 64,
-              alignItems: 'start',
-            }}
-          >
-            <div>
-              <h3 style={taglineStyle}>{tool.tagline}</h3>
-              {tool.summary ? (
-                <div style={{ marginBottom: 24 }}>
-                  {/* biome-ignore lint/suspicious/noExplicitAny: Lexical body shape */}
-                  <RichTextRenderer data={tool.summary as any} />
-                </div>
-              ) : null}
-              <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
-                {tool.externalUrl ? (
-                  <a
-                    href={tool.externalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mx-btn mx-btn--primary"
-                  >
-                    Launch tool →
-                  </a>
-                ) : null}
-                <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
-                  Request a demo
-                </Link>
-              </div>
-            </div>
+          <p style={taglineStyle}>{tagline}</p>
+          <p style={summaryStyle}>{summary}</p>
 
-            {tool.screenshots && tool.screenshots.length > 0 ? (
-              <div
-                className="mx-card"
-                style={{ padding: 0, overflow: 'hidden', background: 'var(--surface)' }}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
+            {externalUrl ? (
+              <a
+                href={externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mx-btn mx-btn--primary"
               >
-                {tool.screenshots.map((s, i) => (
-                  <div
-                    key={i.toString()}
-                    style={{
-                      padding: 24,
-                      borderTop: i > 0 ? '1px solid var(--border-light)' : 'none',
-                    }}
-                  >
-                    {s.image ? (
-                      // External image URL or media id placeholder
-                      <img
-                        src={s.image}
-                        alt={s.caption ?? `${tool.name} screenshot ${i + 1}`}
-                        style={{ width: '100%', borderRadius: 'var(--radius-sm)' }}
-                      />
-                    ) : null}
-                    {s.caption ? (
-                      <p className="mx-mono-caption" style={{ marginTop: 12 }}>
-                        {s.caption}
-                      </p>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <PreviewPlaceholder name={tool.name} accent={accent} />
-            )}
+                Launch tool →
+              </a>
+            ) : null}
+            <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
+              Request a demo
+            </Link>
           </div>
+
+          {/* Screenshots */}
+          {profile?.screenshots && profile.screenshots.length > 0 ? (
+            <ScreenshotGrid screenshots={profile.screenshots} altPrefix={name} />
+          ) : null}
         </div>
       </section>
 
-      {/* Description / capabilities body */}
-      {tool.description ? (
+      {/* Capabilities */}
+      {profile?.capabilities && profile.capabilities.length > 0 ? (
         <section className="mx-section mx-section--shell-warm">
           <div className="mx-container">
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr',
-                gap: 64,
-                alignItems: 'start',
-              }}
-            >
+            <div style={capsLayoutStyle}>
               <div>
                 <p className="mx-eyebrow">Capabilities</p>
-                <h2 className="mx-h2-section" style={{ margin: '8px 0 24px' }}>
+                <h2 className="mx-h2-section" style={{ margin: '8px 0 16px' }}>
                   What it <em>does</em>.
                 </h2>
                 <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--ink-muted)', margin: 0 }}>
@@ -209,11 +119,35 @@ export default async function OpticsToolPage({ params }: PageProps) {
                   model cards and annotation protocols available under NDA.
                 </p>
               </div>
-              <div className="mx-card" style={{ padding: 32, background: 'var(--surface)' }}>
-                {/* biome-ignore lint/suspicious/noExplicitAny: Lexical body shape */}
-                <RichTextRenderer data={tool.description as any} />
+              <ul style={capsListStyle}>
+                {profile.capabilities.map((c) => (
+                  <li key={c} style={capsItemStyle}>
+                    <span style={{ color: accent, fontFamily: 'var(--font-mono)' }}>·</span>
+                    <span>{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Built on + note */}
+      {profile?.builtOn && profile.builtOn.length > 0 ? (
+        <section className="mx-section">
+          <div className="mx-container">
+            <div style={builtOnRowStyle}>
+              <span style={builtOnLabelStyle}>Built on</span>
+              <div style={builtOnListStyle}>
+                {profile.builtOn.map((b, i, arr) => (
+                  <span key={b} style={builtOnItemStyle}>
+                    {b}
+                    {i < arr.length - 1 ? <span style={builtOnDotStyle}>·</span> : null}
+                  </span>
+                ))}
               </div>
             </div>
+            {profile.note ? <p style={builtOnNoteStyle}>{profile.note}</p> : null}
           </div>
         </section>
       ) : null}
@@ -234,47 +168,83 @@ export default async function OpticsToolPage({ params }: PageProps) {
   );
 }
 
-function PreviewPlaceholder({ name, accent }: { name: string; accent: string }) {
+interface ScreenshotGridProps {
+  screenshots: { src: string; caption: string; width?: 'wide' | 'half' }[];
+  altPrefix: string;
+}
+
+function ScreenshotGrid({ screenshots, altPrefix }: ScreenshotGridProps) {
+  // If any screenshot is wide, render single-column. Otherwise pair them.
+  const hasWide = screenshots.some((s) => s.width === 'wide' || !s.width);
+  const gridStyle: CSSProperties = hasWide
+    ? { display: 'grid', gridTemplateColumns: '1fr', gap: 24 }
+    : { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 };
+
   return (
-    <div
-      className="mx-card"
-      style={{
-        padding: 40,
-        background: 'var(--surface)',
-        minHeight: 320,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-      }}
-    >
-      <span
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          letterSpacing: '1.5px',
-          color: accent,
-          textTransform: 'uppercase',
-        }}
-      >
-        Visual preview
-      </span>
-      <p
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontStyle: 'italic',
-          fontSize: 24,
-          color: 'var(--ink-muted)',
-          margin: 0,
-          lineHeight: 1.4,
-        }}
-      >
-        Screenshots for {name} are being uploaded. Request a live walkthrough via contact.
-      </p>
+    <div style={gridStyle}>
+      {screenshots.map((s, i) => (
+        <figure
+          key={s.src}
+          style={{
+            margin: 0,
+            border: '1px solid var(--border-light)',
+            borderRadius: 'var(--radius-md)',
+            overflow: 'hidden',
+            background: 'var(--surface)',
+          }}
+        >
+          <Image
+            src={s.src}
+            alt={`${altPrefix} screenshot ${i + 1}: ${s.caption}`}
+            width={1240}
+            height={720}
+            sizes="(max-width: 768px) 100vw, 600px"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
+          <figcaption style={captionStyle}>{s.caption}</figcaption>
+        </figure>
+      ))}
     </div>
   );
 }
+
+const headerRowStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 16,
+  marginBottom: 32,
+  paddingBottom: 20,
+  borderBottom: '1px solid var(--border-light)',
+};
+
+const toolNameStyle: CSSProperties = {
+  fontFamily: 'var(--font-sans)',
+  fontWeight: 700,
+  fontSize: 30,
+  letterSpacing: '-0.4px',
+  margin: 0,
+  color: 'var(--ink)',
+};
+
+const longNameStyle: CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontStyle: 'italic',
+  fontWeight: 400,
+  fontSize: 16,
+  color: 'var(--ink-muted)',
+  margin: '4px 0 0',
+};
+
+const statusPillStyle: CSSProperties = {
+  padding: '6px 12px',
+  borderRadius: 'var(--radius-pill)',
+  fontFamily: 'var(--font-mono)',
+  fontSize: 10,
+  letterSpacing: '1px',
+  border: '1px solid currentColor',
+  background: 'transparent',
+  whiteSpace: 'nowrap',
+};
 
 const taglineStyle: CSSProperties = {
   fontFamily: 'var(--font-display)',
@@ -286,4 +256,94 @@ const taglineStyle: CSSProperties = {
   margin: '0 0 24px',
   textWrap: 'balance',
   color: 'var(--ink)',
+};
+
+const summaryStyle: CSSProperties = {
+  fontSize: 17,
+  lineHeight: 1.55,
+  color: 'var(--ink-light)',
+  margin: '0 0 32px',
+  maxWidth: '64ch',
+};
+
+const captionStyle: CSSProperties = {
+  padding: '12px 16px',
+  borderTop: '1px solid var(--border-light)',
+  fontFamily: 'var(--font-mono)',
+  fontSize: 11,
+  color: 'var(--ink-muted)',
+  letterSpacing: '0.5px',
+  background: 'var(--shell-cool)',
+};
+
+const capsLayoutStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2fr)',
+  gap: 64,
+  alignItems: 'start',
+};
+
+const capsListStyle: CSSProperties = {
+  listStyle: 'none',
+  padding: 0,
+  margin: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
+};
+
+const capsItemStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '20px 1fr',
+  gap: 12,
+  fontSize: 15,
+  lineHeight: 1.55,
+  color: 'var(--ink)',
+};
+
+const builtOnRowStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '180px 1fr',
+  gap: 32,
+  padding: '32px 0',
+  borderTop: '1px solid var(--border-light)',
+  borderBottom: '1px solid var(--border-light)',
+  alignItems: 'baseline',
+};
+
+const builtOnLabelStyle: CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 10,
+  letterSpacing: '1.5px',
+  color: 'var(--ink-faint)',
+  textTransform: 'uppercase',
+};
+
+const builtOnListStyle: CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '8px 0',
+};
+
+const builtOnItemStyle: CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 13,
+  color: 'var(--ink)',
+  display: 'inline-flex',
+  alignItems: 'center',
+};
+
+const builtOnDotStyle: CSSProperties = {
+  color: 'var(--ink-faint)',
+  marginLeft: 16,
+  marginRight: 16,
+};
+
+const builtOnNoteStyle: CSSProperties = {
+  fontSize: 12,
+  lineHeight: 1.6,
+  color: 'var(--ink-muted)',
+  fontStyle: 'italic',
+  marginTop: 24,
+  maxWidth: '70ch',
 };
