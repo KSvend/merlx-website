@@ -11,6 +11,10 @@ export interface OpticsScreenshot {
   caption: string;
   /** "wide" spans the full preview column; "half" sits side-by-side. */
   width?: 'wide' | 'half';
+  /** Intrinsic pixel width of the source image (used by next/image). */
+  intrinsicWidth: number;
+  /** Intrinsic pixel height of the source image. */
+  intrinsicHeight: number;
 }
 
 export interface OpticsToolProfile {
@@ -58,11 +62,15 @@ export const OPTICS_TOOL_PROFILES: Record<string, OpticsToolProfile> = {
         src: '/screenshots/iris_events.png',
         caption: 'East Africa disorder and hate-speech monitor: map and event timeline',
         width: 'wide',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 1053,
       },
       {
         src: '/screenshots/iris_analyst.png',
         caption: 'Analyst chat and narrative-family triage panel',
         width: 'wide',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 1052,
       },
     ],
   },
@@ -97,11 +105,15 @@ export const OPTICS_TOOL_PROFILES: Record<string, OpticsToolProfile> = {
         src: '/screenshots/prism_map.png',
         caption: 'PRISM · compound risk across Sudan and the Horn of Africa with cell-level detail',
         width: 'wide',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 1216,
       },
       {
         src: '/screenshots/prism_detail.png',
         caption: 'Cell drill-down: dimensional scores and active conflict systems',
         width: 'wide',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 1182,
       },
     ],
   },
@@ -128,11 +140,15 @@ export const OPTICS_TOOL_PROFILES: Record<string, OpticsToolProfile> = {
         caption:
           'NDVI change product · Gezira Wad Madani · baseline, conflict-period and difference · Sentinel-2',
         width: 'wide',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 459,
       },
       {
         src: '/screenshots/aperture_define.png',
         caption: 'Click-to-place area of interest · 250 km² over Khartoum',
-        width: 'half',
+        width: 'wide',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 1000,
       },
     ],
   },
@@ -167,6 +183,8 @@ export const OPTICS_TOOL_PROFILES: Record<string, OpticsToolProfile> = {
         caption:
           'Workshop canvas with the Critical Friend panel generating unintended consequences',
         width: 'wide',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 1194,
       },
     ],
   },
@@ -199,11 +217,15 @@ export const OPTICS_TOOL_PROFILES: Record<string, OpticsToolProfile> = {
         src: '/screenshots/oasis_map.png',
         caption: 'Country view: facility density and population layer across Sudan',
         width: 'half',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 991,
       },
       {
         src: '/screenshots/oasis_dashboard.png',
         caption: 'Priority dashboard: ranked gaps with state-level drill-down',
         width: 'half',
+        intrinsicWidth: 1600,
+        intrinsicHeight: 990,
       },
     ],
   },
@@ -228,16 +250,22 @@ export const OPTICS_TOOL_PROFILES: Record<string, OpticsToolProfile> = {
         src: '/screenshots/echo_home.png',
         caption: 'Home · study packs',
         width: 'half',
+        intrinsicWidth: 450,
+        intrinsicHeight: 1000,
       },
       {
         src: '/screenshots/echo_interview.png',
         caption: 'Live transcript on-device',
         width: 'half',
+        intrinsicWidth: 450,
+        intrinsicHeight: 1000,
       },
       {
         src: '/screenshots/echo_assist.png',
         caption: 'AI assistant: follow-up probes',
         width: 'half',
+        intrinsicWidth: 450,
+        intrinsicHeight: 1000,
       },
     ],
   },

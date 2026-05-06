@@ -7,7 +7,10 @@ import { parseTenantFromHost } from './lib/tenant';
 const intlMiddleware = createIntlMiddleware(routing);
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api|admin|brand).*)'],
+  // Exclude framework + static-asset paths so next-intl does not try
+  // to apply a locale prefix to them. /screenshots and /brand are
+  // public asset folders served straight from /public.
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api|admin|brand|screenshots).*)'],
 };
 
 // Paths handled by Next's metadata routes (sitemap/robots) — they need

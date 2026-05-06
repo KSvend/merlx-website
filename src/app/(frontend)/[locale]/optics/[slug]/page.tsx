@@ -168,17 +168,37 @@ export default async function OpticsToolPage({ params }: PageProps) {
   );
 }
 
+interface ScreenshotItem {
+  src: string;
+  caption: string;
+  width?: 'wide' | 'half';
+  intrinsicWidth: number;
+  intrinsicHeight: number;
+}
+
 interface ScreenshotGridProps {
-  screenshots: { src: string; caption: string; width?: 'wide' | 'half' }[];
+  screenshots: ScreenshotItem[];
   altPrefix: string;
 }
 
 function ScreenshotGrid({ screenshots, altPrefix }: ScreenshotGridProps) {
-  // If any screenshot is wide, render single-column. Otherwise pair them.
-  const hasWide = screenshots.some((s) => s.width === 'wide' || !s.width);
-  const gridStyle: CSSProperties = hasWide
-    ? { display: 'grid', gridTemplateColumns: '1fr', gap: 24 }
-    : { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 };
+  // Render single-column when any screenshot wants the full width;
+  // otherwise pair them. Each image gets a sizes hint that matches
+  // the column it actually occupies, so next/image fetches a
+  // sharp-enough rendition (was 600px previously, which was too
+  // small for the 1180-wide single-column container on desktop).
+  const allHalf = screenshots.every((s) => s.width === 'half');
+  const gridStyle: CSSProperties = allHalf
+    ? { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }
+    : { display: 'grid', gridTemplateColumns: '1fr', gap: 24 };
+
+  // Sizes hint: full container max-width is 1240px (mx-container).
+  // Single-column tiles can fill the whole container; paired tiles
+  // share it 50/50 minus gap.
+  const sizesFor = (w?: 'wide' | 'half') =>
+    w === 'half' && allHalf
+      ? '(max-width: 768px) 100vw, (max-width: 1280px) 45vw, 600px'
+      : '(max-width: 768px) 100vw, (max-width: 1280px) 92vw, 1180px';
 
   return (
     <div style={gridStyle}>
@@ -196,9 +216,10 @@ function ScreenshotGrid({ screenshots, altPrefix }: ScreenshotGridProps) {
           <Image
             src={s.src}
             alt={`${altPrefix} screenshot ${i + 1}: ${s.caption}`}
-            width={1240}
-            height={720}
-            sizes="(max-width: 768px) 100vw, 600px"
+            width={s.intrinsicWidth}
+            height={s.intrinsicHeight}
+            sizes={sizesFor(s.width)}
+            quality={90}
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
           <figcaption style={captionStyle}>{s.caption}</figcaption>
