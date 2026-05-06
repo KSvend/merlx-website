@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 interface BrandMarkProps {
   /** Tenant context drives the wordmark suffix. */
-  tenant?: 'group' | 'studio' | 'network' | 'node';
+  tenant?: 'group' | 'studio' | 'network' | 'node' | 'learn';
   /** For node tenants, the node display name (e.g. "NileX"). */
   nodeName?: string;
   /** Render as link (true) or static (false). */
@@ -36,9 +36,11 @@ export function BrandMark({
       ? 'Studio'
       : tenant === 'network'
         ? 'Network'
-        : tenant === 'node' && nodeName
-          ? nodeName
-          : null;
+        : tenant === 'learn'
+          ? 'Learn'
+          : tenant === 'node' && nodeName
+            ? nodeName
+            : null;
 
   const inner = (
     <>

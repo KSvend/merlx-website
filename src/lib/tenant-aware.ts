@@ -3,7 +3,7 @@ import type { Payload } from 'payload';
 import type { Tenant } from '../../payload-types';
 
 export interface TenantContext {
-  kind: 'group' | 'studio' | 'network' | 'node' | 'unknown';
+  kind: 'group' | 'studio' | 'network' | 'node' | 'learn' | 'unknown';
   subdomain: string;
   domain: string;
 }
@@ -31,6 +31,10 @@ export function isNodeTenant(headers: Headers): boolean {
   return parseTenantHeaders(headers).kind === 'node';
 }
 
+export function isLearnTenant(headers: Headers): boolean {
+  return parseTenantHeaders(headers).kind === 'learn';
+}
+
 /**
  * Gate-and-resolve helper for group-tenant-only CMS routes.
  *
@@ -54,6 +58,10 @@ export async function requireStudioTenant(headers: Headers, payload: Payload): P
 
 export async function requireNetworkTenant(headers: Headers, payload: Payload): Promise<Tenant> {
   return requireTenantByKind(headers, payload, 'network', 'network.merlx.org');
+}
+
+export async function requireLearnTenant(headers: Headers, payload: Payload): Promise<Tenant> {
+  return requireTenantByKind(headers, payload, 'learn', 'learn.merlx.org');
 }
 
 /**
@@ -98,6 +106,7 @@ export async function requireKnownTenant(headers: Headers, payload: Payload): Pr
   if (kind === 'studio') return requireStudioTenant(headers, payload);
   if (kind === 'network') return requireNetworkTenant(headers, payload);
   if (kind === 'node') return requireNodeTenant(headers, payload);
+  if (kind === 'learn') return requireLearnTenant(headers, payload);
   notFound();
 }
 

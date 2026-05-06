@@ -46,6 +46,17 @@ const SEED_TENANTS = [
     hasInsights: true,
     blobBucketPrefix: 'merlx-blob/nilex',
   },
+  {
+    domain: 'learn.merlx.org',
+    displayName: 'MERLx Learn',
+    type: 'learn' as const,
+    status: 'pre-launch' as const,
+    primaryLocale: 'en' as const,
+    supportedLocales: ['en', 'ar', 'fr'] as Array<'en' | 'ar' | 'fr'>,
+    accentColor: 'deep-teal' as const,
+    hasInsights: false,
+    blobBucketPrefix: 'merlx-blob/learn',
+  },
 ];
 
 async function seed() {

@@ -113,6 +113,14 @@ function taglineFor(kind: TenantContext['kind'], nodeName?: string) {
         <br />a MERLx Network node.
       </>
     );
+  if (kind === 'learn')
+    return (
+      <>
+        Cooperative onboarding.
+        <br />
+        Advanced MERL.
+      </>
+    );
   return (
     <>
       Intelligence for impact.
@@ -153,6 +161,17 @@ function columnsFor(kind: TenantContext['kind'], locale: string): Column[] {
         ],
       },
       {
+        heading: 'Learn',
+        items: [
+          { label: 'Catalogue', href: 'https://learn.merlx.org', external: true },
+          {
+            label: 'Tool training',
+            href: 'https://learn.merlx.org/catalogue?track=tool-training',
+            external: true,
+          },
+        ],
+      },
+      {
         heading: 'Contact',
         items: [
           { label: 'Get in touch', href: `/${locale}/contact` },
@@ -180,10 +199,14 @@ function columnsFor(kind: TenantContext['kind'], locale: string): Column[] {
         ],
       },
       {
-        heading: 'Insights',
+        heading: 'Learn',
         items: [
-          { label: 'Insights', href: `/${locale}/insights` },
-          { label: 'About', href: `/${locale}/about` },
+          {
+            label: 'Cooperative onboarding',
+            href: 'https://learn.merlx.org/catalogue?track=cooperative-onboarding',
+            external: true,
+          },
+          { label: 'Catalogue', href: 'https://learn.merlx.org', external: true },
         ],
       },
       {
@@ -217,12 +240,60 @@ function columnsFor(kind: TenantContext['kind'], locale: string): Column[] {
         ],
       },
       {
-        heading: 'Studio',
-        items: [{ label: 'Studio', href: 'https://studio.merlx.org', external: true }],
+        heading: 'Learn',
+        items: [
+          { label: 'Catalogue', href: 'https://learn.merlx.org', external: true },
+          {
+            label: 'Cooperative onboarding',
+            href: 'https://learn.merlx.org/catalogue?track=cooperative-onboarding',
+            external: true,
+          },
+        ],
       },
       {
         heading: 'Contact',
         items: [{ label: 'Get in touch', href: `/${locale}/contact` }],
+      },
+    ];
+  }
+  if (kind === 'learn') {
+    return [
+      {
+        heading: 'Catalogue',
+        items: [
+          { label: 'All courses', href: `/${locale}/catalogue` },
+          {
+            label: 'Cooperative onboarding',
+            href: `/${locale}/catalogue?track=cooperative-onboarding`,
+          },
+          { label: 'Advanced MERL', href: `/${locale}/catalogue?track=advanced-merl` },
+          { label: 'Tool training', href: `/${locale}/catalogue?track=tool-training` },
+        ],
+      },
+      {
+        heading: 'Network',
+        items: [
+          { label: 'Network home', href: 'https://network.merlx.org', external: true },
+          {
+            label: 'Become a node',
+            href: 'https://network.merlx.org/become-a-node',
+            external: true,
+          },
+        ],
+      },
+      {
+        heading: 'Studio',
+        items: [
+          { label: 'Studio home', href: 'https://studio.merlx.org', external: true },
+          { label: 'Optics Suite', href: 'https://studio.merlx.org/optics', external: true },
+        ],
+      },
+      {
+        heading: 'Contact',
+        items: [
+          { label: 'Get in touch', href: `/${locale}/contact` },
+          { label: 'learn@merlx.org', href: 'mailto:learn@merlx.org', external: true },
+        ],
       },
     ];
   }
@@ -242,6 +313,22 @@ function columnsFor(kind: TenantContext['kind'], locale: string): Column[] {
         { label: 'Network home', href: 'https://network.merlx.org', external: true },
         { label: 'Nodes', href: 'https://network.merlx.org/nodes', external: true },
         { label: 'Services', href: 'https://network.merlx.org/services', external: true },
+      ],
+    },
+    {
+      heading: 'Learn',
+      items: [
+        { label: 'Catalogue', href: 'https://learn.merlx.org', external: true },
+        {
+          label: 'Cooperative onboarding',
+          href: 'https://learn.merlx.org/catalogue?track=cooperative-onboarding',
+          external: true,
+        },
+        {
+          label: 'Advanced MERL',
+          href: 'https://learn.merlx.org/catalogue?track=advanced-merl',
+          external: true,
+        },
       ],
     },
     {

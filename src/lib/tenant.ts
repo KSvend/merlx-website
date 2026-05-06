@@ -1,4 +1,4 @@
-export type TenantKind = 'group' | 'studio' | 'network' | 'node' | 'tool';
+export type TenantKind = 'group' | 'studio' | 'network' | 'node' | 'learn' | 'tool';
 
 export interface ParsedTenant {
   kind: TenantKind;
@@ -11,6 +11,7 @@ export interface ParsedTenant {
 const RESERVED_SUBDOMAINS: Record<string, TenantKind> = {
   studio: 'studio',
   network: 'network',
+  learn: 'learn',
 };
 
 /**

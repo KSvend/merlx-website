@@ -30,6 +30,7 @@ export const Tenants: CollectionConfig = {
         { label: 'Studio', value: 'studio' },
         { label: 'Network', value: 'network' },
         { label: 'Node', value: 'node' },
+        { label: 'Learn', value: 'learn' },
       ],
     },
     {

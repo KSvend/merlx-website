@@ -73,6 +73,7 @@ export interface Config {
     'insights-posts': InsightsPost;
     publications: Publication;
     'optics-tools': OpticsTool;
+    courses: Course;
     leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -87,6 +88,7 @@ export interface Config {
     'insights-posts': InsightsPostsSelect<false> | InsightsPostsSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
     'optics-tools': OpticsToolsSelect<false> | OpticsToolsSelect<true>;
+    courses: CoursesSelect<false> | CoursesSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -171,7 +173,7 @@ export interface Tenant {
    */
   domain: string;
   displayName: string;
-  type: 'group' | 'studio' | 'network' | 'node';
+  type: 'group' | 'studio' | 'network' | 'node' | 'learn';
   status: 'active' | 'pre-launch' | 'archived';
   primaryLocale: 'en' | 'ar' | 'fr';
   supportedLocales?: ('en' | 'ar' | 'fr')[] | null;
@@ -370,6 +372,122 @@ export interface OpticsTool {
   createdAt: string;
 }
 /**
+ * Course catalogue for learn.merlx.org.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses".
+ */
+export interface Course {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * URL slug — e.g. "conflict-sensitive-evaluation".
+   */
+  slug: string;
+  title: string;
+  /**
+   * One-liner shown in the catalogue card.
+   */
+  tagline: string;
+  track: 'cooperative-onboarding' | 'continuous-learning' | 'advanced-merl' | 'tool-training';
+  audience: ('network' | 'enumerators' | 'donors' | 'ingo' | 'studio')[];
+  level: 'foundation' | 'intermediate' | 'advanced';
+  language: ('en' | 'ar' | 'fr' | 'es')[];
+  /**
+   * e.g. "4 hours self-paced", "8 weeks cohort".
+   */
+  duration: string;
+  format: 'self-paced' | 'cohort' | 'workshop' | 'hybrid';
+  /**
+   * Lead instructor name (free-text for v1).
+   */
+  instructor?: string | null;
+  instructorAffiliation?: string | null;
+  prerequisites?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  learningOutcomes?:
+    | {
+        outcome: string;
+        id?: string | null;
+      }[]
+    | null;
+  outline?:
+    | {
+        title: string;
+        summary?: string | null;
+        /**
+         * e.g. "30 minutes", "Week 2".
+         */
+        duration?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Long-form description on the course detail page.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Issues a completion certificate. Affects copy on the detail page.
+   */
+  certifies?: boolean | null;
+  /**
+   * Whether this course is part of the floor a new Network node must complete before formal admission.
+   */
+  requiredForNodeAdmission?: boolean | null;
+  price?: {
+    model?: ('free' | 'free-network' | 'seat' | 'cohort' | 'subscription') | null;
+    /**
+     * e.g. "€450", "First cohort free".
+     */
+    amount?: string | null;
+    note?: string | null;
+  };
+  /**
+   * Set when format=cohort. Free-text for v1; promote to date fields if needed.
+   */
+  cohort?: {
+    /**
+     * e.g. "13 Oct 2026".
+     */
+    startsOn?: string | null;
+    endsOn?: string | null;
+    enrolmentDeadline?: string | null;
+    /**
+     * e.g. "20 participants".
+     */
+    cohortSize?: string | null;
+  };
+  status: 'open' | 'starting-soon' | 'waitlist' | 'closed' | 'coming-soon';
+  /**
+   * External LMS URL when wired. While unset, the website routes the CTA to /contact.
+   */
+  enrolmentUrl?: string | null;
+  /**
+   * Sort order within the catalogue. Lower = earlier.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leads".
  */
@@ -443,6 +561,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'optics-tools';
         value: number | OpticsTool;
+      } | null)
+    | ({
+        relationTo: 'courses';
+        value: number | Course;
       } | null)
     | ({
         relationTo: 'leads';
@@ -617,6 +739,67 @@ export interface OpticsToolsSelect<T extends boolean = true> {
   status?: T;
   externalUrl?: T;
   subdomain?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses_select".
+ */
+export interface CoursesSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  tagline?: T;
+  track?: T;
+  audience?: T;
+  level?: T;
+  language?: T;
+  duration?: T;
+  format?: T;
+  instructor?: T;
+  instructorAffiliation?: T;
+  prerequisites?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  learningOutcomes?:
+    | T
+    | {
+        outcome?: T;
+        id?: T;
+      };
+  outline?:
+    | T
+    | {
+        title?: T;
+        summary?: T;
+        duration?: T;
+        id?: T;
+      };
+  description?: T;
+  certifies?: T;
+  requiredForNodeAdmission?: T;
+  price?:
+    | T
+    | {
+        model?: T;
+        amount?: T;
+        note?: T;
+      };
+  cohort?:
+    | T
+    | {
+        startsOn?: T;
+        endsOn?: T;
+        enrolmentDeadline?: T;
+        cohortSize?: T;
+      };
+  status?: T;
+  enrolmentUrl?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -92,6 +92,13 @@ function defaultItemsFor(kind: TenantContext['kind']): NavItem[] {
         { href: '/news', label: 'News' },
         { href: '/about', label: 'About' },
       ];
+    case 'learn':
+      return [
+        { href: '/catalogue', label: 'Catalogue' },
+        { href: '/catalogue?track=cooperative-onboarding', label: 'Cooperative onboarding' },
+        { href: '/catalogue?track=advanced-merl', label: 'Advanced MERL' },
+        { href: '/about', label: 'About' },
+      ];
     default:
       return [
         { href: '/about', label: 'About' },

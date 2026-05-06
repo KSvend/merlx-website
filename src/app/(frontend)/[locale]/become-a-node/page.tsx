@@ -157,6 +157,49 @@ export default async function BecomeANodePage({ params }: PageProps) {
         </div>
       </section>
 
+      <section className="mx-section mx-section--shell-warm">
+        <div className="mx-container">
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 64,
+              alignItems: 'start',
+            }}
+          >
+            <div>
+              <p className="mx-eyebrow">The methodology floor</p>
+              <h2 className="mx-h2-section">
+                Three foundation courses, <em>before fieldwork</em>.
+              </h2>
+            </div>
+            <div>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: 'var(--ink-muted)',
+                  lineHeight: 1.6,
+                  margin: '0 0 24px',
+                  maxWidth: '52ch',
+                }}
+              >
+                The cooperative-onboarding track on MERLx Learn runs as the floor for new nodes.
+                MERL foundations, conflict sensitivity, and the KII protocol. Free for new
+                cooperatives in onboarding. Required before joining an active engagement.
+              </p>
+              <a
+                href="https://learn.merlx.org/catalogue?track=cooperative-onboarding"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mx-btn mx-btn--primary"
+              >
+                See the cooperative-onboarding curriculum →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-section">
         <div className="mx-container">
           <Link href={`/${locale}/contact`} className="mx-btn mx-btn--primary mx-btn--lg">

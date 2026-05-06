@@ -17,6 +17,7 @@ type ConfigTypes = {
     'insights-posts': { slug: 'insights-posts' };
     publications: { slug: 'publications' };
     'optics-tools': { slug: 'optics-tools' };
+    courses: { slug: 'courses' };
   };
 };
 
@@ -51,6 +52,7 @@ export default buildConfig({
         'insights-posts': {},
         publications: {},
         'optics-tools': {},
+        courses: {},
       },
       tenantField: { name: 'tenant' },
       tenantsArrayField: {

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload';
+import { Courses } from './Courses';
 import { InsightsPosts } from './InsightsPosts';
 import { Leads } from './Leads';
 import { OpticsTools } from './OpticsTools';
@@ -14,5 +15,6 @@ export const collections: CollectionConfig[] = [
   InsightsPosts,
   Publications,
   OpticsTools,
+  Courses,
   Leads,
 ];
