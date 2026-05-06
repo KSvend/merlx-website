@@ -6,7 +6,8 @@ interface SeedPage {
   slug: string;
   title: string;
   subtitle?: string;
-  body: string;
+  /** Single string = one paragraph. Array = multi-paragraph body. */
+  body: string | string[];
   status: 'draft' | 'published';
 }
 
@@ -24,38 +25,38 @@ interface SeedTool {
 
 const SEED_TOOLS: SeedTool[] = [
   {
-    slug: 'prism',
-    name: 'PRISM',
-    tagline: 'Predictive crisis-risk maps for fragile contexts.',
+    slug: 'iris',
+    name: 'IRIS',
+    tagline: 'Information risk intelligence.',
     summary:
-      'PRISM combines ML forecasting with conflict-systems analysis to score crisis risk down to the H3 hex level, weekly. Used today in the Horn of Africa.',
+      'Automated monitoring and classification of hate speech, disinformation and violent-extremism narratives across social media and online platforms. Analysts get a map-based timeline and a chat assistant for triage.',
     description:
-      'PRISM (Predictive Risk Intelligence & Simulation Modelling) is an ML platform that produces weekly crisis-risk forecasts at H3 resolution across the Horn of Africa. It integrates ACLED conflict events, IPC food-security phases, climate indicators (CHIRPS rainfall, MODIS vegetation, GloFAS flood), structural features and actor dynamics. Scores are produced at three horizons (1, 3, 6 months) and compared week-over-week to surface escalating cells.',
+      'IRIS pairs an event-extraction pipeline with per-post classifiers fine-tuned for East African use cases. It runs in Arabic, Somali, English, Swahili, Amharic, Oromo, Tigrinya and Kinyarwanda, with new languages added as Network nodes need them. Inference runs on standard CPU infrastructure; PII redaction is on by default. Output feeds dashboards, weekly reports, and the analyst chat for narrative search and briefing.',
     status: 'beta',
-    externalUrl: 'https://merlx-prism.up.railway.app',
-    subdomain: 'prism.merlx.org',
+    subdomain: 'iris.merlx.org',
     order: 1,
   },
   {
-    slug: 'iris',
-    name: 'IRIS',
-    tagline: 'Disinformation + hate-speech monitoring across local languages.',
+    slug: 'prism',
+    name: 'PRISM',
+    tagline: 'Compound risk and forecasting.',
     summary:
-      'IRIS scrapes, classifies and visualises disinformation events and hate-speech posts from open social-media sources, with NLP and human-QA pipelines in local languages.',
+      'A compound-risk platform that brings conflict, socioeconomic, environmental, health and coping-capacity data onto a single spatial grid. Forecasts and narrative summaries are generated on top.',
     description:
-      'IRIS pairs an event-extraction pipeline (NLP) with a per-post classifier (ML + LLM QA) for hate-speech monitoring. Output feeds dashboards and weekly reports for early-warning and PVE programmes. Currently deployed against East Africa and Sudan, with localisation in Arabic, Amharic, Somali and Tigrinya.',
+      'PRISM (Predictive Risk Intelligence and Simulation Modelling) integrates ACLED conflict events, WFP food-price indicators, IPC food-security phases, climate signals (NDVI, evapotranspiration, GloFAS flood), governance indices and an armed-actor ontology. Scores are produced at H3 resolution across multiple horizons and compared week-over-week to surface escalating cells.',
     status: 'beta',
-    subdomain: 'iris.merlx.org',
+    externalUrl: 'https://merlx-prism.up.railway.app',
+    subdomain: 'prism.merlx.org',
     order: 2,
   },
   {
     slug: 'aperture',
     name: 'Aperture',
-    tagline: 'Earth-observation indicators for programme MEAL.',
+    tagline: 'Satellite analysis for non-specialists.',
     summary:
-      'Aperture turns satellite indicators (NDVI, night-time lights, flood, urban change) into AOI-scoped time-series for evaluators and PVE programmes.',
+      "Satellite analysis for programme teams who don't run a GIS. Click a location, set a date range, and get an environmental and situational read back as a PDF report.",
     description:
-      'Aperture lets a non-specialist click an Area of Interest on a map and pull back a time-series of EO indicators — NDVI, night-time lights, flood frequency, urban-change masks. A Claude advisor helps frame interpretation against programme indicators. Built for MEAL teams and humanitarian analysts, deployed on Hugging Face Spaces.',
+      'Aperture lets a non-specialist click an area of interest on a map and pull back a time-series of EO indicators: vegetation (NDVI), surface water (MNDWI), built-up area (NDBI), radar backscatter for all-weather structural change, and active fires from FIRMS / VIIRS. A Claude advisor frames interpretation against programme indicators. Built for MEAL teams and humanitarian analysts.',
     status: 'beta',
     subdomain: 'aperture.merlx.org',
     order: 3,
@@ -63,11 +64,11 @@ const SEED_TOOLS: SeedTool[] = [
   {
     slug: 'toc-tester',
     name: 'ToC Tester',
-    tagline: 'Stress-test theories of change with AI critique.',
+    tagline: 'Theory of change, run as a simulation.',
     summary:
-      'ToC Tester runs your theory of change against a panel of AI critics and historical evaluation data, surfacing likely failure modes before the field tests them for you.',
+      "A simulation engine and AI critic for Theories of Change. Build a causal map, run scenarios, and get critique anchored in your project's own evidence before the design is locked.",
     description:
-      'ToC Tester takes a written theory of change and runs it through a panel of role-played AI critics (donor, beneficiary, evaluator, sceptic) plus a retrieval index of historical evaluations. Output is a structured stress-test report — assumptions to verify, contradictions to resolve, comparable interventions and their outcomes. Designed for proposal-stage MEAL teams.',
+      'ToC Tester runs Theories of Change as Fuzzy Cognitive Maps. You build the causal map, clamp an assumption, and watch the impact cascade. The Critical Friend panel generates unintended consequences anchored in a project-specific evidence corpus. Sensitivity analysis covers every causal edge. Workshop-grade UI with auto-layout, undo/redo and a presentation mode.',
     status: 'beta',
     subdomain: 'toctester.merlx.org',
     order: 4,
@@ -75,24 +76,24 @@ const SEED_TOOLS: SeedTool[] = [
   {
     slug: 'oasis',
     name: 'OASIS',
-    tagline: 'Infrastructure damage + recovery marketplace for Sudan.',
+    tagline: 'Where to go first, ranked.',
     summary:
-      'OASIS maps verified infrastructure damage and connects recovery resources to local actors. First deployment: Sudan, with MERLxLabs as host.',
+      'Geospatial infrastructure for post-conflict recovery planning. OASIS pulls in facility, activity, displacement and response data, scores coverage gaps on a hex grid, and ranks where programme planners should go first.',
     description:
-      'OASIS combines satellite-derived damage assessment, on-ground verification by Network nodes, and a marketplace for recovery resources (technical assistance, equipment, contractors). Built initially for Sudan post-2023, designed for replication to other recovery contexts. Hosted on MERLxLabs infrastructure.',
-    status: 'coming-soon',
+      'OASIS ingests facility, activity, displacement and response data from open humanitarian sources and client feeds, deduplicates facility records across sources, and scores them against configurable need profiles. Distance-decay coverage scoring runs on an H3 hex grid, output as a priority list with admin-level rollups against any country COD-AB boundaries. CSV and GeoJSON export for QGIS, ArcGIS and downstream dashboards.',
+    status: 'live',
     subdomain: 'oasis.merlx.org',
     order: 5,
   },
   {
     slug: 'echo',
     name: 'ECHO',
-    tagline: 'Real-time KII assistant for field interviews.',
+    tagline: 'Offline-first AI for field interviews.',
     summary:
-      'ECHO transcribes, translates and structures key-informant interviews live, surfacing follow-up questions and matching against a project knowledge base.',
+      'An AI assistant that runs entirely on the phone. No cloud call at interview time. Built for Khartoum without power, South Kordofan without 3G, and reception centres where no data can leave the device.',
     description:
-      'ECHO is a live KII (Key Informant Interview) assistant — speech-to-text, on-device translation, structured note-capture, and a follow-up-question recommender that compares the live transcript against a project knowledge base. Designed for field researchers conducting interviews in low-bandwidth settings; an online variant for Google Meet / Teams overlays is planned.',
-    status: 'coming-soon',
+      'ECHO is an offline-first key-informant interview assistant. Speech transcription runs on-device in real time. An on-device language model proposes follow-up probes and gap-spotting suggestions during the interview itself. Dynamic form evaluation runs in a built-in expression engine. Pluggable model registry for English and multilingual stacks.',
+    status: 'beta',
     subdomain: 'echo.merlx.org',
     order: 6,
   },
@@ -102,26 +103,43 @@ const SEED_PAGES: SeedPage[] = [
   {
     slug: 'about',
     title: 'About MERLx',
-    subtitle: 'Two organisations under one roof.',
-    body: 'MERLx is two organisations under one roof: an open-tooling tech studio that builds the Optics Suite, and a federation of locally owned MERL cooperatives. The studio builds the tools. The network does the field work.',
+    subtitle: 'two entities, one practice',
+    body: [
+      'MERLx is two entities under one roof. The Studio is an independent technology studio building analytical tools and infrastructure for humanitarian, peacebuilding and conflict-prevention organisations. The Network is a cooperative of locally owned MERL practices that runs those tools, and traditional MERL, in country.',
+      'Together we enable real adaptive programming. Faster context reads. Earlier course corrections. Decisions grounded in local evidence rather than headquarters narrative. Most adaptive-management talk is performative; the bar we hold is whether the next decision actually changes when the signal does.',
+      'Localisation is not a translation step at the end. It is built into the language stack, the infrastructure choices, and the governance of every engagement. The Studio designs tools so the people closest to the work can run them. The Network nodes do that work, under their own governance, in their own languages.',
+      'We work openly, document our trade-offs, and retire tools that no longer earn their footprint. AI augments the analysts, evaluators and programme staff who already do this work. It does not replace their judgement.',
+    ],
     status: 'published',
   },
   {
     slug: 'legal/privacy',
     title: 'Privacy Policy',
-    body: 'MERLx collects only the data necessary to operate the website and respond to inquiries. We do not use tracking cookies. Form submissions are stored in our content management system and used solely to route inquiries to the appropriate team. Contact privacy@merlx.org for data subject requests.',
+    body: [
+      'MERLx collects only the data necessary to operate the website and respond to enquiries. We do not use tracking cookies. Vercel Analytics provides aggregate page-view counts without identifying individual visitors.',
+      'Form submissions are stored in our content management system and used solely to route enquiries to the appropriate team (Studio, Network, or a specific node). We retain enquiry records for 24 months for follow-up purposes, then delete them.',
+      'Per-tool data handling is documented on each tool page. Tools deployed for partners run under partner-set data-residency and retention policies, agreed at engagement scoping.',
+      'Contact privacy@merlx.org for data-subject requests.',
+    ],
     status: 'published',
   },
   {
     slug: 'legal/terms',
     title: 'Terms of Use',
-    body: 'By using merlx.org you agree to these terms. Content on this site is © MERLx unless otherwise noted; redistribution requires attribution. The MERLx Optics Suite tools are governed by their own licenses (linked from each tool page).',
+    body: [
+      'By using merlx.org you agree to these terms. Content on this site is © MERLx unless otherwise noted; redistribution requires attribution.',
+      'Optics Suite tools are governed by their own licences, linked from each tool page. Tools may be open-source, source-available, or hosted-only depending on the tool.',
+      'Network methodology documents are © MERLx Network and require attribution on redistribution.',
+    ],
     status: 'published',
   },
   {
     slug: 'legal/cookies',
     title: 'Cookie Policy',
-    body: 'merlx.org uses only essential cookies required to operate the admin interface. We do not deploy tracking, analytics, or advertising cookies. Server-side analytics (via Vercel Analytics) operates without identifying individual visitors.',
+    body: [
+      'merlx.org uses only essential cookies required to operate the admin interface and remember locale preference. We do not deploy tracking, analytics, or advertising cookies.',
+      'Vercel Analytics operates server-side without identifying individual visitors. There is no tracking pixel and no cross-site identifier.',
+    ],
     status: 'published',
   },
 ];
@@ -130,20 +148,34 @@ const STUDIO_SEED_PAGES: SeedPage[] = [
   {
     slug: 'about',
     title: 'About the Studio',
-    subtitle: 'Independent. Conflict-sensitive. Evidence-grade.',
-    body: 'MERLx Studio is the engineering arm of MERLx — an independent studio building the Optics Suite, a coordinated set of open analytical tools for monitoring, evaluation, research and early warning in fragile contexts. We pair senior engineering with deep domain knowledge from the MERLx Network. We work openly, document our trade-offs, and retire tools that no longer earn their footprint.',
+    subtitle: 'a partner for tech-enabled global development',
+    body: [
+      'MERLx is an independent studio building analytical tools and infrastructure for humanitarian, peacebuilding and conflict-prevention organisations. Our work helps teams read context faster, adapt programming earlier, and ground decisions in real evidence. AI augments the analysts, evaluators and programme staff who already do this work. It does not replace their judgement.',
+      'We are a technology partner across the full programme cycle: analytical infrastructure, data collection, monitoring, research, evaluation and decision support, instrumented so programme teams can iterate and adapt in real time. The portfolio grows with the work; when a programme or research question needs a bespoke build, we take that on too.',
+      'We work openly. Open data standards, open satellite archives, open-source models, standard APIs. Clients own their data and their instance. Nothing in our core stack is licence-locked.',
+      'We are conflict-sensitive by default. Every engagement runs a data-protection impact assessment at inception. We align to IASC operational guidance on data responsibility, OECD-DAC conflict-sensitivity, and Core Humanitarian Standard principles. PII redaction is on by default; data residency is set by the client.',
+      'Real adaptive programming is the goal. Tools that ship continuously, signals that arrive in time to change the next decision, and findings that name what would change our minds. We retire tools that no longer earn their footprint.',
+    ],
     status: 'published',
   },
   {
     slug: 'legal/privacy',
     title: 'Studio Privacy Policy',
-    body: 'studio.merlx.org collects only the data necessary to operate the website and respond to inquiries. We do not use tracking cookies. Form submissions are stored in our content management system. Tool-specific data handling is documented per tool — see each tool page for its data flow and retention policy. Contact privacy@merlx.org for data subject requests.',
+    body: [
+      'studio.merlx.org collects only the data necessary to operate the website and respond to enquiries. We do not use tracking cookies.',
+      'Form submissions are stored in our content management system. Tool-specific data handling is documented per tool. See each tool page for its data flow and retention policy.',
+      'For tools deployed for partners, data residency and retention follow the partner contract. PII redaction is on by default across the suite.',
+      'Contact privacy@merlx.org for data-subject requests.',
+    ],
     status: 'published',
   },
   {
     slug: 'legal/terms',
     title: 'Studio Terms of Use',
-    body: 'By using studio.merlx.org you agree to these terms. Tool-specific licenses are linked from each tool page; the website itself is © MERLx. Optics Suite tools may be open-source, source-available, or hosted-only depending on the tool — check each tool page for licensing.',
+    body: [
+      'By using studio.merlx.org you agree to these terms. The website itself is © MERLx; tool-specific licences are linked from each tool page.',
+      'Optics Suite tools may be open-source, source-available, or hosted-only depending on the tool. Check each tool page for licensing.',
+    ],
     status: 'published',
   },
 ];
@@ -152,8 +184,13 @@ const NILEX_SEED_PAGES: SeedPage[] = [
   {
     slug: 'about',
     title: 'About NileX',
-    subtitle: 'Sudan-rooted MERL, evidence for the Nile basin.',
-    body: 'NileX is a Sudan-based cooperative of researchers, evaluators and conflict analysts. Founded in 2024, we operate under local governance with field teams across Sudan, South Sudan, and the wider Nile basin. NileX is the first MERLx Network node — we share methodology, conflict-sensitivity standards, and tooling with other federated cooperatives, but operate independently. We work in Arabic, English, and Sudanese local languages, with bilingual reporting standard on all engagements.',
+    subtitle: 'Sudan-rooted MERL, evidence for the Nile basin',
+    body: [
+      'NileX is a Sudan-based cooperative of researchers, evaluators and conflict analysts. We design and deliver MERL programmes for humanitarian and development partners across Sudan, South Sudan and the wider Nile basin, under local governance and shared MERLx Network methodology.',
+      'NileX is the first MERLx Network node. We share methodology, conflict-sensitivity standards, peer review and the Optics Suite as infrastructure with other cooperatives in the Network. Governance, hiring, pricing and partner choice stay with us.',
+      'We work primarily in Arabic, with English and Sudanese local languages on every cycle. Bilingual reporting is standard. KII rotations run with on-device transcription where the field calls for it; classifiers run in Arabic, Somali and the Tigrinya–Amharic–Oromo set across the Horn.',
+      'Our practice covers MERL design and delivery, conflict-sensitive evaluation, KII research, OASIS programme implementation, and cross-border field operations across Sudan, South Sudan and Chad. Findings are owned by NileX. The Studio does not interfere.',
+    ],
     status: 'published',
   },
 ];
@@ -162,25 +199,37 @@ const NETWORK_SEED_PAGES: SeedPage[] = [
   {
     slug: 'about',
     title: 'About the Network',
-    subtitle: 'Federated. Locally owned. Slowly built.',
-    body: 'The MERLx Network is a federation of locally owned MERL cooperatives. Each node operates under its own governance, hires locally, and decides locally — sharing methodology, conflict-sensitivity standards, and tooling with the rest of the federation. The Network coordinates; it does not direct. Studio builds the tools; Network nodes do the field work.',
+    subtitle: 'cooperative, not franchised',
+    body: [
+      'The MERLx Network is a cooperative of locally owned MERL practices. Each node operates under its own governance, hires locally, and decides locally. Nodes share methodology, conflict-sensitivity standards, peer review and tooling with the rest of the cooperative. The Network coordinates; it does not direct.',
+      'The Studio builds the Optics Suite. The Network does the field work — research, evaluation, third-party monitoring, KII rotations, and analysis under shared methodology. Together we enable real adaptive programming, with the practice running where the programme runs.',
+      'Localisation is the structural commitment. Multilingual classifiers in IRIS, on-device transcription in ECHO, Arabic and Sudanese local languages on every NileX cycle, French and Wolof rotations across the Sahel. Country teams own analytical findings. Headquarters does not rewrite them.',
+      'Onboarding is a six-month process: methodology alignment, peer review, tooling integration, then a first joint engagement. We grow by invitation, not application. New nodes join when there is partner demand and a cooperative we trust to do the work.',
+    ],
     status: 'published',
   },
   {
     slug: 'legal/privacy',
     title: 'Network Privacy Policy',
-    body: 'network.merlx.org collects only the data necessary to operate the website and respond to inquiries. Each individual node operates under its own privacy policy at its own subdomain — those policies govern data collected during fieldwork. Contact privacy@merlx.org for data subject requests at the network coordination level.',
+    body: [
+      'network.merlx.org collects only the data necessary to operate the website and respond to enquiries. Each individual node operates under its own privacy policy at its own subdomain. Those policies govern data collected during fieldwork.',
+      'Contact privacy@merlx.org for data-subject requests at the Network coordination level. For per-node fieldwork data, contact the node directly.',
+    ],
     status: 'published',
   },
   {
     slug: 'legal/terms',
     title: 'Network Terms of Use',
-    body: 'By using network.merlx.org you agree to these terms. Network methodology + open methods documents are © MERLx Network with attribution required for redistribution. Per-node terms govern individual engagements.',
+    body: [
+      'By using network.merlx.org you agree to these terms. Network methodology and open-methods documents are © MERLx Network. Redistribution requires attribution.',
+      'Per-node engagement terms govern individual contracts. Contact the node directly for those terms.',
+    ],
     status: 'published',
   },
 ];
 
-function plainTextToLexical(text: string) {
+function plainTextToLexical(text: string | string[]) {
+  const paragraphs = Array.isArray(text) ? text : [text];
   return {
     root: {
       type: 'root',
@@ -188,18 +237,16 @@ function plainTextToLexical(text: string) {
       format: '',
       indent: 0,
       direction: null,
-      children: [
-        {
-          type: 'paragraph',
-          version: 1,
-          format: '',
-          indent: 0,
-          direction: null,
-          children: [
-            { type: 'text', version: 1, text, format: 0, style: '', mode: 'normal', detail: 0 },
-          ],
-        },
-      ],
+      children: paragraphs.map((p) => ({
+        type: 'paragraph',
+        version: 1,
+        format: '',
+        indent: 0,
+        direction: null,
+        children: [
+          { type: 'text', version: 1, text: p, format: 0, style: '', mode: 'normal', detail: 0 },
+        ],
+      })),
     },
   };
 }
