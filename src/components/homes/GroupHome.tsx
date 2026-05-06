@@ -29,10 +29,12 @@ function Hero() {
           Advanced data science and tech-enabled MERL{' '}
           <em>for global development and humanitarian aid programmes.</em>
         </h1>
-        <p className="mx-lead" style={{ marginTop: 32, maxWidth: '52ch' }}>
-          MERLx is two entities under one roof. The Studio builds the tools. The Network is a
-          cooperative of locally owned MERL practices that runs those tools, and traditional MERL,
-          in country.
+        <p className="mx-lead" style={{ marginTop: 32, maxWidth: '56ch' }}>
+          MERLx is two entities under one roof. The Studio builds analytical tools and
+          infrastructure. The Network is a cooperative of locally owned MERL practices that runs
+          those tools, and traditional MERL, in country. Together we enable real adaptive
+          programming: faster context reads, earlier course corrections, decisions grounded in local
+          evidence rather than headquarters narrative.
         </p>
       </div>
     </section>

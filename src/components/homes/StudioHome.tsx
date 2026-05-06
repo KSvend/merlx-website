@@ -51,6 +51,7 @@ export function StudioHome({ locale }: StudioHomeProps) {
       <Hero locale={locale} />
       <PartnersStrip />
       <ProductsTeaser locale={locale} />
+      <LocalisationStrip />
       <MethodologyStrip />
       <FinalCTA locale={locale} />
     </>
@@ -234,6 +235,97 @@ function ProductsTeaser({ locale }: { locale: string }) {
   );
 }
 
+function LocalisationStrip() {
+  const items = [
+    {
+      label: 'Languages',
+      title: 'Multilingual by default.',
+      body: 'IRIS classifiers run in Arabic, Somali, Swahili, Amharic, Oromo, Tigrinya, Kinyarwanda and English, with new languages added as Network nodes need them. ECHO transcribes interviews on-device in the same set.',
+    },
+    {
+      label: 'Infrastructure',
+      title: 'Built for the field, not the demo.',
+      body: 'Low bandwidth, captive portals, power that cuts out. Inference runs on standard CPUs; ECHO runs entirely on the phone. Tools work for a country-office analyst on a modest laptop, not just at a head-office desk.',
+    },
+    {
+      label: 'Governance',
+      title: 'Local control, audited everywhere.',
+      body: 'Clients own their data and their instance. Data residency is set by the client. Network nodes own evaluation findings. Studio does not interfere; the cooperative does the analytical work.',
+    },
+  ];
+
+  return (
+    <section className="mx-section mx-section--shell-warm">
+      <div className="mx-container">
+        <div className="mx-intro">
+          <div>
+            <p className="mx-eyebrow">Localisation</p>
+            <h2 className="mx-h2-section">
+              Real adaptive programming runs <em>in country</em>, not from headquarters.
+            </h2>
+          </div>
+          <p className="mx-lead">
+            Localisation is not a translation step at the end. It is built into the language stack,
+            the infrastructure choices and the governance of every engagement. The tools are
+            designed so the people closest to the work can run them.
+          </p>
+        </div>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 0,
+            border: '1px solid var(--border-light)',
+            borderRadius: 'var(--radius-md)',
+            overflow: 'hidden',
+            background: 'var(--surface)',
+          }}
+        >
+          {items.map((item, i) => (
+            <div
+              key={item.label}
+              style={{
+                padding: 32,
+                borderRight: i < items.length - 1 ? '1px solid var(--border-light)' : 'none',
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  letterSpacing: '1.5px',
+                  color: 'var(--iris)',
+                  textTransform: 'uppercase',
+                  margin: '0 0 16px',
+                }}
+              >
+                {item.label}
+              </p>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  fontSize: 24,
+                  margin: '0 0 12px',
+                  letterSpacing: '-0.4px',
+                  color: 'var(--ink)',
+                }}
+              >
+                {item.title}
+              </h3>
+              <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--ink-muted)', margin: 0 }}>
+                {item.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function MethodologyStrip() {
   const steps = [
     { n: '01', t: 'Frame', d: 'Co-design ToC, indicator scoping, stakeholder map.' },
@@ -243,7 +335,7 @@ function MethodologyStrip() {
   ];
 
   return (
-    <section className="mx-section mx-section--shell-warm">
+    <section className="mx-section">
       <div className="mx-container">
         <div className="mx-intro">
           <div>
