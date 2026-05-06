@@ -1,11 +1,15 @@
 # merlx-website
 
-The MERLx group website. A multi-tenant Next.js 16 + Payload v3 monorepo serving:
+The MERLx group website. A multi-tenant Next.js 16 + Payload v3 monorepo.
 
-- `merlx.org` — group front door (the v16 hover-split chooser between Studio + Network)
-- `studio.merlx.org` — the MERLx Studio sub-site (Optics Suite)
-- `network.merlx.org` — the MERLx Network sub-site (locally owned MERL cooperatives)
-- `[node].merlx.org` — federated node sites (NileX is the first)
+**Three mains** under `merlx.org`:
+
+- `merlx.org` — group front door routing visitors to one of the three mains
+- `studio.merlx.org` — the MERLx Studio (the Optics Suite, technology partner work)
+- `network.merlx.org` — the MERLx Network (cooperative of locally owned MERL practices)
+- `learn.merlx.org` — MERLx Learn (cooperative onboarding for nodes + advanced MERL for donors / INGOs)
+
+**Network nodes** sit *inside* Network at `[node].merlx.org`. NileX is the first; Andes, Sahel and MENA Methods are onboarding or planned. Each node has its own subdomain and Payload tenant, but conceptually they are subordinate to Network, not peers of Studio or Learn.
 
 Tool subdomains (`prism.merlx.org`, `iris.merlx.org`, etc.) are not part of this codebase. They route to separate tool deployments.
 

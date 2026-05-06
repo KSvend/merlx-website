@@ -24,17 +24,18 @@ function Hero() {
   return (
     <section style={{ padding: '80px 0 48px' }}>
       <div className="mx-container">
-        <p className="mx-eyebrow">A studio and a network</p>
+        <p className="mx-eyebrow">A studio, a network and a learning surface</p>
         <h1 className="mx-h1-display" style={{ maxWidth: '20ch' }}>
           Advanced data science and tech-enabled MERL{' '}
           <em>for global development and humanitarian aid programmes.</em>
         </h1>
-        <p className="mx-lead" style={{ marginTop: 32, maxWidth: '56ch' }}>
-          MERLx is two entities under one roof. The Studio builds analytical tools and
+        <p className="mx-lead" style={{ marginTop: 32, maxWidth: '60ch' }}>
+          MERLx is three entities under one roof. The Studio builds analytical tools and
           infrastructure. The Network is a cooperative of locally owned MERL practices that runs
-          those tools, and traditional MERL, in country. Together we enable real adaptive
-          programming: faster context reads, earlier course corrections, decisions grounded in local
-          evidence rather than headquarters narrative.
+          those tools, and traditional MERL, in country. Learn turns the practice into curriculum,
+          for new Network nodes and for donor and INGO programme teams. Together we enable real
+          adaptive programming: faster context reads, earlier course corrections, decisions grounded
+          in local evidence rather than headquarters narrative.
         </p>
       </div>
     </section>
@@ -49,7 +50,7 @@ function TwoFrontDoorsSection({ locale }: { locale: string }) {
           <article style={frontDoorCardStyle}>
             <div style={frontDoorHeaderStyle}>
               <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
-                01 · THE TECH STUDIO
+                01 · STUDIO · THE TECH STUDIO
               </span>
               <h2 style={cardHeadingStyle}>
                 MERLx <em style={emItalicStyle('var(--deep-teal)')}>Studio</em>
@@ -91,7 +92,7 @@ function TwoFrontDoorsSection({ locale }: { locale: string }) {
           <article style={frontDoorCardStyle}>
             <div style={frontDoorHeaderStyle}>
               <span className="mx-mono-caption" style={accentLabel('var(--deep-teal)')}>
-                02 · THE MERL NETWORK
+                02 · NETWORK · THE MERL COOPERATIVE
               </span>
               <h2 style={cardHeadingStyle}>
                 MERLx <em style={emItalicStyle('var(--iris)')}>Network</em>
@@ -107,9 +108,9 @@ function TwoFrontDoorsSection({ locale }: { locale: string }) {
               </p>
               <BulletList
                 items={[
-                  'Active node: NileX (Sudan and the Nile basin)',
-                  'Onboarding: Andes Cooperativa, Sahel Reseau',
+                  'Cooperative members (nodes): NileX active; Andes and Sahel onboarding',
                   'Services: research, evaluation, TPM, KII, partner support',
+                  'Each node operates under its own governance, hires locally',
                 ]}
               />
               <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
@@ -130,6 +131,51 @@ function TwoFrontDoorsSection({ locale }: { locale: string }) {
             </div>
           </article>
         </div>
+
+        {/* Third main: Learn. Separate row, no preview dashboard, sized for
+            cross-cutting positioning. */}
+        <article style={learnCardStyle}>
+          <div style={learnGridStyle}>
+            <div>
+              <span className="mx-mono-caption" style={accentLabel('var(--iris)')}>
+                03 · LEARN · COURSES AND CURRICULUM
+              </span>
+              <h2 style={{ ...cardHeadingStyle, maxWidth: '24ch' }}>
+                MERLx <em style={emItalicStyle('var(--iris)')}>Learn</em>
+                <br />
+                <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
+                  The curriculum surface that connects both.
+                </span>
+              </h2>
+            </div>
+            <div>
+              <p style={{ ...cardLeadStyle, maxWidth: '52ch' }}>
+                Two tracks, one practice. Cooperative onboarding for new Network researchers and
+                enumerators (the methodological floor every new node clears). Advanced MERL for
+                donor and INGO programme teams. Same instructor pool, same standards.
+              </p>
+              <BulletList
+                items={[
+                  'Cooperative-onboarding seats are free for Network nodes',
+                  'Advanced-MERL cohorts run twice a year. First cohort free.',
+                  'Tool-training certifications for the Optics Suite',
+                ]}
+              />
+              <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+                <a
+                  href="https://learn.merlx.org"
+                  className="mx-btn mx-btn--primary"
+                  rel="noopener noreferrer"
+                >
+                  Enter MERLx Learn →
+                </a>
+                <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
+                  Commission a private cohort
+                </Link>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
   );
@@ -397,6 +443,21 @@ const frontDoorCardStyle: CSSProperties = {
   border: '1px solid var(--border-light)',
   borderRadius: 'var(--radius-md)',
   padding: 40,
+};
+
+const learnCardStyle: CSSProperties = {
+  background: 'var(--surface)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-md)',
+  padding: 40,
+  marginTop: 24,
+};
+
+const learnGridStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+  gap: 48,
+  alignItems: 'start',
 };
 
 const frontDoorHeaderStyle: CSSProperties = {
