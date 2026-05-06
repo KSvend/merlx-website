@@ -487,6 +487,13 @@ pre {
   font-weight: 500;
   color: var(--ink-muted);
   letter-spacing: 0;
+  transition: color var(--motion-default) var(--easing);
+}
+.mx-brand-main-link:hover {
+  color: var(--ink);
+}
+.mx-tenant-suffix-link:hover .mx-tenant-suffix {
+  color: var(--ink);
 }
 .mx-nav-links {
   display: flex;

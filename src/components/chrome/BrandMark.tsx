@@ -11,16 +11,34 @@ interface BrandMarkProps {
   iconOnly?: boolean;
   /** Pixel height of the icon — wordmark scales relative. */
   size?: number;
-  /** Locale used for the home link. */
+  /** Locale used for the home link (used when href props are not provided). */
   locale?: string;
   /** Footer mark — collapses the icon's tricolour to a single shell tone. */
   variant?: 'default' | 'inverse';
+  /**
+   * Where the icon + "MERLx" wordmark links. From any tenant this should
+   * resolve to the group root (e.g. `https://merlx.org/en`). Defaults to
+   * `/{locale}` if not provided.
+   */
+  groupHomeHref?: string;
+  /**
+   * Where the tenant-suffix text links. On a sub-tenant this is the
+   * tenant's own root (e.g. `https://learn.merlx.org/en`). When null the
+   * suffix is not rendered as a link (group tenant has no suffix).
+   */
+  tenantHomeHref?: string | null;
 }
 
 /**
  * BrandMark — inline SVG icon (sand drop / iris teardrop / teal pillar)
  * + "MERL" in Inter Bold + italic serif "x" in iris (or shell on
  * dark backgrounds). Optional tenant suffix to the right.
+ *
+ * Icon + "MERLx" wordmark always link to the group root. When a
+ * tenant suffix is shown, the suffix text is its own link to that
+ * tenant's home — so a visitor on `learn.merlx.org/catalogue` can
+ * either go back to MERLx group or to MERLx Learn root, by clicking
+ * the relevant half of the wordmark.
  */
 export function BrandMark({
   tenant = 'group',
@@ -30,6 +48,8 @@ export function BrandMark({
   size = 22,
   locale = 'en',
   variant = 'default',
+  groupHomeHref,
+  tenantHomeHref,
 }: BrandMarkProps) {
   const suffix =
     tenant === 'studio'
@@ -42,35 +62,57 @@ export function BrandMark({
             ? nodeName
             : null;
 
-  const inner = (
-    <>
-      <BrandIcon size={size} />
-      {!iconOnly ? (
-        <span className="mx-brand-name">
-          <span
-            style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, letterSpacing: '-0.3px' }}
-          >
-            MERL
-          </span>
-          <span className="mx-brand-x">x</span>
-          {suffix ? <span className="mx-tenant-suffix">{suffix}</span> : null}
-        </span>
-      ) : null}
-    </>
-  );
-
+  const groupHref = groupHomeHref ?? `/${locale}`;
   const className = variant === 'inverse' ? 'mx-brand mx-footer-brand' : 'mx-brand';
 
-  if (asLink) {
+  // Static (non-link) variant — used in the footer where the brand is
+  // decorative.
+  if (!asLink) {
     return (
-      <Link href={`/${locale}`} aria-label="MERLx home" className={className}>
-        {inner}
-      </Link>
+      <span aria-label="MERLx" className={className}>
+        <BrandIcon size={size} />
+        {!iconOnly ? (
+          <span className="mx-brand-name">
+            <span style={mainWordmarkStyle}>MERL</span>
+            <span className="mx-brand-x">x</span>
+            {suffix ? <span className="mx-tenant-suffix">{suffix}</span> : null}
+          </span>
+        ) : null}
+      </span>
     );
   }
+
+  // Linked variant — the icon + "MERLx" portion always links to the
+  // group root. A tenant suffix, if present, becomes its own anchor to
+  // the tenant's own root.
   return (
-    <span aria-label="MERLx" className={className}>
-      {inner}
+    <span className={className} style={brandRowStyle}>
+      <Link
+        href={groupHref}
+        aria-label="MERLx group home"
+        className="mx-brand-main-link"
+        style={mainLinkStyle}
+      >
+        <BrandIcon size={size} />
+        {!iconOnly ? (
+          <span className="mx-brand-name">
+            <span style={mainWordmarkStyle}>MERL</span>
+            <span className="mx-brand-x">x</span>
+          </span>
+        ) : null}
+      </Link>
+      {suffix && tenantHomeHref ? (
+        <Link
+          href={tenantHomeHref}
+          aria-label={`${suffix} home`}
+          className="mx-tenant-suffix-link"
+          style={suffixLinkStyle}
+        >
+          <span className="mx-tenant-suffix">{suffix}</span>
+        </Link>
+      ) : suffix ? (
+        <span className="mx-tenant-suffix">{suffix}</span>
+      ) : null}
     </span>
   );
 }
@@ -97,3 +139,29 @@ function BrandIcon({ size }: { size: number }) {
     </svg>
   );
 }
+
+const brandRowStyle: import('react').CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+};
+
+const mainLinkStyle: import('react').CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 10,
+  color: 'inherit',
+  textDecoration: 'none',
+};
+
+const suffixLinkStyle: import('react').CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  color: 'inherit',
+  textDecoration: 'none',
+};
+
+const mainWordmarkStyle: import('react').CSSProperties = {
+  fontFamily: 'var(--font-sans)',
+  fontWeight: 700,
+  letterSpacing: '-0.3px',
+};

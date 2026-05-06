@@ -6,6 +6,8 @@ interface SiteFooterProps {
   tenant: TenantContext;
   locale: string;
   nodeName?: string;
+  groupHomeHref: string;
+  tenantHomeHref: string | null;
 }
 
 interface ColumnItem {
@@ -19,7 +21,13 @@ interface Column {
   items: ColumnItem[];
 }
 
-export function SiteFooter({ tenant, locale, nodeName }: SiteFooterProps) {
+export function SiteFooter({
+  tenant,
+  locale,
+  nodeName,
+  groupHomeHref,
+  tenantHomeHref,
+}: SiteFooterProps) {
   const tag = taglineFor(tenant.kind, nodeName);
   const columns = columnsFor(tenant.kind, locale);
 
@@ -32,8 +40,9 @@ export function SiteFooter({ tenant, locale, nodeName }: SiteFooterProps) {
               tenant={tenant.kind === 'unknown' ? 'group' : tenant.kind}
               nodeName={nodeName}
               locale={locale}
-              asLink={false}
               variant="inverse"
+              groupHomeHref={groupHomeHref}
+              tenantHomeHref={tenantHomeHref}
             />
             <p className="mx-footer-tag">{tag}</p>
             <p

@@ -16,9 +16,19 @@ interface SiteNavProps {
   pathname: string;
   items?: NavItem[];
   nodeName?: string;
+  groupHomeHref: string;
+  tenantHomeHref: string | null;
 }
 
-export function SiteNav({ tenant, locale, pathname, items, nodeName }: SiteNavProps) {
+export function SiteNav({
+  tenant,
+  locale,
+  pathname,
+  items,
+  nodeName,
+  groupHomeHref,
+  tenantHomeHref,
+}: SiteNavProps) {
   const navItems = items ?? defaultItemsFor(tenant.kind);
 
   return (
@@ -28,6 +38,8 @@ export function SiteNav({ tenant, locale, pathname, items, nodeName }: SiteNavPr
           tenant={tenant.kind === 'unknown' ? 'group' : tenant.kind}
           nodeName={nodeName}
           locale={locale}
+          groupHomeHref={groupHomeHref}
+          tenantHomeHref={tenantHomeHref}
         />
         <div className="mx-nav-links">
           {navItems.map((item) => {
