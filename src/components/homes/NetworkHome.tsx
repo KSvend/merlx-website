@@ -32,15 +32,14 @@ function Hero({ locale }: { locale: string }) {
           }}
         >
           <div>
-            <p className="mx-eyebrow">MERLx Network · the MERL guild</p>
+            <p className="mx-eyebrow">MERLx Network</p>
             <h1 className="mx-h1-display">
               Locally owned MERL. <em>Cooperative, not franchised.</em>
             </h1>
             <p className="mx-lead" style={{ marginTop: 32, maxWidth: '46ch' }}>
-              The Network is a cooperative of locally owned MERL practices — research, evaluation,
-              third-party monitoring, KII rotations, and field analysis under shared methodology and
-              conflict-sensitivity standards. The Studio builds the tools; the Network does the work
-              in country.
+              A cooperative of locally owned MERL practices: research, evaluation, third-party
+              monitoring, KII rotations, and field analysis. Each node operates under its own
+              governance. The Studio builds the tools; the Network does the work in country.
             </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 36, flexWrap: 'wrap' }}>
               <Link href={`/${locale}/nodes`} className="mx-btn mx-btn--primary mx-btn--lg">
@@ -60,7 +59,7 @@ function Hero({ locale }: { locale: string }) {
                 textTransform: 'uppercase',
               }}
             >
-              Active node — NileX · Sudan and the Nile basin
+              Active node: NileX · Sudan and the Nile basin
             </p>
           </div>
           <NetworkPreview />
@@ -82,8 +81,8 @@ function NodesStrip({ locale }: { locale: string }) {
             </h2>
           </div>
           <p className="mx-lead">
-            Each node is autonomous and accountable in country. Nodes share methodology, peer
-            review, and tooling — not governance.
+            Nodes share methodology, peer review and tooling. They do not share governance. Hiring,
+            pricing and partner choice stay with the local cooperative.
           </p>
         </div>
 
@@ -185,12 +184,12 @@ function ServicesStrip({ locale }: { locale: string }) {
             <p className="mx-eyebrow">What nodes deliver</p>
             <h2 className="mx-h2-section">
               MERL programme delivery, end-to-end.{' '}
-              <em>Plus the Studio's tools as infrastructure.</em>
+              <em>With the Studio's tools as infrastructure.</em>
             </h2>
           </div>
           <p className="mx-lead">
-            Five service areas across the cooperative. Every engagement uses locally-grounded
-            methodology with cross-node peer review.
+            Five service areas. Every engagement uses locally-grounded methodology with cross-node
+            peer review on the analytical outputs.
           </p>
         </div>
 
@@ -292,9 +291,9 @@ function BecomeANodeStrip({ locale }: { locale: string }) {
             margin: '0 auto 32px',
           }}
         >
-          We work with cooperative MERL practices in countries where the Network has gaps.
-          Onboarding is a six-month process: methodology alignment, peer review, tooling
-          integration, then a first joint engagement.
+          We work with cooperative MERL practices in countries where the Network has gaps and
+          partner demand. Onboarding takes about six months: methodology alignment, peer review,
+          tooling integration, and a first joint engagement.
         </p>
         <div
           style={{ display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}

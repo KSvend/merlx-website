@@ -27,13 +27,13 @@ export const NODES: NetworkNode[] = [
     primaryLocale: 'ar',
     tagline: 'MERL cooperative for Sudan and the wider Nile basin.',
     description:
-      'NileX is the first MERLx Network node — a Sudan-based cooperative of researchers, evaluators, and conflict analysts working across Sudan, South Sudan, and the wider Nile basin. NileX runs MERL programmes for humanitarian and development partners with full local accountability, hosts MERLxLabs (the OASIS recovery marketplace), and contributes data to the Optics Suite.',
+      'NileX is the first MERLx Network node: a Sudan-based cooperative of researchers, evaluators and conflict analysts working across Sudan, South Sudan and the wider Nile basin. NileX runs MERL programmes for humanitarian and development partners with full local accountability, hosts MERLxLabs (the OASIS recovery marketplace), and contributes data to the Optics Suite.',
     capabilities: [
-      'MERL design + delivery',
+      'MERL design and delivery',
       'Conflict-sensitive evaluation',
-      'KII research in Arabic + Sudanese local languages',
+      'KII research in Arabic and Sudanese local languages',
       'OASIS programme implementation',
-      'Cross-border field operations (Sudan / South Sudan / Chad)',
+      'Cross-border field operations (Sudan, South Sudan, Chad)',
     ],
     subdomain: 'nilex.merlx.org',
   },
@@ -44,14 +44,14 @@ export const NODES: NetworkNode[] = [
     country: 'Colombia',
     status: 'onboarding',
     primaryLocale: 'en',
-    tagline: 'MERL + peace-building expertise across the Andean region.',
+    tagline: 'MERL and peace-building expertise across the Andean region.',
     description:
-      'Onboarding partner cooperative based in Bogotá, with delivery teams across Colombia, Ecuador, and Peru. Specialises in post-conflict transition monitoring, illicit-economy research, and indigenous-community-led MERL.',
+      'Onboarding cooperative based in Bogotá, with delivery teams across Colombia, Ecuador and Peru. Specialises in post-conflict transition monitoring, illicit-economy research, and indigenous-community-led MERL.',
     capabilities: [
       'Post-conflict transition monitoring',
-      'Illicit economy + governance research',
+      'Illicit economy and governance research',
       'Indigenous-community MERL methodology',
-      'Spanish + Quechua + Aymara field research',
+      'Spanish, Quechua and Aymara field research',
     ],
   },
   {
@@ -63,12 +63,12 @@ export const NODES: NetworkNode[] = [
     primaryLocale: 'fr',
     tagline: 'Francophone Sahel evaluation and early-warning network.',
     description:
-      'Onboarding network based in Dakar, with delivery teams across Senegal, Mali, Burkina Faso, and Niger. Specialises in violent-extremism early warning, climate-fragility monitoring, and pastoralist livelihoods evaluation.',
+      'Onboarding cooperative based in Dakar, with delivery teams across Senegal, Mali, Burkina Faso and Niger. Specialises in violent-extremism early warning, climate-fragility monitoring, and pastoralist livelihoods evaluation.',
     capabilities: [
       'Violent-extremism early warning',
       'Climate-fragility monitoring',
       'Pastoralist livelihoods MERL',
-      'French + Wolof + Hausa + Bambara field research',
+      'French, Wolof, Hausa and Bambara field research',
     ],
   },
   {
@@ -78,14 +78,14 @@ export const NODES: NetworkNode[] = [
     country: 'Jordan',
     status: 'planned',
     primaryLocale: 'ar',
-    tagline: 'Coming 2026 — Levant and broader MENA research collaborative.',
+    tagline: 'Levant and broader MENA research collaborative. Onboarding 2026.',
     description:
-      'Planned MERLx Network node in Amman, with operating reach across Jordan, Lebanon, Iraq, and Syria. Will focus on protracted-displacement research, refugee-host-community evaluation, and stabilisation programme MERL.',
+      'Planned MERLx Network node in Amman, with operating reach across Jordan, Lebanon, Iraq and Syria. Focus areas: protracted-displacement research, refugee-host-community evaluation, and stabilisation programme MERL.',
     capabilities: [
       'Protracted-displacement research',
       'Refugee-host-community evaluation',
       'Stabilisation programme MERL',
-      'Arabic + Kurdish + Levantine local languages',
+      'Arabic, Kurdish and Levantine local languages',
     ],
   },
 ];

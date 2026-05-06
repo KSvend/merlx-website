@@ -70,15 +70,14 @@ function Hero({ locale }: { locale: string }) {
           }}
         >
           <div>
-            <p className="mx-eyebrow">MERLx Studio · the tech studio</p>
+            <p className="mx-eyebrow">MERLx Studio</p>
             <h1 className="mx-h1-display">
               Open AI tooling for <em>monitoring, evaluation, research and early warning</em>.
             </h1>
             <p className="mx-lead" style={{ marginTop: 32, maxWidth: '46ch' }}>
-              We build the Optics Suite — six AI-native tools for analysts working in fragile and
+              The Studio builds the Optics Suite: six tools for analysts working in fragile and
               rapidly changing contexts. Earth observation, NLP, compound-risk forecasting,
-              theory-of-change testing, KII assistance, recovery mapping. Open methods,
-              evidence-grade outputs.
+              theory-of-change simulation, recovery mapping, on-device KII assistance.
             </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 36, flexWrap: 'wrap' }}>
               <Link href={`/${locale}/optics`} className="mx-btn mx-btn--primary mx-btn--lg">
@@ -98,7 +97,7 @@ function Hero({ locale }: { locale: string }) {
                 textTransform: 'uppercase',
               }}
             >
-              In service of UNDP · UNICEF · WFP · OCHA · GIZ · FCDO
+              We have worked with UNDP, UNICEF, WFP, OCHA, GIZ and FCDO
             </p>
           </div>
           <StudioPreview />
@@ -124,7 +123,7 @@ function PartnersStrip() {
             margin: '0 0 32px',
           }}
         >
-          Partnered with leading development organisations
+          We have worked with
         </p>
         <div
           style={{
@@ -167,8 +166,8 @@ function ProductsTeaser({ locale }: { locale: string }) {
             </h2>
           </div>
           <p className="mx-lead">
-            Built for analysts, not procurement officers. Each tool is small, opinionated, and
-            interoperable with the data systems you already run.
+            Built for analysts. Each tool is small, opinionated, and interoperable with the data
+            systems your programme already runs.
           </p>
         </div>
         <div
@@ -252,8 +251,8 @@ function MethodologyStrip() {
             </h2>
           </div>
           <p className="mx-lead">
-            Studio engagements run alongside the programme — small, frequent signals that compound
-            into understanding. Tools amplify the practice; they do not replace it.
+            Studio engagements run alongside the programme. Findings ship continuously, not as a
+            single end-line report. Tools amplify the practice; they do not replace it.
           </p>
         </div>
         <div

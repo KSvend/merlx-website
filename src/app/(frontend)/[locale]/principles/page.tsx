@@ -37,8 +37,8 @@ export default async function PrinciplesPage({ params }: PageProps) {
             {heroLine} <em>{heroFlourish}.</em>
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
-            Principles describe the floor we won't drop below — not the ceiling we aspire to. They
-            are the things we'll say no to a contract for.
+            Principles describe the floor we will not drop below. They are the things we will say no
+            to a contract for.
           </p>
         </div>
       </section>

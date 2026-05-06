@@ -68,7 +68,7 @@ export default async function OpticsIndexPage({ params }: PageProps) {
       >
         <div className="mx-container">
           <p className="mx-mono-caption" style={{ marginBottom: 14 }}>
-            BROWSE THE PORTFOLIO · {tools.length} TOOLS
+            Browse the portfolio · {tools.length} tools
           </p>
           {tools.length === 0 ? (
             <p
@@ -173,9 +173,9 @@ export default async function OpticsIndexPage({ params }: PageProps) {
               </h2>
             </div>
             <p className="mx-lead">
-              Optics tools cover three analytical domains. Alongside those, we run delivery tools
-              that turn analysis into programme decisions. When a question needs a bespoke
-              component, we build it.
+              Optics tools cover three analytical domains. Alongside those, three delivery tools
+              turn analysis into programme decisions. When a question needs a bespoke component, we
+              build it.
             </p>
           </div>
 
@@ -242,7 +242,7 @@ const DOMAIN_CARDS = [
     label: 'INFORMATION',
     title: 'What is the discourse doing?',
     description:
-      'Hate speech, disinformation and violent-extremism narratives across social media — multilingual classifiers and analyst chat for triage.',
+      'Hate speech, disinformation and violent-extremism narratives across social media. Multilingual classifiers and an analyst chat for triage.',
     tools: ['IRIS'],
     accent: 'var(--iris)',
   },
@@ -250,7 +250,7 @@ const DOMAIN_CARDS = [
     label: 'TERRAIN',
     title: 'What is changing on the ground?',
     description:
-      'Earth observation for non-specialists. NDVI, surface water, settlement expansion, radar backscatter, active fires — abstracted to a click-and-go interface.',
+      'Earth observation for non-specialists. NDVI, surface water, settlement expansion, radar backscatter and active fires, abstracted to a click-and-go interface.',
     tools: ['Aperture'],
     accent: 'var(--deep-teal)',
   },

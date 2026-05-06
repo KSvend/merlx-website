@@ -11,29 +11,29 @@ const STAGES = [
   {
     n: '01',
     t: 'Mutual fit',
-    d: 'A short two-call window. We learn what your cooperative does, where it operates, what kind of MERL clients it serves. You learn what the Network expects: methodology, peer review, conflict-sensitivity, no-interference findings.',
+    d: 'Two calls. We learn what your cooperative does, where it operates and the kind of MERL clients it serves. You learn what the Network expects: methodology, peer review, conflict-sensitivity, no-interference findings.',
   },
   {
     n: '02',
     t: 'Methodology alignment',
-    d: 'A focused 8-week period of methodology review. We co-author one piece of work — typically an evaluation or a research brief — with cross-node peer review. The aim is honest assessment of whether the methodology floor matches.',
+    d: 'Eight weeks of methodology review. We co-author one piece of work, typically an evaluation or research brief, with cross-node peer review. The point is to test whether the methodology floor actually matches.',
   },
   {
     n: '03',
     t: 'Tooling integration',
-    d: 'If alignment holds, the node connects to the Optics Suite as infrastructure. Training, sandbox access, and shared documentation. Tools become available; methods stay yours.',
+    d: 'If alignment holds, the node connects to the Optics Suite as infrastructure: training, sandbox access, shared documentation. Tools become available. Methods stay yours.',
   },
   {
     n: '04',
     t: 'First joint engagement',
-    d: 'A first joint engagement with the cooperative — usually a co-led delivery for a multilateral or INGO partner. Both sides validate operational fit before formal admission as an active node.',
+    d: 'A first joint engagement with the cooperative, usually a co-led delivery for a multilateral or INGO partner. Both sides validate operational fit before formal admission as an active node.',
   },
 ];
 
 const REQUIREMENTS = [
   'A locally registered cooperative or research collective with a working bench of senior MERL practitioners.',
-  'At least three years of independent client delivery (evaluation, research, TPM, or programme MERL).',
-  'A pattern of locally led analysis — country teams own findings, not headquarters.',
+  'At least three years of independent client delivery (evaluation, research, TPM or programme MERL).',
+  'A pattern of locally led analysis. Country teams own findings, not headquarters.',
   'Willingness to publish methodology and (with partner consent) data under shared terms.',
   'Commitment to conflict-sensitivity review on every engagement.',
 ];

@@ -112,8 +112,7 @@ export function ContactForm({ turnstileSiteKey, defaultInterest }: ContactFormPr
             lineHeight: 1.6,
           }}
         >
-          Someone from the right team will reply within two working days. If anything is urgent,
-          email{' '}
+          A senior analyst will reply within two working days. If it is urgent, email{' '}
           <a href="mailto:hello@merlx.org" style={inlineLinkStyle}>
             hello@merlx.org
           </a>{' '}

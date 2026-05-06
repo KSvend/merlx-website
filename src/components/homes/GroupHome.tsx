@@ -24,15 +24,15 @@ function Hero() {
   return (
     <section style={{ padding: '80px 0 48px' }}>
       <div className="mx-container">
-        <p className="mx-eyebrow">A studio · a network · one MERLx</p>
+        <p className="mx-eyebrow">A studio and a network</p>
         <h1 className="mx-h1-display" style={{ maxWidth: '20ch' }}>
           Advanced data science and tech-enabled MERL{' '}
-          <em>for global development and humanitarian aid programs.</em>
+          <em>for global development and humanitarian aid programmes.</em>
         </h1>
         <p className="mx-lead" style={{ marginTop: 32, maxWidth: '52ch' }}>
-          MERLx operates as two distinct entities under one roof. The Studio builds open AI tooling
-          for monitoring, evaluation, research and early warning. The Network is a cooperative of
-          locally owned MERL practices running that tooling — and traditional MERL — in country.
+          MERLx is two entities under one roof. The Studio builds the tools. The Network is a
+          cooperative of locally owned MERL practices that runs those tools, and traditional MERL,
+          in country.
         </p>
       </div>
     </section>
@@ -57,15 +57,15 @@ function TwoFrontDoorsSection({ locale }: { locale: string }) {
                 </span>
               </h2>
               <p style={cardLeadStyle}>
-                An independent studio building the Optics Suite — six AI-native tools for conflict,
-                food-insecurity and humanitarian-context analysis. Open methods, evidence-grade
-                outputs, conflict-sensitive engineering.
+                An independent studio building the Optics Suite: six AI-native tools for analysts
+                working in conflict, food-insecurity and humanitarian contexts. Methods are open.
+                Outputs ship with their uncertainty.
               </p>
               <BulletList
                 items={[
-                  'Six tools — IRIS · Aperture · PRISM · ToC Tester · OASIS · ECHO',
-                  'Earth observation · NLP · compound-risk forecasting',
-                  'Engagements: hosted · pilot · build-with · advisory',
+                  'Six tools: IRIS, Aperture, PRISM, ToC Tester, OASIS, ECHO',
+                  'Earth observation, NLP, compound-risk forecasting',
+                  'Engagements: hosted, pilot, build-with, advisory',
                 ]}
               />
               <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
@@ -100,14 +100,14 @@ function TwoFrontDoorsSection({ locale }: { locale: string }) {
               </h2>
               <p style={cardLeadStyle}>
                 A cooperative of locally owned MERL practices. Each node is autonomous and
-                accountable in country, working under shared methodology and conflict-sensitivity
-                standards. Traditional MERL with the Optics Suite as infrastructure.
+                accountable in country. Nodes share methodology, peer review and the Optics Suite as
+                infrastructure. Governance stays local.
               </p>
               <BulletList
                 items={[
-                  'Active node — NileX (Sudan + the Nile basin)',
-                  'Onboarding — Andes Cooperativa, Sahel Reseau',
-                  'Services: research · evaluation · TPM · KII · partner support',
+                  'Active node: NileX (Sudan and the Nile basin)',
+                  'Onboarding: Andes Cooperativa, Sahel Reseau',
+                  'Services: research, evaluation, TPM, KII, partner support',
                 ]}
               />
               <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
@@ -138,22 +138,22 @@ function PrinciplesSection() {
     {
       n: '01',
       t: 'Open by default.',
-      d: 'Tools, methods, and data schemas are open-source unless a partner constraint forces otherwise.',
+      d: 'Tools, methods and data schemas are open-source unless a partner constraint says otherwise. When a constraint exists, we name it.',
     },
     {
       n: '02',
       t: 'Conflict-sensitive engineering.',
-      d: 'Every tool reviewed for harm pathways before launch — surveillance, dual-use, exclusion.',
+      d: 'Every tool is reviewed for harm pathways before launch: surveillance, dual-use, exclusion. Reviews are documented and re-run when the context shifts.',
     },
     {
       n: '03',
-      t: 'Evidence-grade outputs.',
-      d: 'Numbers ship with their uncertainty. Models ship with their evaluation.',
+      t: 'Numbers ship with uncertainty.',
+      d: 'No quietly-rounded estimates. Models ship with the evaluation that produced them.',
     },
     {
       n: '04',
       t: 'Local epistemics.',
-      d: 'Member nodes hold local knowledge. The Studio builds; the Network deploys.',
+      d: 'Local researchers know things satellites cannot. The Studio builds; the Network deploys.',
     },
   ];
 
@@ -164,12 +164,12 @@ function PrinciplesSection() {
           <div>
             <p className="mx-eyebrow">How we work</p>
             <h2 className="mx-h2-section">
-              A <em>quieter</em>, more careful kind of analytical practice.
+              Four commitments, <em>shared across the studio and the network</em>.
             </h2>
           </div>
           <p className="mx-lead">
-            Both entities — Studio and Network — operate under a shared set of commitments. They
-            describe the floor we won't drop below, not the ceiling we aspire to.
+            These describe the floor we will not drop below. Both Studio and Network sign off on
+            them on every engagement.
           </p>
         </div>
         <div
@@ -242,7 +242,7 @@ function PartnersStrip() {
             margin: '0 0 32px',
           }}
         >
-          Partnered with leading development organisations
+          We have worked with
         </p>
         <div
           style={{
@@ -304,9 +304,8 @@ function FinalCTA({ locale, tenantKind }: { locale: string; tenantKind: string }
             margin: '0 auto 32px',
           }}
         >
-          Considering a pilot, a hosted Optics Suite deployment, an evaluation, or a long-form
-          advisory engagement? Send us a brief. We will route it to the right entity within two
-          working days.
+          A pilot, a hosted Optics Suite deployment, an evaluation, or short advisory work — send us
+          a brief and we will route it to the right team within two working days.
         </p>
         <div
           style={{ display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}

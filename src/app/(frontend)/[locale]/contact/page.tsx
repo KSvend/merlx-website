@@ -29,8 +29,8 @@ export default async function ContactPage({ params }: PageProps) {
             Tell us about the <em>programme</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '56ch' }}>
-            We read every enquiry. A senior analyst replies within two working days, usually with
-            two or three questions before a call.
+            We read every enquiry. A senior analyst replies within two working days, usually with a
+            few questions before a call.
           </p>
         </div>
       </section>

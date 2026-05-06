@@ -45,7 +45,7 @@ export default async function InsightsIndexPage({ params }: PageProps) {
             Writing from the <em>field</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '56ch' }}>
-            Methods notes, field reflections, and the occasional essay — from the Studio and the
+            Methods notes, field reflections and the occasional essay, from the Studio and the
             Network. No company updates.
           </p>
         </div>

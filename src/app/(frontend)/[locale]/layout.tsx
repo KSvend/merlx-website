@@ -44,12 +44,12 @@ const TENANT_TITLE: Record<string, string> = {
 };
 
 const TENANT_DESCRIPTION: Record<string, string> = {
-  group: 'Open analytical tools for fragile contexts. A studio + a cooperative MERL network.',
+  group: 'Open analytical tools for fragile contexts. A studio and a cooperative MERL network.',
   studio:
-    'An independent studio building the Optics Suite — open AI tools for monitoring, evaluation, research and early warning in fragile contexts.',
+    'An independent studio building the Optics Suite: open AI tools for monitoring, evaluation, research and early warning in fragile contexts.',
   network:
-    'A cooperative of locally owned MERL practices. Member nodes across Africa, the Andes, MENA, and beyond, working under shared methodology and conflict-sensitivity standards.',
-  node: 'A MERLx Network node — locally owned MERL cooperative.',
+    'A cooperative of locally owned MERL practices. Member nodes across Africa, the Andes, MENA and beyond, working under shared methodology and conflict-sensitivity standards.',
+  node: 'A MERLx Network node. Locally owned MERL cooperative.',
 };
 
 export async function generateMetadata(): Promise<Metadata> {

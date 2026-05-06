@@ -65,8 +65,8 @@ function DeploymentsStrip({ locale }: { locale: string }) {
             </h2>
           </div>
           <p className="mx-lead">
-            Active engagements across Sudan, South Sudan, and the wider Nile basin — for INGO
-            consortia, multilateral research foundations, and partner Network operations.
+            Active engagements across Sudan, South Sudan and the wider Nile basin, for INGO
+            consortia, multilateral research foundations, and joint Network operations.
           </p>
         </div>
 
@@ -162,8 +162,7 @@ function NewsStrip({ locale }: { locale: string }) {
             </h2>
           </div>
           <p className="mx-lead">
-            What's happened at the node lately — methodology updates, new deployments, publications,
-            cross-network announcements.
+            Methodology updates, new deployments, publications, and the occasional editorial.
           </p>
         </div>
 

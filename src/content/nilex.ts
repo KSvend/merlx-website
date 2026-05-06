@@ -24,7 +24,7 @@ export const NILEX_HERO = {
   eyebrow: 'NileX · MERLx Network node · Sudan',
   title: 'Sudan-rooted MERL, evidence for the Nile basin.',
   tagline:
-    'NileX is a Sudan-based cooperative of researchers, evaluators and conflict analysts. We design and deliver MERL programmes for humanitarian and development partners across Sudan, South Sudan, and the wider Nile basin — under local governance and shared MERLx Network methodology.',
+    'NileX is a Sudan-based cooperative of researchers, evaluators and conflict analysts. We design and deliver MERL programmes for humanitarian and development partners across Sudan, South Sudan and the wider Nile basin, under local governance and shared MERLx Network methodology.',
   primaryCta: 'See active deployments',
   secondaryCta: 'Talk to NileX',
 };
@@ -37,7 +37,7 @@ export const NILEX_DEPLOYMENTS: NodeDeployment[] = [
     region: 'Sudan, multi-state',
     status: 'active',
     summary:
-      'Damage-and-recovery marketplace deployment across Khartoum, Darfur, and Kordofan. Pairs satellite-derived damage assessments with NileX field-verified records.',
+      'Damage-and-recovery marketplace across Khartoum, Darfur and Kordofan. Pairs satellite-derived damage assessments with NileX field-verified records.',
   },
   {
     slug: 'horn-ewer',
@@ -74,7 +74,7 @@ export const NILEX_NEWS: NodeNewsItem[] = [
     date: '2026-04-15',
     title: 'NileX joins the MERLx Network as the first member node',
     excerpt:
-      'NileX is the first cooperative to fully join the MERLx Network. Our methodology + tooling integration is complete; cross-node peer review pilots begin in May.',
+      'NileX is the first cooperative to fully join the MERLx Network. Methodology and tooling integration is complete. Cross-node peer review pilots begin in May.',
   },
   {
     slug: '2026-03-oasis-launch',
@@ -88,6 +88,6 @@ export const NILEX_NEWS: NodeNewsItem[] = [
     date: '2026-02-10',
     title: 'NileX publishes Arabic-language MERL methodology series',
     excerpt:
-      'Eight-paper series on conflict-sensitive evaluation methodology for Arabic-language MERL practitioners, free under CC-BY-SA licensing.',
+      'Eight-paper series on conflict-sensitive evaluation methodology for Arabic-language MERL practitioners. CC-BY-SA.',
   },
 ];

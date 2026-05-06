@@ -39,7 +39,7 @@ export default async function PublicationsIndexPage({ params }: PageProps) {
             Working papers, briefs, <em>peer-reviewed research</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '56ch' }}>
-            Open-access by default. Methodology notes, evaluation reports, and journal articles from
+            Open-access by default. Methodology notes, evaluation reports and journal articles from
             the Studio and the Network.
           </p>
         </div>
