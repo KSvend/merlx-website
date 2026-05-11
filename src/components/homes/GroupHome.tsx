@@ -1,4 +1,3 @@
-import { NetworkPreview } from '@/components/dashboards/NetworkPreview';
 import { StudioPreview } from '@/components/dashboards/StudioPreview';
 import Link from 'next/link';
 import type { CSSProperties } from 'react';
@@ -12,7 +11,9 @@ export function GroupHome({ locale, tenantKind }: GroupHomeProps) {
   return (
     <>
       <Hero />
-      <TwoFrontDoorsSection locale={locale} />
+      <ForAudiencesSection locale={locale} />
+      <DashboardPreviewSection />
+      <CaseStudiesSection locale={locale} />
       <PrinciplesSection />
       <PartnersStrip />
       <FinalCTA locale={locale} tenantKind={tenantKind} />
@@ -24,158 +25,174 @@ function Hero() {
   return (
     <section style={{ padding: '80px 0 48px' }}>
       <div className="mx-container">
-        <p className="mx-eyebrow">A studio, a network and a learning surface</p>
+        <p className="mx-eyebrow">Evidence infrastructure for adaptive programming</p>
         <h1 className="mx-h1-display" style={{ maxWidth: '20ch' }}>
-          Advanced data science and tech-enabled MERL{' '}
-          <em>for global development and humanitarian aid programmes.</em>
+          <em style={{ color: 'var(--iris)' }}>Next-generation MERL</em> for global development and
+          humanitarian aid programmes.
         </h1>
         <p className="mx-lead" style={{ marginTop: 32, maxWidth: '60ch' }}>
-          MERLx is three entities under one roof. The Studio builds analytical tools and
-          infrastructure. The Network is a cooperative of locally owned MERL practices that runs
-          those tools, and traditional MERL, in country. Learn turns the practice into curriculum,
-          for new Network nodes and for donor and INGO programme teams. Together we enable real
-          adaptive programming: faster context reads, earlier course corrections, decisions grounded
-          in local evidence rather than headquarters narrative.
+          MERLx delivers advanced data science and tech-enabled MERL for global development and
+          humanitarian aid programmes. AI-augmented analytical tools, locally anchored research and
+          conflict-sensitive methodology, built for donors, multilaterals, INGOs and implementers —
+          faster context reads, earlier course corrections, decisions grounded in real evidence
+          rather than headquarters narrative.
         </p>
       </div>
     </section>
   );
 }
 
-function TwoFrontDoorsSection({ locale }: { locale: string }) {
+function ForAudiencesSection({ locale }: { locale: string }) {
   return (
     <section style={{ padding: '32px 0 96px' }}>
       <div className="mx-container">
         <div style={gridTwoCol}>
-          <article style={frontDoorCardStyle}>
-            <div style={frontDoorHeaderStyle}>
-              <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
-                01 · STUDIO · THE TECH STUDIO
+          <article style={audienceCardStyle}>
+            <span className="mx-mono-caption" style={accentLabel('var(--deep-teal)')}>
+              01 · FOR DONORS, MULTILATERALS & INGOs
+            </span>
+            <h2 style={cardHeadingStyle}>
+              MERLx <em style={emItalicStyle('var(--teal-light)')}>Studio</em>
+              <br />
+              <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
+                Scope, instrument, evaluate.
               </span>
-              <h2 style={cardHeadingStyle}>
-                MERLx <em style={emItalicStyle('var(--deep-teal)')}>Studio</em>
-                <br />
-                <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
-                  We build the tools.
-                </span>
-              </h2>
-              <p style={cardLeadStyle}>
-                An independent studio building the Optics Suite: six AI-native tools for analysts
-                working in conflict, food-insecurity and humanitarian contexts. Methods are open.
-                Outputs ship with their uncertainty.
-              </p>
-              <BulletList
-                items={[
-                  'Six tools: IRIS, Aperture, PRISM, ToC Tester, OASIS, ECHO',
-                  'Earth observation, NLP, compound-risk forecasting',
-                  'Engagements: hosted, pilot, build-with, advisory',
-                ]}
-              />
-              <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
-                <a
-                  href="https://studio.merlx.org"
-                  className="mx-btn mx-btn--primary"
-                  rel="noopener noreferrer"
-                >
-                  Enter MERLx Studio →
-                </a>
-                <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
-                  Talk to the studio
-                </Link>
-              </div>
-            </div>
-            <div style={frontDoorPreviewStyle}>
-              <StudioPreview />
+            </h2>
+            <p style={cardLeadStyle}>
+              MERLx delivers AI-augmented MERL infrastructure for international development and
+              humanitarian programmes. From scoping to live dashboards to formal evaluation — built
+              for accountability, conflict-sensitivity and compound-risk realities.
+            </p>
+            <BulletList
+              items={[
+                'AI-augmented analytical infrastructure (Optics Suite)',
+                'Conflict-sensitive MERL design, delivery, and evaluation',
+                'Live dashboards: indicators, compound risk, narrative monitoring',
+                'Auditable outputs — features and signals, not black boxes',
+              ]}
+            />
+            <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+              <Link href={`/${locale}/contact`} className="mx-btn mx-btn--primary">
+                Start a conversation →
+              </Link>
+              <Link href={`/${locale}/deployments`} className="mx-btn mx-btn--ghost">
+                Browse deployments
+              </Link>
             </div>
           </article>
 
-          <article style={frontDoorCardStyle}>
-            <div style={frontDoorHeaderStyle}>
-              <span className="mx-mono-caption" style={accentLabel('var(--deep-teal)')}>
-                02 · NETWORK · THE MERL COOPERATIVE
+          <article style={audienceCardStyle}>
+            <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
+              02 · FOR MERL PRACTITIONERS & FIELD TEAMS
+            </span>
+            <h2 style={cardHeadingStyle}>
+              MERLx <em style={emItalicStyle('var(--ember)')}>Network</em>
+              <br />
+              <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
+                Shared methodology, shared tools.
               </span>
-              <h2 style={cardHeadingStyle}>
-                MERLx <em style={emItalicStyle('var(--iris)')}>Network</em>
-                <br />
-                <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
-                  Locally owned MERL, in-country.
-                </span>
-              </h2>
-              <p style={cardLeadStyle}>
-                A cooperative of locally owned MERL practices. Each node is autonomous and
-                accountable in country. Nodes share methodology, peer review and the Optics Suite as
-                infrastructure. Governance stays local.
-              </p>
-              <BulletList
-                items={[
-                  'Cooperative members (nodes): NileX active; Andes and Sahel onboarding',
-                  'Services: research, evaluation, TPM, KII, partner support',
-                  'Each node operates under its own governance, hires locally',
-                ]}
-              />
-              <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
-                <a
-                  href="https://network.merlx.org"
-                  className="mx-btn mx-btn--primary"
-                  rel="noopener noreferrer"
-                >
-                  Enter the Network →
-                </a>
-                <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
-                  Talk to the network
-                </Link>
-              </div>
-            </div>
-            <div style={frontDoorPreviewStyle}>
-              <NetworkPreview />
+            </h2>
+            <p style={cardLeadStyle}>
+              MERLx works alongside in-country MERL teams, researchers and enumerators. Use the
+              Optics Suite as shared analytical infrastructure, train on conflict-sensitivity
+              standards, and join a peer-review practice that holds a methodological floor across
+              engagements.
+            </p>
+            <BulletList
+              items={[
+                'Optics Suite as shared analytical tooling',
+                'Conflict-sensitivity training and methodological standards',
+                'Peer review across active engagements',
+                'Routes to ongoing partnership for established teams',
+              ]}
+            />
+            <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+              <Link href={`/${locale}/become-a-node`} className="mx-btn mx-btn--primary">
+                Become a partner →
+              </Link>
+              <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
+                Talk to us
+              </Link>
             </div>
           </article>
         </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* Third main: Learn. Separate row, no preview dashboard, sized for
-            cross-cutting positioning. */}
-        <article style={learnCardStyle}>
-          <div style={learnGridStyle}>
-            <div>
-              <span className="mx-mono-caption" style={accentLabel('var(--iris)')}>
-                03 · LEARN · COURSES AND CURRICULUM
-              </span>
-              <h2 style={{ ...cardHeadingStyle, maxWidth: '24ch' }}>
-                MERLx <em style={emItalicStyle('var(--iris)')}>Learn</em>
-                <br />
-                <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
-                  The curriculum surface that connects both.
-                </span>
-              </h2>
-            </div>
-            <div>
-              <p style={{ ...cardLeadStyle, maxWidth: '52ch' }}>
-                Two tracks, one practice. Cooperative onboarding for new Network researchers and
-                enumerators (the methodological floor every new node clears). Advanced MERL for
-                donor and INGO programme teams. Same instructor pool, same standards.
-              </p>
-              <BulletList
-                items={[
-                  'Cooperative-onboarding seats are free for Network nodes',
-                  'Advanced-MERL cohorts run twice a year. First cohort free.',
-                  'Tool-training certifications for the Optics Suite',
-                ]}
-              />
-              <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
-                <a
-                  href="https://learn.merlx.org"
-                  className="mx-btn mx-btn--primary"
-                  rel="noopener noreferrer"
-                >
-                  Enter MERLx Learn →
-                </a>
-                <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
-                  Commission a private cohort
-                </Link>
-              </div>
-            </div>
+function DashboardPreviewSection() {
+  return (
+    <section className="mx-section mx-section--shell-warm">
+      <div className="mx-container">
+        <div className="mx-intro">
+          <div>
+            <p className="mx-eyebrow">What it looks like in practice</p>
+            <h2 className="mx-h2-section">
+              A live MERL dashboard, <em>built for the programme team</em>.
+            </h2>
           </div>
-        </article>
+          <p className="mx-lead">
+            INGO programme teams log into MERLx and see compound risk for their portfolio,
+            real-time indicator trends, narrative shifts, and forecast confidence — auditable down
+            to the underlying signal. No black-box outputs.
+          </p>
+        </div>
+        <div style={dashboardFrameStyle}>
+          <StudioPreview />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CaseStudiesSection({ locale }: { locale: string }) {
+  const cases = [
+    {
+      eyebrow: 'ACTIVE · NILEX · SUDAN',
+      eyebrowColor: 'var(--deep-teal)',
+      title: 'Conflict-sensitive MERL across an active conflict',
+      body: 'NileX deploys IRIS, PRISM and conflict-sensitive evaluation across Sudan and the wider Nile basin. Bilingual reporting in Arabic and English. KII research with on-device transcription. Programme teams receive weekly compound-risk briefs.',
+      href: `/${locale}/nodes/nilex`,
+    },
+    {
+      eyebrow: 'LIVE · PRISM · HORN OF AFRICA',
+      eyebrowColor: 'var(--ember)',
+      title: 'Four-month forecast for food insecurity and displacement',
+      body: 'PRISM ingests EO data, conflict events and price signals to forecast compound risk across IPC phase 3+ populations. Programme teams use the dashboard for adaptive resource allocation across the Horn of Africa.',
+      href: `/${locale}/optics/prism`,
+    },
+  ];
+
+  return (
+    <section className="mx-section">
+      <div className="mx-container">
+        <div className="mx-intro">
+          <div>
+            <p className="mx-eyebrow">Case studies</p>
+            <h2 className="mx-h2-section">
+              Deployed across <em>active conflict and fragile-state contexts</em>.
+            </h2>
+          </div>
+          <p className="mx-lead">
+            Real engagements where MERLx infrastructure runs on the ground, with locally anchored
+            partners.
+          </p>
+        </div>
+        <div style={caseStudyGridStyle}>
+          {cases.map((c) => (
+            <article key={c.title} style={caseStudyCardStyle}>
+              <span className="mx-mono-caption" style={accentLabel(c.eyebrowColor)}>
+                {c.eyebrow}
+              </span>
+              <h3 style={caseStudyTitleStyle}>{c.title}</h3>
+              <p style={caseStudyBodyStyle}>{c.body}</p>
+              <Link href={c.href} style={caseStudyLinkStyle}>
+                Read case study →
+              </Link>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -435,39 +452,68 @@ const gridTwoCol: CSSProperties = {
   alignItems: 'stretch',
 };
 
-const frontDoorCardStyle: CSSProperties = {
-  display: 'grid',
-  gridTemplateRows: 'auto 1fr',
-  gap: 32,
-  background: 'var(--surface)',
-  border: '1px solid var(--border-light)',
-  borderRadius: 'var(--radius-md)',
-  padding: 40,
-};
-
-const learnCardStyle: CSSProperties = {
-  background: 'var(--surface)',
-  border: '1px solid var(--border-light)',
-  borderRadius: 'var(--radius-md)',
-  padding: 40,
-  marginTop: 24,
-};
-
-const learnGridStyle: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-  gap: 48,
-  alignItems: 'start',
-};
-
-const frontDoorHeaderStyle: CSSProperties = {
+const audienceCardStyle: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
+  background: 'var(--surface)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-md)',
+  padding: 40,
 };
 
-const frontDoorPreviewStyle: CSSProperties = {
+const dashboardFrameStyle: CSSProperties = {
+  marginTop: 32,
+  background: 'var(--surface)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-md)',
+  padding: 24,
+};
+
+const caseStudyGridStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+  gap: 24,
+  marginTop: 32,
+};
+
+const caseStudyCardStyle: CSSProperties = {
   display: 'flex',
-  alignItems: 'flex-start',
+  flexDirection: 'column',
+  gap: 16,
+  background: 'var(--surface)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-md)',
+  padding: 32,
+};
+
+const caseStudyTitleStyle: CSSProperties = {
+  fontFamily: 'var(--font-sans)',
+  fontWeight: 600,
+  fontSize: 22,
+  lineHeight: 1.2,
+  letterSpacing: '-0.3px',
+  color: 'var(--ink)',
+  margin: 0,
+  maxWidth: '22ch',
+};
+
+const caseStudyBodyStyle: CSSProperties = {
+  fontSize: 14,
+  lineHeight: 1.6,
+  color: 'var(--ink-muted)',
+  margin: 0,
+  flex: 1,
+};
+
+const caseStudyLinkStyle: CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 11,
+  letterSpacing: '0.5px',
+  color: 'var(--deep-teal)',
+  textDecoration: 'underline',
+  textDecorationColor: 'var(--border)',
+  textUnderlineOffset: '4px',
+  alignSelf: 'flex-start',
 };
 
 const cardHeadingStyle: CSSProperties = {
