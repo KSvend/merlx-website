@@ -648,12 +648,20 @@ pre {
   font-size: 16px;
 }
 
-/* Footer — theme-aware: shell-warm in light, dark warm-shell in dark. */
+/* Footer — pastel-mint anchor in both themes. The background never
+   theme-swaps, so we lock the foreground tokens to always-dark values
+   inside the footer (otherwise --ink etc. would flip light in dark
+   mode and the text would disappear). */
 .mx-footer {
-  background: var(--shell-warm);
+  --ink: #111;
+  --ink-light: #2a2a2a;
+  --ink-muted: rgba(0, 0, 0, 0.62);
+  --ink-faint: rgba(0, 0, 0, 0.45);
+  --border-light: rgba(0, 0, 0, 0.12);
+  --surface: rgba(255, 255, 255, 0.7);
+  background: var(--teal-light);
   color: var(--ink-light);
   padding: 80px 0 32px;
-  border-top: 1px solid var(--border-light);
 }
 .mx-footer-grid {
   display: grid;
