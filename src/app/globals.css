@@ -868,6 +868,7 @@ pre {
   align-items: end;
   margin-bottom: 56px;
 }
+/* ───────── Responsive: tablet (≤900px) ───────── */
 @media (max-width: 900px) {
   .mx-intro {
     grid-template-columns: 1fr;
@@ -875,12 +876,180 @@ pre {
   }
   .mx-footer-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 32px;
   }
   .mx-stats {
     grid-template-columns: 1fr 1fr;
   }
+  /* Hide centre nav link strip from the desktop grid; mobile nav rule
+     below shows it on its own row at ≤640px. */
   .mx-nav-links {
     display: none;
+  }
+  .mx-page-header h1,
+  .mx-h1-display {
+    font-size: clamp(34px, 6.4vw, 64px);
+    letter-spacing: -1px;
+  }
+  .mx-h2-section {
+    font-size: clamp(26px, 4.2vw, 36px);
+  }
+}
+
+/* ───────── Responsive: mobile (≤640px) ───────── */
+@media (max-width: 640px) {
+  /* Tighter container gutters. */
+  .mx-container,
+  .mx-container-narrow {
+    padding: 0 20px;
+  }
+  .mx-section {
+    padding: 56px 0;
+  }
+  .mx-section--tight {
+    padding: 40px 0;
+  }
+  .mx-page-header {
+    padding: 56px 0 32px;
+  }
+
+  /* Nav: flex-wrap, two rows on mobile. Top row = logo + actions.
+     Second row = nav links (visible again, scroll horizontally if
+     they ever overflow). */
+  .mx-nav-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 20px;
+    height: auto;
+    min-height: 60px;
+  }
+  .mx-nav-actions {
+    gap: 8px;
+  }
+  .mx-nav-actions .mx-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .mx-nav-links {
+    display: flex;
+    order: 3;
+    flex-basis: 100%;
+    gap: 18px;
+    padding: 4px 0 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .mx-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+  .mx-nav-link {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  /* Hide the tenant-suffix divider on the brand to save space —
+     suffix stays readable inline. */
+  .mx-brand .mx-tenant-suffix {
+    margin-left: 8px;
+    padding-left: 8px;
+  }
+
+  /* Typography: smaller floors for hero and section heads. */
+  .mx-h1-display {
+    font-size: clamp(30px, 8.4vw, 56px);
+    letter-spacing: -0.6px;
+  }
+  .mx-page-header h1 {
+    font-size: clamp(28px, 7.6vw, 44px);
+    letter-spacing: -0.6px;
+    max-width: none;
+  }
+  .mx-h2-section {
+    font-size: clamp(22px, 6vw, 30px);
+    letter-spacing: -0.4px;
+    max-width: none;
+  }
+  .mx-lead {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .mx-eyebrow {
+    font-size: 10px;
+  }
+
+  /* Buttons: full-width on mobile when in a stack. */
+  .mx-btn--lg {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+
+  /* Stack the four-commitment principles grid. */
+  .mx-section .mx-container > div[style*='repeat(4, 1fr)'],
+  .mx-section .mx-container-narrow > div[style*='repeat(4, 1fr)'] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stats row stacks fully. */
+  .mx-stats {
+    grid-template-columns: 1fr;
+  }
+
+  /* Footer: single column, vertical bottom strip. */
+  .mx-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  .mx-footer {
+    padding: 56px 0 24px;
+  }
+  .mx-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .mx-footer-newsletter {
+    flex-direction: column;
+    gap: 8px;
+    max-width: 100%;
+  }
+  .mx-footer-newsletter input,
+  .mx-footer-newsletter button {
+    width: 100%;
+  }
+
+  /* Tables (e.g. /publications) overflow horizontally rather than
+     forcing the page to scroll. */
+  .mx-card table,
+  .mx-card-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* mx-card-grid / similar grids in pages: drop to 1 col below 640. */
+  .mx-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* No element should overflow its container horizontally. */
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* ───────── Responsive: small mobile (≤380px) ───────── */
+@media (max-width: 380px) {
+  .mx-container,
+  .mx-container-narrow {
+    padding: 0 16px;
+  }
+  .mx-nav-actions .mx-btn {
+    padding: 7px 10px;
+    font-size: 11px;
   }
 }
 
