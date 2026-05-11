@@ -14,6 +14,7 @@ export function GroupHome({ locale, tenantKind }: GroupHomeProps) {
       <ForAudiencesSection locale={locale} />
       <DashboardPreviewSection />
       <CaseStudiesSection locale={locale} />
+      <WhereWeOperateSection />
       <PrinciplesSection />
       <PartnersStrip />
       <FinalCTA locale={locale} tenantKind={tenantKind} />
@@ -192,6 +193,86 @@ function CaseStudiesSection({ locale }: { locale: string }) {
               </Link>
             </article>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WhereWeOperateSection() {
+  const regions = [
+    {
+      label: 'Primary',
+      title: 'Sudan & the Horn of Africa',
+      detail:
+        'Sudan, Somalia, Ethiopia, Kenya. Live deployments, dedicated in-country teams, and an established conflict-sensitivity track record.',
+    },
+    {
+      label: 'Active',
+      title: 'South Asia',
+      detail:
+        'Engagements in Pakistan, Bangladesh and the wider region. The same analytical stack, the same standards.',
+    },
+    {
+      label: 'Portable',
+      title: 'Anywhere with reasonable open-data coverage',
+      detail:
+        'The architecture is portable. Every engagement includes handover and national-staff training so tools can be run by client teams.',
+    },
+  ];
+  const languages = [
+    'Arabic',
+    'Somali',
+    'English',
+    'French',
+    'Spanish',
+    'Swahili',
+    'Amharic',
+    'Oromo',
+    'Tigrinya',
+    'Kinyarwanda',
+    'Nigerian Pidgin',
+  ];
+
+  return (
+    <section className="mx-section">
+      <div className="mx-container">
+        <div className="mx-intro">
+          <div>
+            <p className="mx-eyebrow">Where we operate</p>
+            <h2 className="mx-h2-section">
+              Working languages and live regions, <em style={{ color: 'var(--teal-light)' }}>not aspirations</em>.
+            </h2>
+          </div>
+          <p className="mx-lead">
+            Engagements include handover and national-staff training. New languages and regions are
+            added as engagements require them.
+          </p>
+        </div>
+
+        <div style={regionGridStyle}>
+          {regions.map((r) => (
+            <article key={r.title} style={regionCardStyle}>
+              <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
+                {r.label}
+              </span>
+              <h3 style={regionTitleStyle}>{r.title}</h3>
+              <p style={regionBodyStyle}>{r.detail}</p>
+            </article>
+          ))}
+        </div>
+
+        <div style={languagesWrapStyle}>
+          <p className="mx-mono-caption" style={{ margin: '0 0 12px', color: 'var(--ink-faint)' }}>
+            NLP classifiers and working languages
+          </p>
+          <div style={languagesRowStyle}>
+            {languages.map((lang) => (
+              <span key={lang} style={languageChipStyle}>
+                {lang}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -514,6 +595,63 @@ const caseStudyLinkStyle: CSSProperties = {
   textDecorationColor: 'var(--border)',
   textUnderlineOffset: '4px',
   alignSelf: 'flex-start',
+};
+
+const regionGridStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+  gap: 16,
+  marginTop: 32,
+};
+
+const regionCardStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
+  padding: 28,
+  background: 'var(--surface)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-md)',
+};
+
+const regionTitleStyle: CSSProperties = {
+  fontFamily: 'var(--font-sans)',
+  fontWeight: 600,
+  fontSize: 18,
+  lineHeight: 1.25,
+  letterSpacing: '-0.2px',
+  color: 'var(--ink)',
+  margin: 0,
+};
+
+const regionBodyStyle: CSSProperties = {
+  fontSize: 13,
+  lineHeight: 1.6,
+  color: 'var(--ink-muted)',
+  margin: 0,
+};
+
+const languagesWrapStyle: CSSProperties = {
+  marginTop: 40,
+  paddingTop: 32,
+  borderTop: '1px solid var(--border-light)',
+};
+
+const languagesRowStyle: CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: 8,
+};
+
+const languageChipStyle: CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 11,
+  letterSpacing: '0.5px',
+  padding: '6px 12px',
+  background: 'var(--shell-warm)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-pill, 100px)',
+  color: 'var(--ink-muted)',
 };
 
 const cardHeadingStyle: CSSProperties = {

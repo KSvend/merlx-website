@@ -52,8 +52,8 @@ export default async function OpticsIndexPage({ params }: PageProps) {
             Six tools, <em>one practice</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
-            The Studio's open AI tooling for monitoring, evaluation, research and early warning.
-            Each tool is small, opinionated, and built to interoperate with the data systems your
+            MERLx's open AI tooling for monitoring, evaluation, research and early warning. Each
+            tool is small, opinionated, and built to interoperate with the data systems your
             programme already runs.
           </p>
         </div>

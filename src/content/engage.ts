@@ -47,11 +47,11 @@ export const ENGAGEMENT_MODELS: EngagementModel[] = [
     tagline: 'Co-build a tool with us in your domain.',
     fit: 'Partners with deep domain knowledge and a problem we should solve openly.',
     description:
-      'When the suite is missing a tool that your domain needs, build with us. The result is a new open-source tool that you co-own, with a maintenance commitment from the Studio for an agreed period. Your domain expertise plus our engineering. We retain rights to keep maintaining the tool for the wider field.',
+      'When the suite is missing a tool that your domain needs, build with us. The result is a new open-source tool that you co-own, with a maintenance commitment from MERLx for an agreed period. Your domain expertise plus our engineering. We retain rights to keep maintaining the tool for the wider field.',
     bullets: [
       'Joint design and engineering sprints (typically 8-20 weeks)',
       'Open-source by default. Co-attribution.',
-      'Studio maintenance window after launch',
+      'MERLx maintenance window after launch',
       'IP terms agreed up front',
     ],
   },

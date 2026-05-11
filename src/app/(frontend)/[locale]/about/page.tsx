@@ -244,7 +244,7 @@ function leadFor(kind: string): string {
     return 'A cooperative of locally owned MERL practices. Each node is autonomous and accountable in country, working under shared methodology and conflict-sensitivity standards.';
   if (kind === 'node')
     return 'A MERLx Network node. Locally owned MERL, working in cooperative under shared methodology and conflict-sensitivity standards.';
-  return 'MERLx is a Spain-based Monitoring, Evaluation, Research & Learning consultancy delivering advanced data science and tech-enabled MERL for global development and humanitarian aid programmes. We combine AI-augmented analytical infrastructure with locally anchored research and conflict-sensitive methodology, working alongside donors, multilaterals, INGOs and implementers across active conflict and fragile-state contexts.';
+  return 'AI-augmented MERL infrastructure for global development and humanitarian aid programmes — anchored locally through in-country partners.';
 }
 
 function capitalise(s: string): string {

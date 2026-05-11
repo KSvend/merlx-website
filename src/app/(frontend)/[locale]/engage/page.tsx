@@ -15,13 +15,13 @@ export default async function EngagePage({ params }: PageProps) {
     <PageShell locale={locale} pathname="/engage">
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">How to engage with the Studio</p>
+          <p className="mx-eyebrow">How to work with MERLx</p>
           <h1>
             Four ways to <em>engage</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
-            Most engagements with the Studio fit one of four shapes. Pick the closest fit on the
-            contact form and we will route you to the right team within two working days.
+            Most engagements with MERLx fit one of four shapes. Pick the closest fit on the contact
+            form and we will route you to the right team within two working days.
           </p>
         </div>
       </section>
