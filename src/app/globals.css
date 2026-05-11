@@ -473,11 +473,14 @@ pre {
   align-items: baseline;
 }
 .mx-brand-x {
-  color: var(--teal-light);
+  color: var(--iris);
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
   margin-left: 1px;
+}
+[data-theme="dark"] .mx-brand-x {
+  color: var(--teal-light);
 }
 .mx-tenant-suffix {
   margin-left: 12px;
@@ -786,10 +789,19 @@ pre {
   color: var(--ink);
 }
 
-/* Brand mark — all three elements in --teal-light throughout. */
-.mx-mark-rect,
-.mx-mark-square,
+/* Brand mark — canonical tricolour in light, teal-light in dark. */
+.mx-mark-rect {
+  fill: var(--iris);
+}
+.mx-mark-square {
+  fill: var(--sand);
+}
 .mx-mark-spike {
+  fill: var(--teal-light);
+}
+[data-theme="dark"] .mx-mark-rect,
+[data-theme="dark"] .mx-mark-square,
+[data-theme="dark"] .mx-mark-spike {
   fill: var(--teal-light);
 }
 
