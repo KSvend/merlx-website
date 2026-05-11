@@ -91,7 +91,7 @@ function CompanyHistorySection() {
       year: '2026',
       entity: 'MERLx, S.L. · Spain',
       title: 'First formal node in the network',
-      body: 'The Spanish-based function of the practice is formalized through the incorporation of MERLx, S.L. — a wholly owned subsidiary of the Slipström-linked holding structure, which carries the legacy of the 2017–2026 consultancy activity. MERLx, S.L. serves as the strategic hub and the first formal node in a broader network, linked closely to NileX (Nairobi and Sudan) and future nodes.',
+      body: 'The practice is formalized through the incorporation of MERLx, S.L. in Spain — a limited-liability legal form that carries forward the eight-year track record built under the Slipström name. Same principal, same methodology, same partner relationships. From here on the practice runs as MERLx, S.L., serving as the strategic hub and the first formal node in a broader network with NileX (Nairobi and Sudan).',
     },
   ];
 
