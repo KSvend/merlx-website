@@ -14,6 +14,7 @@ export default async function LabLandingAPage({ params }: PageProps) {
   setRequestLocale(locale);
 
   const headerList = await headers();
+  if (process.env.NODE_ENV === 'production') notFound();
   if (!isGroupTenant(headerList)) notFound();
 
   return (

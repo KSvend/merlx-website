@@ -112,10 +112,6 @@ function defaultItemsFor(kind: TenantContext['kind']): NavItem[] {
         { href: '/about', label: 'About' },
       ];
     default:
-      return [
-        { href: '/about', label: 'About' },
-        { href: '/insights', label: 'Insights' },
-        { href: '/publications', label: 'Publications' },
-      ];
+      return [{ href: '/about', label: 'About' }];
   }
 }
