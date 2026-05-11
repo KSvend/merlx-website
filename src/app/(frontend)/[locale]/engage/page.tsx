@@ -13,11 +13,11 @@ export default async function EngagePage({ params }: PageProps) {
 
   return (
     <PageShell locale={locale} pathname="/engage">
-      <section className="mx-page-header">
+      <section className="mx-page-header mx-section--ink">
         <div className="mx-container">
           <p className="mx-eyebrow">How to work with MERLx</p>
           <h1>
-            Four ways to <em>engage</em>.
+            Four ways to <em style={{ color: 'var(--ember)' }}>engage</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
             Most engagements with MERLx fit one of four shapes. Pick the closest fit on the contact
@@ -26,7 +26,7 @@ export default async function EngagePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-section mx-section--ink">
+      <section className="mx-section mx-section--ink" style={{ paddingTop: 0 }}>
         <div className="mx-container">
           <div
             style={{
