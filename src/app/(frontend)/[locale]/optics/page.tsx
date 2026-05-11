@@ -41,7 +41,19 @@ export default async function OpticsIndexPage({ params }: PageProps) {
   const { kind: _kind } = parseTenantHeaders(headerList);
   const payload = await getPayload({ config });
   const tenant = await requireKnownTenant(headerList, payload);
-  const tools = await listOpticsTools({ tenant, locale });
+  // The Optics Suite is the Studio's portfolio. When viewing /optics from
+  // a non-studio tenant (group/network/node/learn), look up the Studio
+  // tenant so the same tools render regardless of host.
+  let toolsTenant = tenant;
+  if (tenant.type !== 'studio') {
+    const studioLookup = await payload.find({
+      collection: 'tenants',
+      where: { type: { equals: 'studio' } },
+      limit: 1,
+    });
+    if (studioLookup.docs.length > 0) toolsTenant = studioLookup.docs[0]!;
+  }
+  const tools = await listOpticsTools({ tenant: toolsTenant, locale });
 
   return (
     <PageShell locale={locale} pathname="/optics">

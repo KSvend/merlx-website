@@ -28,7 +28,18 @@ export default async function OpticsToolPage({ params }: PageProps) {
   const headerList = await headers();
   const payload = await getPayload({ config });
   const tenant = await requireKnownTenant(headerList, payload);
-  const tool = await findOpticsToolBySlug({ tenant, slug, locale });
+  // Optics is the Studio's portfolio. From any non-studio tenant, look
+  // up the Studio so the same /optics/[slug] data renders site-wide.
+  let toolsTenant = tenant;
+  if (tenant.type !== 'studio') {
+    const studioLookup = await payload.find({
+      collection: 'tenants',
+      where: { type: { equals: 'studio' } },
+      limit: 1,
+    });
+    if (studioLookup.docs.length > 0) toolsTenant = studioLookup.docs[0]!;
+  }
+  const tool = await findOpticsToolBySlug({ tenant: toolsTenant, slug, locale });
   const profile = OPTICS_TOOL_PROFILES[slug];
 
   if (!tool && !profile) notFound();
