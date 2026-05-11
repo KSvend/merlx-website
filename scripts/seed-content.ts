@@ -136,11 +136,11 @@ const SEED_PAGES: SeedPage[] = [
   {
     slug: 'about',
     title: 'About MERLx',
-    subtitle: 'two entities, one practice',
+    subtitle: 'the next-generation MERL practice',
     body: [
-      'MERLx is two entities under one roof. The Studio is an independent technology studio building analytical tools and infrastructure for humanitarian, peacebuilding and conflict-prevention organisations. The Network is a cooperative of locally owned MERL practices that runs those tools, and traditional MERL, in country.',
-      'Together we enable real adaptive programming. Faster context reads. Earlier course corrections. Decisions grounded in local evidence rather than headquarters narrative. Most adaptive-management talk is performative; the bar we hold is whether the next decision actually changes when the signal does.',
-      'Localisation is not a translation step at the end. It is built into the language stack, the infrastructure choices, and the governance of every engagement. The Studio designs tools so the people closest to the work can run them. The Network nodes do that work, under their own governance, in their own languages.',
+      'MERLx is a Spain-based Monitoring, Evaluation, Research & Learning consultancy delivering advanced data science and tech-enabled MERL for global development and humanitarian aid programmes. We combine AI-augmented analytical infrastructure with locally anchored research and conflict-sensitive methodology, working alongside donors, multilaterals, INGOs and implementers across active conflict and fragile-state contexts.',
+      'Together with our partners we enable real adaptive programming. Faster context reads. Earlier course corrections. Decisions grounded in local evidence rather than headquarters narrative. Most adaptive-management talk is performative; the bar we hold is whether the next decision actually changes when the signal does.',
+      'Localisation is not a translation step at the end. It is built into the language stack, the infrastructure choices, and the governance of every engagement. We design tools so the people closest to the work can run them, and we anchor delivery locally through partners who own the analysis under their own governance, in their own languages.',
       'We work openly, document our trade-offs, and retire tools that no longer earn their footprint. AI augments the analysts, evaluators and programme staff who already do this work. It does not replace their judgement.',
     ],
     status: 'published',

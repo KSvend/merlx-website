@@ -52,7 +52,7 @@ export const BELIEFS: Principle[] = [
   {
     number: 3,
     title: 'Cooperative, not centralised.',
-    body: 'Tools are open and portable. Expertise is locally held by Network nodes and partner organisations. The Studio builds; the Network deploys.',
+    body: 'Tools are open and portable. Expertise is locally held — anchored through partner cooperatives and in-country teams who own the analysis.',
   },
   {
     number: 4,

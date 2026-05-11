@@ -229,12 +229,12 @@ function PrinciplesSection() {
           <div>
             <p className="mx-eyebrow">How we work</p>
             <h2 className="mx-h2-section">
-              Four commitments, <em>shared across the studio and the network</em>.
+              Four commitments, <em style={{ color: 'var(--teal-light)' }}>held on every engagement</em>.
             </h2>
           </div>
           <p className="mx-lead">
-            These describe the floor we will not drop below. Both Studio and Network sign off on
-            them on every engagement.
+            These describe the floor we will not drop below — methodology, conflict-sensitivity,
+            data responsibility, and how we handle the tools.
           </p>
         </div>
         <div
