@@ -4,7 +4,7 @@
  */
 
 export interface EngagementModel {
-  slug: 'hosted' | 'pilot' | 'build-with' | 'advisory';
+  slug: 'hosted' | 'pilot' | 'build-with' | 'advisory' | 'evaluation' | 'tpm-research';
   name: string;
   tagline: string;
   fit: string;
@@ -67,6 +67,34 @@ export const ENGAGEMENT_MODELS: EngagementModel[] = [
       'Senior staff only',
       'Output-shaped: written critique, design review, sprint kick-off',
       'We will say no to engagements we cannot do well',
+    ],
+  },
+  {
+    slug: 'evaluation',
+    name: 'Evaluation',
+    tagline: 'Conflict-sensitive evaluations across the programme lifecycle.',
+    fit: 'Donors, multilaterals and INGOs commissioning formative, midterm or endline evaluations in fragile and conflict-affected contexts.',
+    description:
+      'Independent mixed-methods evaluations: document review, KII, FGD, survey, and — where the question warrants — Optics tools as analytical infrastructure (PRISM compound risk, IRIS narrative monitoring, ToC Tester theory-of-change critique). Conflict-sensitive by default. Bilingual reporting. Outputs are auditable: features behind classifications, indicators behind narratives, evidence behind every claim.',
+    bullets: [
+      'Mixed-methods: KII, FGD, survey, document review',
+      'Theory-of-change critique with ToC Tester where useful',
+      'Bilingual reporting (English + working language)',
+      'DPIA per engagement, IASC and OECD-DAC aligned',
+    ],
+  },
+  {
+    slug: 'tpm-research',
+    name: 'TPM & Research',
+    tagline: 'Third-Party Monitoring, KII rotations and primary research in fragile contexts.',
+    fit: 'Donors and implementers needing recurring field verification, baseline / midline / endline studies, or primary research where the field is hard to reach.',
+    description:
+      'Recurring TPM cycles and primary research delivered through locally anchored teams who own the analysis. On-device KII transcription via ECHO where bandwidth, security or consent demands it. Findings are owned by the country team and signed off jointly. Client receives structured outputs and briefings rather than raw transcripts.',
+    bullets: [
+      'Recurring TPM cycles, configurable cadence',
+      'On-device KII transcription (ECHO) for low-bandwidth or sensitive contexts',
+      'Baseline / midline / endline data collection',
+      'Locally anchored teams; structured client briefings, not raw transcripts',
     ],
   },
 ];

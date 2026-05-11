@@ -17,11 +17,12 @@ export default async function EngagePage({ params }: PageProps) {
         <div className="mx-container">
           <p className="mx-eyebrow">How to work with MERLx</p>
           <h1>
-            Four ways to <em style={{ color: 'var(--ember)' }}>engage</em>.
+            Six ways to <em style={{ color: 'var(--ember)' }}>engage</em>.
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
-            Most engagements with MERLx fit one of four shapes. Pick the closest fit on the contact
-            form and we will route you to the right team within two working days.
+            Most engagements with MERLx fit one of six shapes — four tooling-led, two grounded in
+            classical MERL practice. Pick the closest fit on the contact form and we will route you
+            to the right team within two working days.
           </p>
         </div>
       </section>
