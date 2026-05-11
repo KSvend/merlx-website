@@ -20,6 +20,12 @@ interface SiteNavProps {
   tenantHomeHref: string | null;
 }
 
+const NAV_LABELS_BY_LOCALE: Record<string, { tools: string; engage: string; about: string; getInTouch: string }> = {
+  en: { tools: 'Tools', engage: 'Engage', about: 'About', getInTouch: 'Get in touch' },
+  fr: { tools: 'Outils', engage: 'Collaborer', about: 'À propos', getInTouch: 'Nous contacter' },
+  ar: { tools: 'الأدوات', engage: 'تعاون', about: 'حول', getInTouch: 'تواصل معنا' },
+};
+
 export function SiteNav({
   tenant,
   locale,
@@ -29,7 +35,8 @@ export function SiteNav({
   groupHomeHref,
   tenantHomeHref,
 }: SiteNavProps) {
-  const navItems = items ?? defaultItemsFor(tenant.kind);
+  const labels = NAV_LABELS_BY_LOCALE[locale] ?? NAV_LABELS_BY_LOCALE.en;
+  const navItems = items ?? defaultItemsFor(tenant.kind, labels);
 
   return (
     <nav className="mx-nav">
@@ -71,7 +78,7 @@ export function SiteNav({
             className="mx-btn mx-btn--primary"
             aria-current={pathname === '/contact' ? 'page' : undefined}
           >
-            Get in touch
+            {labels.getInTouch}
           </Link>
         </div>
       </div>
@@ -79,43 +86,28 @@ export function SiteNav({
   );
 }
 
-function defaultItemsFor(kind: TenantContext['kind']): NavItem[] {
+function defaultItemsFor(
+  kind: TenantContext['kind'],
+  labels: { tools: string; engage: string; about: string },
+): NavItem[] {
   switch (kind) {
     case 'studio':
       return [
-        { href: '/optics', label: 'Optics Suite' },
-        { href: '/engage', label: 'Engage' },
-        { href: '/principles', label: 'Principles' },
-        { href: '/insights', label: 'Insights' },
-        { href: '/about', label: 'About' },
+        { href: '/optics', label: labels.tools },
+        { href: '/engage', label: labels.engage },
+        { href: '/about', label: labels.about },
       ];
     case 'network':
-      return [
-        { href: '/nodes', label: 'Nodes' },
-        { href: '/services', label: 'Services' },
-        { href: '/become-a-node', label: 'Become a node' },
-        { href: '/principles', label: 'Principles' },
-        { href: '/insights', label: 'Insights' },
-        { href: '/about', label: 'About' },
-      ];
+      return [{ href: '/about', label: labels.about }];
     case 'node':
-      return [
-        { href: '/deployments', label: 'Deployments' },
-        { href: '/news', label: 'News' },
-        { href: '/about', label: 'About' },
-      ];
+      return [{ href: '/about', label: labels.about }];
     case 'learn':
-      return [
-        { href: '/catalogue', label: 'Catalogue' },
-        { href: '/catalogue?track=cooperative-onboarding', label: 'Cooperative onboarding' },
-        { href: '/catalogue?track=advanced-merl', label: 'Advanced MERL' },
-        { href: '/about', label: 'About' },
-      ];
+      return [{ href: '/about', label: labels.about }];
     default:
       return [
-        { href: '/optics', label: 'Tools' },
-        { href: '/engage', label: 'Engage' },
-        { href: '/about', label: 'About' },
+        { href: '/optics', label: labels.tools },
+        { href: '/engage', label: labels.engage },
+        { href: '/about', label: labels.about },
       ];
   }
 }

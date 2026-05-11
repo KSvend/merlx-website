@@ -1,5 +1,6 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { ENGAGEMENT_MODELS } from '@/content/engage';
+import { pageHeroesFor } from '@/content/copy/page-heroes';
+import { engagementModelsFor } from '@/content/engage';
 import { setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -9,20 +10,34 @@ interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
+const PRIMARY_CTA_BY_LOCALE: Record<string, string> = {
+  en: 'Start a conversation →',
+  fr: 'Démarrer une conversation →',
+  ar: 'ابدأ محادثة →',
+};
+
+const WHATS_INCLUDED_BY_LOCALE: Record<string, string> = {
+  en: "What's included",
+  fr: 'Ce qui est inclus',
+  ar: 'ما يتضمّنه',
+};
+
 export default async function EngageSlugPage({ params }: PageProps) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const model = ENGAGEMENT_MODELS.find((m) => m.slug === slug);
+  const models = engagementModelsFor(locale);
+  const model = models.find((m) => m.slug === slug);
   if (!model) notFound();
+  const heroes = pageHeroesFor(locale);
 
   return (
     <PageShell locale={locale} pathname={`/engage/${slug}`}>
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">Engagement model</p>
+          <p className="mx-eyebrow">{heroes.engageModel.eyebrow}</p>
           <h1>
-            {model.name} <em>— {model.tagline.replace(/\.$/, '')}.</em>
+            {model.name} <em>— {model.tagline.replace(/\.$/, '').replace(/。$/, '')}.</em>
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
             {model.fit}
@@ -48,7 +63,7 @@ export default async function EngageSlugPage({ params }: PageProps) {
           </p>
 
           <p className="mx-mono-caption" style={{ margin: '0 0 16px', textTransform: 'uppercase' }}>
-            What's included
+            {WHATS_INCLUDED_BY_LOCALE[locale] ?? WHATS_INCLUDED_BY_LOCALE.en}
           </p>
           <ul style={listStyle}>
             {model.bullets.map((b) => (
@@ -66,10 +81,10 @@ export default async function EngageSlugPage({ params }: PageProps) {
 
           <div style={{ marginTop: 48, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <Link href={`/${locale}/contact`} className="mx-btn mx-btn--primary">
-              Start a conversation →
+              {PRIMARY_CTA_BY_LOCALE[locale] ?? PRIMARY_CTA_BY_LOCALE.en}
             </Link>
             <Link href={`/${locale}/engage`} className="mx-btn mx-btn--ghost">
-              ← All engagement models
+              {heroes.pillCtas.backToEngage}
             </Link>
           </div>
         </div>

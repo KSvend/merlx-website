@@ -198,6 +198,20 @@ body {
   text-align: start;
 }
 
+/* Logo stays LTR even in Arabic: the brand mark + Latin "MERLx"
+   wordmark are not mirrored. The nav grid also stays LTR so the logo
+   keeps its visual position on the left. Nav-link text inside is
+   translated and renders correctly inline. */
+[dir="rtl"] .mx-nav-inner,
+[dir="rtl"] .mx-footer-brand,
+[dir="rtl"] .mx-brand {
+  direction: ltr;
+}
+.mx-brand,
+.mx-footer-brand {
+  unicode-bidi: isolate;
+}
+
 a {
   color: inherit;
   text-decoration: none;

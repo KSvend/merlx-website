@@ -1,5 +1,6 @@
 import { PageShell } from '@/components/chrome/PageShell';
-import { ENGAGEMENT_MODELS } from '@/content/engage';
+import { engagementModelsFor } from '@/content/engage';
+import { pageHeroesFor } from '@/content/copy/page-heroes';
 import { setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
 
@@ -10,19 +11,22 @@ interface PageProps {
 export default async function EngagePage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const hero = pageHeroesFor(locale).engage;
+  const models = engagementModelsFor(locale);
+  const fitLabel = pageHeroesFor(locale).engageModel.leadLabel;
 
   return (
     <PageShell locale={locale} pathname="/engage">
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">How to work with MERLx</p>
+          <p className="mx-eyebrow">{hero.eyebrow}</p>
           <h1>
-            Six ways to <em style={{ color: 'var(--ember)' }}>engage</em>.
+            {hero.headlinePrefix}{' '}
+            <em style={{ color: 'var(--ember)' }}>{hero.headlineEm}</em>
+            {hero.headlineSuffix}
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
-            Most engagements with MERLx fit one of six shapes — four tooling-led, two grounded in
-            classical MERL practice. Pick the closest fit on the contact form and we will route you
-            to the right team within two working days.
+            {hero.lead}
           </p>
         </div>
       </section>
@@ -36,7 +40,7 @@ export default async function EngagePage({ params }: PageProps) {
               gap: 16,
             }}
           >
-            {ENGAGEMENT_MODELS.map((m, i) => (
+            {models.map((m, i) => (
               <Link
                 key={m.slug}
                 href={`/${locale}/engage/${m.slug}`}
@@ -95,7 +99,7 @@ export default async function EngagePage({ params }: PageProps) {
                   }}
                 >
                   <strong style={{ fontWeight: 500, color: 'var(--ink-muted)' }}>
-                    Fit ·{' '}
+                    {fitLabel} ·{' '}
                   </strong>
                   {m.fit}
                 </p>
@@ -108,7 +112,7 @@ export default async function EngagePage({ params }: PageProps) {
                     letterSpacing: '0.5px',
                   }}
                 >
-                  Read more →
+                  →
                 </p>
               </Link>
             ))}

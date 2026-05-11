@@ -1,4 +1,5 @@
 import { PageShell } from '@/components/chrome/PageShell';
+import { pageHeroesFor } from '@/content/copy/page-heroes';
 import { listInsights } from '@/lib/cms';
 import { formatLongDate } from '@/lib/format-date';
 import { parseTenantHeaders, requireKnownTenant } from '@/lib/tenant-aware';
@@ -36,17 +37,19 @@ export default async function InsightsIndexPage({ params }: PageProps) {
   const tenant = await requireKnownTenant(headerList, payload);
   const posts = await listInsights({ tenant, tenantKind: kind, locale });
 
+  const heroCopy = pageHeroesFor(locale).insights;
+
   return (
     <PageShell locale={locale} pathname="/insights">
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">Insights</p>
+          <p className="mx-eyebrow">{heroCopy.eyebrow}</p>
           <h1>
-            Writing from the <em>field</em>.
+            {heroCopy.headlinePrefix} <em>{heroCopy.headlineEm}</em>
+            {heroCopy.headlineSuffix}
           </h1>
           <p className="mx-lead" style={{ maxWidth: '56ch' }}>
-            Methods notes, field reflections and the occasional essay from MERLx and its partners.
-            No company updates.
+            {heroCopy.lead}
           </p>
         </div>
       </section>

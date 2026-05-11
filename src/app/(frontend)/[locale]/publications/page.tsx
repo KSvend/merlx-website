@@ -1,4 +1,5 @@
 import { PageShell } from '@/components/chrome/PageShell';
+import { pageHeroesFor } from '@/content/copy/page-heroes';
 import { listPublications } from '@/lib/cms';
 import { parseTenantHeaders, requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
@@ -30,17 +31,19 @@ export default async function PublicationsIndexPage({ params }: PageProps) {
   const tenant = await requireKnownTenant(headerList, payload);
   const docs = await listPublications({ tenant, tenantKind: kind, locale });
 
+  const heroCopy = pageHeroesFor(locale).publications;
+
   return (
     <PageShell locale={locale} pathname="/publications">
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">Publications</p>
+          <p className="mx-eyebrow">{heroCopy.eyebrow}</p>
           <h1>
-            Working papers, briefs, <em>peer-reviewed research</em>.
+            {heroCopy.headlinePrefix} <em>{heroCopy.headlineEm}</em>
+            {heroCopy.headlineSuffix}
           </h1>
           <p className="mx-lead" style={{ maxWidth: '56ch' }}>
-            Open-access by default. Methodology notes, evaluation reports and journal articles
-            authored across MERLx engagements.
+            {heroCopy.lead}
           </p>
         </div>
       </section>

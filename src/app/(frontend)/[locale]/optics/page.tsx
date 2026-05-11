@@ -1,4 +1,5 @@
 import { PageShell } from '@/components/chrome/PageShell';
+import { pageHeroesFor } from '@/content/copy/page-heroes';
 import { listOpticsTools } from '@/lib/cms';
 import { parseTenantHeaders, requireKnownTenant } from '@/lib/tenant-aware';
 import config from '@/payload.config';
@@ -55,18 +56,19 @@ export default async function OpticsIndexPage({ params }: PageProps) {
   }
   const tools = await listOpticsTools({ tenant: toolsTenant, locale });
 
+  const heroCopy = pageHeroesFor(locale).optics;
+
   return (
     <PageShell locale={locale} pathname="/optics">
       <section className="mx-page-header">
         <div className="mx-container">
-          <p className="mx-eyebrow">The Optics Suite</p>
+          <p className="mx-eyebrow">{heroCopy.eyebrow}</p>
           <h1>
-            Six tools, <em>one practice</em>.
+            {heroCopy.headlinePrefix} <em>{heroCopy.headlineEm}</em>
+            {heroCopy.headlineSuffix}
           </h1>
           <p className="mx-lead" style={{ maxWidth: '64ch' }}>
-            MERLx's open AI tooling for monitoring, evaluation, research and early warning. Each
-            tool is small, opinionated, and built to interoperate with the data systems your
-            programme already runs.
+            {heroCopy.lead}
           </p>
         </div>
       </section>
@@ -80,7 +82,7 @@ export default async function OpticsIndexPage({ params }: PageProps) {
       >
         <div className="mx-container">
           <p className="mx-mono-caption" style={{ marginBottom: 14 }}>
-            Browse the portfolio · {tools.length} tools
+            {heroCopy.browseLabel(tools.length)}
           </p>
           {tools.length === 0 ? (
             <p
@@ -92,7 +94,7 @@ export default async function OpticsIndexPage({ params }: PageProps) {
                 margin: 0,
               }}
             >
-              The portfolio is being seeded. Reload shortly.
+              {heroCopy.emptyState}
             </p>
           ) : (
             <div

@@ -1,4 +1,5 @@
 import { StudioPreview } from '@/components/dashboards/StudioPreview';
+import { homeCopyFor, type HomeCopy } from '@/content/copy/home';
 import Link from 'next/link';
 import type { CSSProperties } from 'react';
 
@@ -8,111 +9,91 @@ interface GroupHomeProps {
 }
 
 export function GroupHome({ locale, tenantKind }: GroupHomeProps) {
+  const copy = homeCopyFor(locale);
   return (
     <>
-      <Hero />
-      <ForAudiencesSection locale={locale} />
-      <DashboardPreviewSection />
-      <CaseStudiesSection locale={locale} />
-      <WhereWeOperateSection />
-      <PrinciplesSection />
-      <PartnersStrip />
-      <FinalCTA locale={locale} tenantKind={tenantKind} />
+      <Hero copy={copy.hero} />
+      <ForAudiencesSection locale={locale} copy={copy.audiences} />
+      <DashboardPreviewSection copy={copy.dashboardPreview} />
+      <CaseStudiesSection locale={locale} copy={copy.caseStudies} />
+      <WhereWeOperateSection copy={copy.whereWeOperate} />
+      <PrinciplesSection copy={copy.principles} />
+      <PartnersStrip copy={copy.partners} />
+      <FinalCTA locale={locale} tenantKind={tenantKind} copy={copy.finalCta} />
     </>
   );
 }
 
-function Hero() {
+function Hero({ copy }: { copy: HomeCopy['hero'] }) {
   return (
     <section style={{ padding: '80px 0 48px' }}>
       <div className="mx-container">
-        <p className="mx-eyebrow">Evidence infrastructure for adaptive programming</p>
+        <p className="mx-eyebrow">{copy.eyebrow}</p>
         <h1 className="mx-h1-display" style={{ maxWidth: '20ch' }}>
-          <em style={{ color: 'var(--iris)' }}>Next-generation MERL</em> for global development and
-          humanitarian aid programmes.
+          <em style={{ color: 'var(--iris)' }}>{copy.headlineEm}</em> {copy.headlineRest}
         </h1>
         <p className="mx-lead" style={{ marginTop: 32, maxWidth: '60ch' }}>
-          MERLx delivers advanced data science and tech-enabled MERL for global development and
-          humanitarian aid programmes. AI-augmented analytical tools, locally anchored research and
-          conflict-sensitive methodology, built for donors, multilaterals, INGOs and implementers —
-          faster context reads, earlier course corrections, decisions grounded in real evidence
-          rather than headquarters narrative.
+          {copy.body}
         </p>
       </div>
     </section>
   );
 }
 
-function ForAudiencesSection({ locale }: { locale: string }) {
+function ForAudiencesSection({
+  locale,
+  copy,
+}: {
+  locale: string;
+  copy: HomeCopy['audiences'];
+}) {
+  const [studio, network] = copy.cards;
   return (
     <section style={{ padding: '32px 0 96px' }}>
       <div className="mx-container">
         <div style={gridTwoCol}>
           <article style={audienceCardStyle}>
             <span className="mx-mono-caption" style={accentLabel('var(--deep-teal)')}>
-              01 · FOR DONORS, MULTILATERALS & INGOs
+              {studio.preheader}
             </span>
             <h2 style={cardHeadingStyle}>
-              MERLx <em style={emItalicStyle('var(--teal-light)')}>Studio</em>
+              {studio.brand}{' '}
+              <em style={emItalicStyle('var(--teal-light)')}>{studio.brandSuffix}</em>
               <br />
-              <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
-                Scope, instrument, evaluate.
-              </span>
+              <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>{studio.subtitle}</span>
             </h2>
-            <p style={cardLeadStyle}>
-              MERLx delivers AI-augmented MERL infrastructure for international development and
-              humanitarian programmes. From scoping to live dashboards to formal evaluation — built
-              for accountability, conflict-sensitivity and compound-risk realities.
-            </p>
-            <BulletList
-              items={[
-                'AI-augmented analytical infrastructure (Optics Suite)',
-                'Conflict-sensitive MERL design, delivery, and evaluation',
-                'Live dashboards: indicators, compound risk, narrative monitoring',
-                'Auditable outputs — features and signals, not black boxes',
-              ]}
-            />
+            <p style={cardLeadStyle}>{studio.body}</p>
+            <BulletList items={studio.bullets} />
             <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
               <Link href={`/${locale}/contact`} className="mx-btn mx-btn--primary">
-                Start a conversation →
+                {studio.primaryCta}
               </Link>
               <Link href={`/${locale}/deployments`} className="mx-btn mx-btn--ghost">
-                Browse deployments
+                {studio.secondaryCta}
               </Link>
             </div>
           </article>
 
           <article style={audienceCardStyle}>
             <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
-              02 · FOR MERL PRACTITIONERS & FIELD TEAMS
+              {network.preheader}
             </span>
             <h2 style={cardHeadingStyle}>
-              MERLx <em style={emItalicStyle('var(--ember)')}>Network</em>
+              {network.brand}{' '}
+              <em style={emItalicStyle('var(--ember)')}>{network.brandSuffix}</em>
               <br />
               <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
-                Shared methodology, shared tools.
+                {network.subtitle}
               </span>
             </h2>
-            <p style={cardLeadStyle}>
-              MERLx works alongside in-country MERL teams, researchers and enumerators. Use the
-              Optics Suite as shared analytical infrastructure, train on conflict-sensitivity
-              standards, and join a peer-review practice that holds a methodological floor across
-              engagements.
-            </p>
-            <BulletList
-              items={[
-                'Optics Suite as shared analytical tooling',
-                'Conflict-sensitivity training and methodological standards',
-                'Peer review across active engagements',
-                'Routes to ongoing partnership for established teams',
-              ]}
-            />
+            <p style={cardLeadStyle}>{network.body}</p>
+            <BulletList items={network.bullets} />
             <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
               <Link href={`/${locale}/become-a-node`} className="mx-btn mx-btn--primary">
-                Become a partner →
+                {network.primaryCta}
               </Link>
               <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
-                Talk to us
+                {network.secondaryCta}
               </Link>
             </div>
           </article>
@@ -122,22 +103,18 @@ function ForAudiencesSection({ locale }: { locale: string }) {
   );
 }
 
-function DashboardPreviewSection() {
+function DashboardPreviewSection({ copy }: { copy: HomeCopy['dashboardPreview'] }) {
   return (
     <section className="mx-section mx-section--shell-warm">
       <div className="mx-container">
         <div className="mx-intro">
           <div>
-            <p className="mx-eyebrow">What it looks like in practice</p>
+            <p className="mx-eyebrow">{copy.eyebrow}</p>
             <h2 className="mx-h2-section">
-              A live MERL dashboard, <em>built for the programme team</em>.
+              {copy.headlinePrefix} <em>{copy.headlineEm}</em>.
             </h2>
           </div>
-          <p className="mx-lead">
-            INGO programme teams log into MERLx and see compound risk for their portfolio,
-            real-time indicator trends, narrative shifts, and forecast confidence — auditable down
-            to the underlying signal. No black-box outputs.
-          </p>
+          <p className="mx-lead">{copy.body}</p>
         </div>
         <div style={dashboardFrameStyle}>
           <StudioPreview />
@@ -147,20 +124,23 @@ function DashboardPreviewSection() {
   );
 }
 
-function CaseStudiesSection({ locale }: { locale: string }) {
+function CaseStudiesSection({
+  locale,
+  copy,
+}: {
+  locale: string;
+  copy: HomeCopy['caseStudies'];
+}) {
+  const [nilex, prism] = copy.cards;
   const cases = [
     {
-      eyebrow: 'ACTIVE · NILEX · SUDAN',
+      ...nilex,
       eyebrowColor: 'var(--deep-teal)',
-      title: 'Conflict-sensitive MERL across an active conflict',
-      body: 'NileX deploys IRIS, PRISM and conflict-sensitive evaluation across Sudan and the wider Nile basin. Bilingual reporting in Arabic and English. KII research with on-device transcription. Programme teams receive weekly compound-risk briefs.',
       href: `/${locale}/nodes/nilex`,
     },
     {
-      eyebrow: 'LIVE · PRISM · HORN OF AFRICA',
+      ...prism,
       eyebrowColor: 'var(--ember)',
-      title: 'Four-month forecast for food insecurity and displacement',
-      body: 'PRISM ingests EO data, conflict events and price signals to forecast compound risk across IPC phase 3+ populations. Programme teams use the dashboard for adaptive resource allocation across the Horn of Africa.',
       href: `/${locale}/optics/prism`,
     },
   ];
@@ -170,15 +150,13 @@ function CaseStudiesSection({ locale }: { locale: string }) {
       <div className="mx-container">
         <div className="mx-intro">
           <div>
-            <p className="mx-eyebrow">Case studies</p>
+            <p className="mx-eyebrow">{copy.eyebrow}</p>
             <h2 className="mx-h2-section">
-              Deployed across <em>active conflict and fragile-state contexts</em>.
+              {copy.headlinePrefix} <em>{copy.headlineEm}</em>
+              {copy.headlineSuffix}
             </h2>
           </div>
-          <p className="mx-lead">
-            Real engagements where MERLx infrastructure runs on the ground, with locally anchored
-            partners.
-          </p>
+          <p className="mx-lead">{copy.lead}</p>
         </div>
         <div style={caseStudyGridStyle}>
           {cases.map((c) => (
@@ -189,7 +167,7 @@ function CaseStudiesSection({ locale }: { locale: string }) {
               <h3 style={caseStudyTitleStyle}>{c.title}</h3>
               <p style={caseStudyBodyStyle}>{c.body}</p>
               <Link href={c.href} style={caseStudyLinkStyle}>
-                Read case study →
+                {c.cta}
               </Link>
             </article>
           ))}
@@ -199,59 +177,23 @@ function CaseStudiesSection({ locale }: { locale: string }) {
   );
 }
 
-function WhereWeOperateSection() {
-  const regions = [
-    {
-      label: 'Primary',
-      title: 'Sudan & the Horn of Africa',
-      detail:
-        'Sudan, Somalia, Ethiopia, Kenya. Live deployments, dedicated in-country teams, and an established conflict-sensitivity track record.',
-    },
-    {
-      label: 'Active',
-      title: 'South Asia',
-      detail:
-        'Engagements in Pakistan, Bangladesh and the wider region. The same analytical stack, the same standards.',
-    },
-    {
-      label: 'Portable',
-      title: 'Anywhere with reasonable open-data coverage',
-      detail:
-        'The architecture is portable. Every engagement includes handover and national-staff training so tools can be run by client teams.',
-    },
-  ];
-  const languages = [
-    'Arabic',
-    'Somali',
-    'English',
-    'French',
-    'Spanish',
-    'Swahili',
-    'Amharic',
-    'Oromo',
-    'Tigrinya',
-    'Kinyarwanda',
-    'Nigerian Pidgin',
-  ];
-
+function WhereWeOperateSection({ copy }: { copy: HomeCopy['whereWeOperate'] }) {
   return (
     <section className="mx-section">
       <div className="mx-container">
         <div className="mx-intro">
           <div>
-            <p className="mx-eyebrow">Where we operate</p>
+            <p className="mx-eyebrow">{copy.eyebrow}</p>
             <h2 className="mx-h2-section">
-              Working languages and live regions, <em style={{ color: 'var(--teal-light)' }}>not aspirations</em>.
+              {copy.headlinePrefix}{' '}
+              <em style={{ color: 'var(--teal-light)' }}>{copy.headlineEm}</em>.
             </h2>
           </div>
-          <p className="mx-lead">
-            Engagements include handover and national-staff training. New languages and regions are
-            added as engagements require them.
-          </p>
+          <p className="mx-lead">{copy.lead}</p>
         </div>
 
         <div style={regionGridStyle}>
-          {regions.map((r) => (
+          {copy.regions.map((r) => (
             <article key={r.title} style={regionCardStyle}>
               <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
                 {r.label}
@@ -264,10 +206,10 @@ function WhereWeOperateSection() {
 
         <div style={languagesWrapStyle}>
           <p className="mx-mono-caption" style={{ margin: '0 0 12px', color: 'var(--ink-faint)' }}>
-            NLP classifiers and working languages
+            {copy.languagesLabel}
           </p>
           <div style={languagesRowStyle}>
-            {languages.map((lang) => (
+            {copy.languages.map((lang) => (
               <span key={lang} style={languageChipStyle}>
                 {lang}
               </span>
@@ -279,44 +221,19 @@ function WhereWeOperateSection() {
   );
 }
 
-function PrinciplesSection() {
-  const items = [
-    {
-      n: '01',
-      t: 'Field first, not lab first.',
-      d: 'Our tools have to work for programme teams in low-bandwidth environments with limited infrastructure, not just at a conference demo.',
-    },
-    {
-      n: '02',
-      t: 'Evidence over abstraction.',
-      d: 'Analytical outputs are auditable. We can show the features behind a classification, the indicators behind a narrative, the inputs behind a forecast. No black-box outputs.',
-    },
-    {
-      n: '03',
-      t: 'Open and interoperable.',
-      d: 'Open data standards, open satellite archives, open-source models, standard APIs. Clients own their data and their instance.',
-    },
-    {
-      n: '04',
-      t: 'Responsible by default.',
-      d: 'Data-protection impact assessment per engagement. IASC data-responsibility guidance, do-no-harm and informed-consent protocols documented. On-device processing wherever viable. Data residency set by the client.',
-    },
-  ];
-
+function PrinciplesSection({ copy }: { copy: HomeCopy['principles'] }) {
   return (
     <section className="mx-section mx-section--shell-warm">
       <div className="mx-container">
         <div className="mx-intro">
           <div>
-            <p className="mx-eyebrow">How we work</p>
+            <p className="mx-eyebrow">{copy.eyebrow}</p>
             <h2 className="mx-h2-section">
-              Four commitments, <em style={{ color: 'var(--teal-light)' }}>held on every engagement</em>.
+              {copy.headlinePrefix}{' '}
+              <em style={{ color: 'var(--teal-light)' }}>{copy.headlineEm}</em>.
             </h2>
           </div>
-          <p className="mx-lead">
-            These describe the floor we will not drop below — methodology, conflict-sensitivity,
-            data responsibility, and how we handle the tools.
-          </p>
+          <p className="mx-lead">{copy.lead}</p>
         </div>
         <div
           style={{
@@ -329,12 +246,12 @@ function PrinciplesSection() {
             background: 'var(--surface)',
           }}
         >
-          {items.map((item, i) => (
+          {copy.items.map((item, i) => (
             <div
               key={item.n}
               style={{
                 padding: 32,
-                borderRight: i < items.length - 1 ? '1px solid var(--border-light)' : 'none',
+                borderRight: i < copy.items.length - 1 ? '1px solid var(--border-light)' : 'none',
               }}
             >
               <p
@@ -359,10 +276,10 @@ function PrinciplesSection() {
                   color: 'var(--ink)',
                 }}
               >
-                {item.t}
+                {item.title}
               </h3>
               <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-muted)', margin: 0 }}>
-                {item.d}
+                {item.body}
               </p>
             </div>
           ))}
@@ -372,8 +289,7 @@ function PrinciplesSection() {
   );
 }
 
-function PartnersStrip() {
-  const partners = ['UNDP', 'UNICEF', 'WFP', 'UN OCHA', 'GIZ', 'FCDO', 'USAID', 'World Bank'];
+function PartnersStrip({ copy }: { copy: HomeCopy['partners'] }) {
   return (
     <section style={{ padding: '64px 0', borderTop: '1px solid var(--border-light)' }}>
       <div className="mx-container">
@@ -388,7 +304,7 @@ function PartnersStrip() {
             margin: '0 0 32px',
           }}
         >
-          We have worked with
+          {copy.label}
         </p>
         <div
           style={{
@@ -399,7 +315,7 @@ function PartnersStrip() {
             alignItems: 'center',
           }}
         >
-          {partners.map((p) => (
+          {copy.items.map((p) => (
             <span
               key={p}
               style={{
@@ -419,12 +335,20 @@ function PartnersStrip() {
   );
 }
 
-function FinalCTA({ locale, tenantKind }: { locale: string; tenantKind: string }) {
+function FinalCTA({
+  locale,
+  tenantKind,
+  copy,
+}: {
+  locale: string;
+  tenantKind: string;
+  copy: HomeCopy['finalCta'];
+}) {
   return (
     <section className="mx-section mx-section--teal">
       <div className="mx-container" style={{ textAlign: 'center' }}>
         <p className="mx-eyebrow" style={{ justifyContent: 'center', display: 'inline-flex' }}>
-          Working with MERLx
+          {copy.eyebrow}
         </p>
         <h2
           style={{
@@ -439,7 +363,8 @@ function FinalCTA({ locale, tenantKind }: { locale: string; tenantKind: string }
             textWrap: 'balance',
           }}
         >
-          Bring us in <em style={emItalicStyle('var(--teal-light)')}>early</em>.
+          {copy.headlinePrefix}{' '}
+          <em style={emItalicStyle('var(--teal-light)')}>{copy.headlineEm}</em>.
         </h2>
         <p
           style={{
@@ -450,20 +375,19 @@ function FinalCTA({ locale, tenantKind }: { locale: string; tenantKind: string }
             margin: '0 auto 32px',
           }}
         >
-          A pilot, a hosted Optics Suite deployment, an evaluation, or short advisory work — send us
-          a brief and we will route it to the right team within two working days.
+          {copy.body}
         </p>
         <div
           style={{ display: 'inline-flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}
         >
           <Link href={`/${locale}/contact`} className="mx-btn mx-btn--inverse mx-btn--lg">
-            Start a conversation →
+            {copy.primary}
           </Link>
           <Link
             href={`/${locale}/publications`}
             className="mx-btn mx-btn--outline-light mx-btn--lg"
           >
-            Browse publications
+            {copy.secondary}
           </Link>
         </div>
         {tenantKind !== 'group' ? (
