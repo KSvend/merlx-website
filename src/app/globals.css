@@ -648,11 +648,12 @@ pre {
   font-size: 16px;
 }
 
-/* Footer */
+/* Footer — theme-aware: shell-warm in light, dark warm-shell in dark. */
 .mx-footer {
-  background: var(--ink);
-  color: rgba(245, 243, 238, 0.85);
+  background: var(--shell-warm);
+  color: var(--ink-light);
   padding: 80px 0 32px;
+  border-top: 1px solid var(--border-light);
 }
 .mx-footer-grid {
   display: grid;
@@ -665,7 +666,7 @@ pre {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--track-label);
-  color: rgba(245, 243, 238, 0.55);
+  color: var(--ink-faint);
   margin: 0 0 18px;
 }
 .mx-footer ul {
@@ -678,29 +679,29 @@ pre {
 }
 .mx-footer ul a {
   font-size: 13px;
-  color: rgba(245, 243, 238, 0.78);
+  color: var(--ink-muted);
   transition: color var(--motion-default) var(--easing);
 }
 .mx-footer ul a:hover {
-  color: var(--shell);
+  color: var(--ink);
 }
 .mx-footer-brand .mx-brand-name {
-  color: var(--shell);
+  color: var(--ink);
 }
 .mx-footer-brand .mx-brand-x {
-  color: var(--shell);
+  color: var(--ink);
 }
 .mx-footer-brand .mx-mark-rect,
 .mx-footer-brand .mx-mark-square,
 .mx-footer-brand .mx-mark-spike {
-  fill: var(--shell);
+  fill: var(--ink);
 }
 .mx-footer-tag {
   font-family: var(--font-display);
   font-style: italic;
   font-size: 22px;
   line-height: 1.25;
-  color: rgba(245, 243, 238, 0.85);
+  color: var(--ink-light);
   margin: 20px 0 28px;
   max-width: 18ch;
 }
@@ -714,23 +715,23 @@ pre {
   flex: 1;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(245, 243, 238, 0.15);
-  background: rgba(245, 243, 238, 0.05);
-  color: var(--shell);
+  border: 1px solid var(--border-light);
+  background: var(--surface);
+  color: var(--ink);
   font-family: var(--font-sans);
   font-size: 13px;
   letter-spacing: var(--track-body);
   outline: 0;
 }
 .mx-footer-newsletter input::placeholder {
-  color: rgba(245, 243, 238, 0.4);
+  color: var(--ink-faint);
 }
 .mx-footer-newsletter input:focus {
   border-color: var(--iris);
 }
 .mx-footer-newsletter button {
-  background: var(--shell);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--shell);
   border: 0;
   padding: 10px 16px;
   border-radius: var(--radius-sm);
@@ -741,7 +742,7 @@ pre {
   transition: background var(--motion-default) var(--easing);
 }
 .mx-footer-newsletter button:hover {
-  background: var(--shell-warm);
+  background: var(--ink-light);
 }
 .mx-footer-bottom {
   display: flex;
@@ -749,16 +750,16 @@ pre {
   align-items: center;
   gap: 24px;
   padding-top: 32px;
-  border-top: 1px solid rgba(245, 243, 238, 0.08);
+  border-top: 1px solid var(--border-light);
   font-size: 12px;
-  color: rgba(245, 243, 238, 0.5);
+  color: var(--ink-faint);
 }
 .mx-footer-bottom-links {
   display: flex;
   gap: 24px;
 }
 .mx-footer-bottom-links a:hover {
-  color: var(--shell);
+  color: var(--ink);
 }
 
 /* Nav mark — canonical tricolour */
