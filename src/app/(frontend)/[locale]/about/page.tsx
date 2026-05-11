@@ -102,7 +102,8 @@ function CompanyHistorySection() {
           <div>
             <p className="mx-eyebrow">Organizational history</p>
             <h2 className="mx-h2-section">
-              The first formal node in a network rooted in <em>conflict-sensitive MERL</em>.
+              The formal continuation of a practice running since{' '}
+              <em style={{ color: 'var(--ember)' }}>2017</em>.
             </h2>
           </div>
           <p className="mx-lead">
@@ -224,7 +225,7 @@ function renderHeroTitle(title: string, subtitle: string | null | undefined, kin
   const flourish = subtitle ?? defaultFlourish(kind);
   return (
     <>
-      {title} <em>{flourish}</em>.
+      {title} <em style={{ color: 'var(--teal-light)' }}>{flourish}</em>.
     </>
   );
 }
@@ -233,7 +234,7 @@ function defaultFlourish(kind: string): string {
   if (kind === 'studio') return 'a partner for tech-enabled global development';
   if (kind === 'network') return 'a cooperative of MERL practices';
   if (kind === 'node') return 'a MERLx Network node';
-  return 'one studio, one network';
+  return 'the next-generation MERL practice';
 }
 
 function leadFor(kind: string): string {
@@ -243,7 +244,7 @@ function leadFor(kind: string): string {
     return 'A cooperative of locally owned MERL practices. Each node is autonomous and accountable in country, working under shared methodology and conflict-sensitivity standards.';
   if (kind === 'node')
     return 'A MERLx Network node. Locally owned MERL, working in cooperative under shared methodology and conflict-sensitivity standards.';
-  return 'MERLx is two entities under one roof. The Studio builds the Optics Suite. The Network is a cooperative of locally owned MERL practices that runs those tools, and traditional MERL, in country.';
+  return 'MERLx is a Spain-based Monitoring, Evaluation, Research & Learning consultancy delivering advanced data science and tech-enabled MERL for global development and humanitarian aid programmes. We combine AI-augmented analytical infrastructure with locally anchored research and conflict-sensitive methodology, working alongside donors, multilaterals, INGOs and implementers across active conflict and fragile-state contexts.';
 }
 
 function capitalise(s: string): string {
