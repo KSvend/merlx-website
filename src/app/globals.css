@@ -1041,6 +1041,81 @@ pre {
   }
 }
 
+/* ───────── Responsive: inner-page fixed grids (≤640px) ───────── */
+/* The pages below use inline `gridTemplateColumns` values that don't
+   auto-collapse. Rather than threading mobile state into every
+   component we target the inline `style` attribute substrings here. */
+@media (max-width: 640px) {
+  /* About page — Origins timeline: year column + body */
+  [style*='minmax(140px, 180px) 1fr'] {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding-left: 16px !important;
+  }
+
+  /* Contact page — sidebar (lead/meta) + form */
+  [style*='minmax(260px, 320px) minmax(0, 1fr)'] {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  /* Optics [slug] — capabilities heading + bullets layout */
+  [style*='minmax(0, 1fr) minmax(0, 2fr)'] {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Optics [slug] — "Built on" label + chip row */
+  [style*='180px 1fr'] {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* Publications [slug] — meta column + body */
+  [style*='minmax(120px, max-content) minmax(0, 1fr)'] {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* Nodes index — two-column intro */
+  [style*='minmax(0, 1.1fr) minmax(0, 1fr)'] {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Insights / publications / news / deployments / catalogue table rows:
+     reflow from horizontal columns to a vertical stack. The trailing
+     60px arrow column gets clipped via overflow inside the parent. */
+  [style*='120px 1fr 60px'],
+  [style*='110px 1fr 60px'],
+  [style*='60px 1fr 60px'],
+  [style*='120px 1fr 220px 60px'],
+  [style*='120px 1fr 200px 60px'],
+  [style*='60px 1fr 140px'] {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+    padding: 16px 0 !important;
+  }
+
+  /* Two-column form rows (label + input) — stack for full-width inputs. */
+  [style*='120px 1fr']:not([style*='60px']):not([style*='200px']):not([style*='220px']) {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  /* Become-a-node / catalogue 1fr 1fr — single column */
+  [style*='1fr 1fr']:not(.mx-footer-grid):not(.mx-stats) {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Catalogue [slug] — outline body grid */
+  [style*='40px 1fr'] {
+    grid-template-columns: 32px 1fr !important;
+    gap: 8px !important;
+  }
+}
+
 /* ───────── Responsive: small mobile (≤380px) ───────── */
 @media (max-width: 380px) {
   .mx-container,
