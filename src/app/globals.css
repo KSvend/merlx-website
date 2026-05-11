@@ -473,7 +473,7 @@ pre {
   align-items: baseline;
 }
 .mx-brand-x {
-  color: var(--iris);
+  color: var(--teal-light);
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
@@ -706,6 +706,9 @@ pre {
 }
 .mx-footer-brand .mx-brand-x {
   color: var(--ink);
+}
+[data-theme="dark"] .mx-footer-brand .mx-brand-x {
+  color: var(--teal-light);
 }
 .mx-footer-brand .mx-mark-rect,
 .mx-footer-brand .mx-mark-square,
