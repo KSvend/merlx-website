@@ -13,7 +13,6 @@ export function GroupHome({ locale, tenantKind }: GroupHomeProps) {
   return (
     <>
       <Hero copy={copy.hero} />
-      <ForAudiencesSection locale={locale} copy={copy.audiences} />
       <DashboardPreviewSection copy={copy.dashboardPreview} />
       <CaseStudiesSection locale={locale} copy={copy.caseStudies} />
       <WhereWeOperateSection copy={copy.whereWeOperate} />
@@ -35,69 +34,6 @@ function Hero({ copy }: { copy: HomeCopy['hero'] }) {
         <p className="mx-lead" style={{ marginTop: 32, maxWidth: '60ch' }}>
           {copy.body}
         </p>
-      </div>
-    </section>
-  );
-}
-
-function ForAudiencesSection({
-  locale,
-  copy,
-}: {
-  locale: string;
-  copy: HomeCopy['audiences'];
-}) {
-  const [studio, network] = copy.cards;
-  return (
-    <section style={{ padding: '32px 0 96px' }}>
-      <div className="mx-container">
-        <div style={gridTwoCol}>
-          <article style={audienceCardStyle}>
-            <span className="mx-mono-caption" style={accentLabel('var(--deep-teal)')}>
-              {studio.preheader}
-            </span>
-            <h2 style={cardHeadingStyle}>
-              {studio.brand}{' '}
-              <em style={emItalicStyle('var(--teal-light)')}>{studio.brandSuffix}</em>
-              <br />
-              <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>{studio.subtitle}</span>
-            </h2>
-            <p style={cardLeadStyle}>{studio.body}</p>
-            <BulletList items={studio.bullets} />
-            <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
-              <Link href={`/${locale}/contact`} className="mx-btn mx-btn--primary">
-                {studio.primaryCta}
-              </Link>
-              <Link href={`/${locale}/deployments`} className="mx-btn mx-btn--ghost">
-                {studio.secondaryCta}
-              </Link>
-            </div>
-          </article>
-
-          <article style={audienceCardStyle}>
-            <span className="mx-mono-caption" style={accentLabel('var(--ember)')}>
-              {network.preheader}
-            </span>
-            <h2 style={cardHeadingStyle}>
-              {network.brand}{' '}
-              <em style={emItalicStyle('var(--ember)')}>{network.brandSuffix}</em>
-              <br />
-              <span style={{ color: 'var(--ink-muted)', fontWeight: 400 }}>
-                {network.subtitle}
-              </span>
-            </h2>
-            <p style={cardLeadStyle}>{network.body}</p>
-            <BulletList items={network.bullets} />
-            <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
-              <Link href={`/${locale}/become-a-node`} className="mx-btn mx-btn--primary">
-                {network.primaryCta}
-              </Link>
-              <Link href={`/${locale}/contact`} className="mx-btn mx-btn--ghost">
-                {network.secondaryCta}
-              </Link>
-            </div>
-          </article>
-        </div>
       </div>
     </section>
   );
@@ -409,63 +345,6 @@ function FinalCTA({
   );
 }
 
-function BulletList({ items }: { items: string[] }) {
-  return (
-    <ul
-      style={{
-        listStyle: 'none',
-        padding: 0,
-        margin: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8,
-      }}
-    >
-      {items.map((item) => (
-        <li
-          key={item}
-          style={{
-            fontSize: 12,
-            color: 'var(--ink)',
-            display: 'flex',
-            gap: 10,
-            lineHeight: 1.55,
-          }}
-        >
-          <span
-            aria-hidden="true"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--ink-faint)',
-              fontSize: 10,
-              paddingTop: 2,
-            }}
-          >
-            ·
-          </span>
-          {item}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-const gridTwoCol: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
-  gap: 24,
-  alignItems: 'stretch',
-};
-
-const audienceCardStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  background: 'var(--surface)',
-  border: '1px solid var(--border-light)',
-  borderRadius: 'var(--radius-md)',
-  padding: 40,
-};
-
 const dashboardFrameStyle: CSSProperties = {
   marginTop: 32,
   background: 'var(--surface)',
@@ -576,26 +455,6 @@ const languageChipStyle: CSSProperties = {
   border: '1px solid var(--border-light)',
   borderRadius: 'var(--radius-pill, 100px)',
   color: 'var(--ink-muted)',
-};
-
-const cardHeadingStyle: CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontWeight: 600,
-  fontSize: 'clamp(28px, 3vw, 36px)',
-  lineHeight: 1.1,
-  letterSpacing: '-0.6px',
-  margin: '12px 0 16px',
-  color: 'var(--ink)',
-  textWrap: 'balance',
-  maxWidth: '18ch',
-};
-
-const cardLeadStyle: CSSProperties = {
-  fontSize: 14,
-  lineHeight: 1.6,
-  color: 'var(--ink-muted)',
-  margin: '0 0 20px',
-  maxWidth: '46ch',
 };
 
 const accentLabel = (color: string): CSSProperties => ({
