@@ -1114,6 +1114,28 @@ pre {
     grid-template-columns: 32px 1fr !important;
     gap: 8px !important;
   }
+
+  /* Contact form — engagement-type radio buttons stack vertically.
+     ContactForm also uses repeat(auto-fit, minmax(220px, 1fr)) for
+     name/email pairs which auto-collapses; this rule is only for the
+     fixed 3-col layout. */
+  [style*='repeat(3, 1fr)'] {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* Cards with inline 40px padding (contact form card, engagement model
+     cards, audience cards historically) get reduced internal padding
+     so 375px viewports aren't half-eaten. */
+  [style*='padding:40px'],
+  [style*='padding: 40px'] {
+    padding: 24px !important;
+  }
+
+  /* Same for cards with inline 32px padding on engagement model tiles. */
+  [style*='padding:32px']:not([style*='padding:32px 0']) {
+    padding: 20px !important;
+  }
 }
 
 /* ───────── Responsive: small mobile (≤380px) ───────── */
