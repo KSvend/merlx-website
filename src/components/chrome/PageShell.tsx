@@ -34,7 +34,7 @@ export async function PageShell({ locale, children, pathname = '/', nodeName }: 
     nodeName ??
     (tenant.kind === 'node' ? (NODE_NAMES[tenant.subdomain] ?? tenant.subdomain) : undefined);
 
-  const groupHomeHref = deriveGroupHomeHref(tenant.domain, locale);
+  const groupHomeHref = deriveGroupHomeHref(tenant.domain, locale, tenant.kind);
   const tenantHomeHref = deriveTenantHomeHref(tenant.kind, tenant.subdomain || null, locale);
 
   return (

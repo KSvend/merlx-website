@@ -64,12 +64,24 @@ export function parseTenantFromHost(rawHost: string): ParsedTenant {
 }
 
 /**
- * Group home URL the logo links to from any tenant. In production this
- * is the bare 2-label host (`https://merlx.org/{locale}`); in dev it
- * resolves to `http://merlx.localhost.test:3000/{locale}` to match the
- * conventional dev hosts file.
+ * Group home URL the logo links to from any tenant. When the visitor
+ * is already on the group tenant (or on a non-tenant dev host like
+ * plain localhost), this returns a relative `/{locale}` so the link
+ * stays on the current origin and keeps working on any port.
+ * From a sub-tenant subdomain (studio.merlx.org etc.) it returns the
+ * absolute URL pointing at the group host so the click crosses
+ * domains correctly.
  */
-export function deriveGroupHomeHref(currentDomain: string, locale: string): string {
+export function deriveGroupHomeHref(
+  currentDomain: string,
+  locale: string,
+  kind?: TenantKind | 'unknown',
+): string {
+  // Same-origin link when we are already on the group tenant.
+  if (kind === 'group' || kind === 'unknown' || !kind) {
+    return `/${locale}`;
+  }
+
   const isDev = process.env.NODE_ENV !== 'production';
   if (isDev) {
     return `http://merlx.localhost.test:3000/${locale}`;
