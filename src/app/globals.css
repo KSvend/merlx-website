@@ -648,10 +648,9 @@ pre {
   font-size: 16px;
 }
 
-/* Footer — pastel-mint anchor in both themes. The background never
-   theme-swaps, so we lock the foreground tokens to always-dark values
-   inside the footer (otherwise --ink etc. would flip light in dark
-   mode and the text would disappear). */
+/* Footer — pastel-mint in light, dark-teal in dark. Foreground tokens
+   are scoped per-theme so existing rules using --ink / --ink-muted etc.
+   stay readable on whichever background applies. */
 .mx-footer {
   --ink: #111;
   --ink-light: #2a2a2a;
@@ -662,6 +661,15 @@ pre {
   background: var(--teal-light);
   color: var(--ink-light);
   padding: 80px 0 32px;
+}
+[data-theme="dark"] .mx-footer {
+  --ink: #f0eee7;
+  --ink-light: #d9d6cd;
+  --ink-muted: rgba(245, 243, 238, 0.78);
+  --ink-faint: rgba(245, 243, 238, 0.52);
+  --border-light: rgba(245, 243, 238, 0.12);
+  --surface: rgba(0, 0, 0, 0.25);
+  background: #1a3a34; /* --color-teal-deep — fixed dark teal even in dark theme where --deep-teal flips brighter */
 }
 .mx-footer-grid {
   display: grid;
@@ -703,6 +711,11 @@ pre {
 .mx-footer-brand .mx-mark-square,
 .mx-footer-brand .mx-mark-spike {
   fill: var(--ink);
+}
+[data-theme="dark"] .mx-footer-brand .mx-mark-rect,
+[data-theme="dark"] .mx-footer-brand .mx-mark-square,
+[data-theme="dark"] .mx-footer-brand .mx-mark-spike {
+  fill: var(--teal-light);
 }
 .mx-footer-tag {
   font-family: var(--font-display);
@@ -770,13 +783,9 @@ pre {
   color: var(--ink);
 }
 
-/* Nav mark — canonical tricolour */
-.mx-mark-rect {
-  fill: var(--iris);
-}
-.mx-mark-square {
-  fill: var(--sand);
-}
+/* Brand mark — all three elements in --teal-light throughout. */
+.mx-mark-rect,
+.mx-mark-square,
 .mx-mark-spike {
   fill: var(--teal-light);
 }
