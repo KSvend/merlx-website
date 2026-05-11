@@ -345,6 +345,24 @@ export interface OpticsTool {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Bullet list rendered under "Capabilities" on /optics/[slug].
+   */
+  capabilities?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Tech-stack chips rendered under "Built on" on /optics/[slug].
+   */
+  builtOn?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
   screenshots?:
     | {
         caption?: string | null;
@@ -729,6 +747,18 @@ export interface OpticsToolsSelect<T extends boolean = true> {
   tagline?: T;
   summary?: T;
   description?: T;
+  capabilities?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  builtOn?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
   screenshots?:
     | T
     | {

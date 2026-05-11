@@ -1,5 +1,5 @@
 import { getPayload } from 'payload';
-import type { Course, OpticsTool, Page } from '../payload-types';
+import type { Course, InsightsPost, OpticsTool, Page } from '../payload-types';
 import config from '../src/payload.config';
 
 interface SeedPage {
@@ -129,6 +129,48 @@ const SEED_TOOLS: SeedTool[] = [
     status: 'beta',
     subdomain: 'echo.merlx.org',
     order: 6,
+  },
+];
+
+interface SeedInsight {
+  slug: string;
+  title: string;
+  excerpt: string;
+  body: string[];
+  category: 'news' | 'analysis' | 'field-note' | 'methods';
+  publishedAt: string;
+  syndicate?: boolean;
+}
+
+const SEED_INSIGHTS: SeedInsight[] = [
+  {
+    slug: 'the-aid-reset-and-what-it-means-for-merl',
+    title: 'The aid reset and what it means for MERL',
+    excerpt:
+      'Donors are doing less, differently. Budgets are tightening just as climate shocks, protracted crises, and geopolitical fragmentation intensify. Most MERL systems were not built for this.',
+    body: [
+      'The global aid system is undergoing what senior UN leaders call a "humanitarian reset" — a fundamental reconfiguration in response to shrinking budgets, rising needs, and a crisis of legitimacy and trust. Less money, more crises. No return to the pre-2015 aid model. Pressure to simplify and re-wire delivery chains.',
+      'MERL and TPM now face a triple mandate: deliver more, faster; localise leadership and capacity; digitise and de-risk. Yet the business model and institutional incentives around MERL have barely changed. International firms still dominate larger contracts. Local researchers are often engaged at the bottom of the value chain. Tools and datasets remain project-bound and siloed.',
+      'This is the space MERLx is designed for: AI-augmented analytical infrastructure that helps teams read context faster and adapt programming earlier, with locally anchored partners at the centre of analysis and interpretation rather than at the bottom of the value chain.',
+      'For donor and INGO programme teams, the practical question is no longer "can we add AI to MERL?" — it is "which MERL functions can be re-architected so that signals arrive in time to change the next decision?". That is the bar we hold ourselves to.',
+    ],
+    category: 'analysis',
+    publishedAt: '2026-04-22T00:00:00.000Z',
+    syndicate: true,
+  },
+  {
+    slug: 'conflict-sensitive-merl-what-do-no-harm-requires',
+    title: 'Conflict-sensitive MERL: what "do no harm" actually requires',
+    excerpt:
+      'Conflict-sensitivity is a discipline, not a checkbox. A short note on what we actually do at engagement inception and why explainability matters in fragile contexts.',
+    body: [
+      'Conflict-sensitivity is often invoked and rarely operationalised. In our practice, every engagement starts with a data-protection impact assessment, alignment to IASC operational guidance on data responsibility, and OECD-DAC conflict-sensitivity and Core Humanitarian Standard principles. Informed consent, distress-referral and takedown protocols are documented per deployment.',
+      'When AI sits anywhere in the workflow, explainability is not an add-on. Classifier outputs that affect named individuals pass a human-in-the-loop review before release. Narrative reports cite the indicators behind them. Forecasts ship with confidence intervals and the underlying signals they rest on. PII redaction is on by default. Data residency is set by the client, not the vendor.',
+      'In fragile contexts the architecture itself has to adapt. ECHO runs entirely on-device with no cloud call at interview time — built for Khartoum without power, South Kordofan without 3G, and reception centres where no data can leave the device. None of this is sufficient on its own. It is the floor we will not drop below, and it is the reason we pass on engagements where the floor would be lower.',
+    ],
+    category: 'methods',
+    publishedAt: '2026-05-04T00:00:00.000Z',
+    syndicate: true,
   },
 ];
 
@@ -621,6 +663,35 @@ async function seed() {
       } as Omit<Page, 'id' | 'createdAt' | 'updatedAt'>,
     });
     console.log(`  + seeded: pages/${page.slug}`);
+  }
+
+  for (const post of SEED_INSIGHTS) {
+    const existing = await payload.find({
+      collection: 'insights-posts',
+      where: { and: [{ slug: { equals: post.slug } }, { tenant: { equals: tenantId } }] },
+      limit: 1,
+    });
+
+    if (existing.docs.length > 0) {
+      console.log(`  - skip: insights-posts/${post.slug} already exists`);
+      continue;
+    }
+
+    await payload.create({
+      collection: 'insights-posts',
+      data: {
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        body: plainTextToLexical(post.body),
+        category: post.category,
+        publishedAt: post.publishedAt,
+        syndicate: post.syndicate ?? false,
+        status: 'published',
+        tenant: tenantId,
+      } as Omit<InsightsPost, 'id' | 'createdAt' | 'updatedAt'>,
+    });
+    console.log(`  + seeded: insights-posts/${post.slug}`);
   }
 
   // Seed studio content under the studio tenant

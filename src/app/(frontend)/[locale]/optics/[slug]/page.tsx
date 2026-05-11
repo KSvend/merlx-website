@@ -33,15 +33,24 @@ export default async function OpticsToolPage({ params }: PageProps) {
 
   if (!tool && !profile) notFound();
 
-  // Authoritative copy comes from the company-profile profile; the
-  // Payload doc supplies status, an editorial override of name/tagline,
-  // and any external-deployment URL.
+  // Payload-first for editorial fields (status, name, tagline,
+  // capabilities, builtOn). The TS profile in optics-tool-profiles.ts
+  // supplies static design assets (letter, screenshots, longName,
+  // note, metrics) that aren't worth round-tripping through the CMS.
   const accent = OPTICS_ACCENT_BY_SLUG[slug] ?? 'var(--ink-muted)';
   const name = tool?.name ?? slug.toUpperCase();
   const longName = profile?.longName ?? '';
   const tagline = profile?.tagline ?? tool?.tagline ?? '';
   const summary = profile?.summary ?? tool?.tagline ?? '';
   const status = tool?.status ?? 'beta';
+  const capabilities =
+    tool?.capabilities && tool.capabilities.length > 0
+      ? tool.capabilities.map((c) => c.item).filter((s): s is string => !!s)
+      : (profile?.capabilities ?? []);
+  const builtOn =
+    tool?.builtOn && tool.builtOn.length > 0
+      ? tool.builtOn.map((b) => b.item).filter((s): s is string => !!s)
+      : (profile?.builtOn ?? []);
   const externalUrl = tool?.externalUrl ?? null;
 
   return (
@@ -105,7 +114,7 @@ export default async function OpticsToolPage({ params }: PageProps) {
       </section>
 
       {/* Capabilities */}
-      {profile?.capabilities && profile.capabilities.length > 0 ? (
+      {capabilities.length > 0 ? (
         <section className="mx-section mx-section--shell-warm">
           <div className="mx-container">
             <div style={capsLayoutStyle}>
@@ -120,7 +129,7 @@ export default async function OpticsToolPage({ params }: PageProps) {
                 </p>
               </div>
               <ul style={capsListStyle}>
-                {profile.capabilities.map((c) => (
+                {capabilities.map((c) => (
                   <li key={c} style={capsItemStyle}>
                     <span style={{ color: accent, fontFamily: 'var(--font-mono)' }}>·</span>
                     <span>{c}</span>
@@ -133,13 +142,13 @@ export default async function OpticsToolPage({ params }: PageProps) {
       ) : null}
 
       {/* Built on + note */}
-      {profile?.builtOn && profile.builtOn.length > 0 ? (
+      {builtOn.length > 0 ? (
         <section className="mx-section">
           <div className="mx-container">
             <div style={builtOnRowStyle}>
               <span style={builtOnLabelStyle}>Built on</span>
               <div style={builtOnListStyle}>
-                {profile.builtOn.map((b, i, arr) => (
+                {builtOn.map((b, i, arr) => (
                   <span key={b} style={builtOnItemStyle}>
                     {b}
                     {i < arr.length - 1 ? <span style={builtOnDotStyle}>·</span> : null}
@@ -147,7 +156,7 @@ export default async function OpticsToolPage({ params }: PageProps) {
                 ))}
               </div>
             </div>
-            {profile.note ? <p style={builtOnNoteStyle}>{profile.note}</p> : null}
+            {profile?.note ? <p style={builtOnNoteStyle}>{profile.note}</p> : null}
           </div>
         </section>
       ) : null}

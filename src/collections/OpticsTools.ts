@@ -49,6 +49,20 @@ export const OpticsTools: CollectionConfig = {
       admin: { description: 'Full marketing copy on /optics/[slug].' },
     },
     {
+      name: 'capabilities',
+      type: 'array',
+      labels: { singular: 'Capability', plural: 'Capabilities' },
+      admin: { description: 'Bullet list rendered under "Capabilities" on /optics/[slug].' },
+      fields: [{ name: 'item', type: 'text', required: true }],
+    },
+    {
+      name: 'builtOn',
+      type: 'array',
+      labels: { singular: 'Tech', plural: 'Built on' },
+      admin: { description: 'Tech-stack chips rendered under "Built on" on /optics/[slug].' },
+      fields: [{ name: 'item', type: 'text', required: true }],
+    },
+    {
       name: 'screenshots',
       type: 'array',
       labels: { singular: 'Screenshot', plural: 'Screenshots' },
